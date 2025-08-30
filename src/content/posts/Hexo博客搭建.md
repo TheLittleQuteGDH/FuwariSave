@@ -13,7 +13,9 @@ lang: ''
 
 ## 本博客就是基于Hexo搭建的，并且已经托管到Cloudflare并使用了优选域名，如图所示
 
-![Itdog测速，非常绿](https://github.com/TheLittleQuteGDH/gdhblog.github.io/blob/main/img/hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/1.PNG?raw=true)
+![Itdog测速，非常绿](photo/itdog测速.PNG)
+
+
 
 ## 准备工作
 
@@ -48,9 +50,9 @@ npm install
 
 如图所示，将localhost:4000复制进入浏览器查看Hexo博客效果
 
-![运行hexo s](https://github.com/TheLittleQuteGDH/gdhblog.github.io/blob/main/img/hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/2.PNG?raw=true)
+![运行hexo s](photo/运行Hexo s.PNG)
 
-![初始化界面](https://github.com/TheLittleQuteGDH/gdhblog.github.io/blob/main/img/hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/3.PNG?raw=true)
+![初始化界面](photo/初始化界面预览.PNG)
 
 #### 4、插入一篇新文章
 
@@ -86,4 +88,4 @@ hexo clean #清理缓存
 
 ## 到这里你已经拥有博客框架了，那么本期教程就结束了，886~
 
-托管到Cloudflare请查看[将Hexo免费托管到Cloudflare](https://blog.thelittlequtegdh.dpdns.org/posts/将hexo免费托管到cloudflare)
+托管到Cloudflare请查看[将Hexo免费托管到Cloudflare](/将Hexo免费托管到Cloudflare.md)

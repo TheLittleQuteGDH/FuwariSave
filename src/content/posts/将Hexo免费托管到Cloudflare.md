@@ -54,13 +54,13 @@ lang: ''
 
 2、打开你注册好的Github，点击右上角头像，点击“Your repositories”
 
-![Your repositories](https://github.com/TheLittleQuteGDH/gdhblog.github.io/blob/main/img/hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/4.PNG?raw=true)
+![Your repositories点击存储库](photo/点击存储库.PNG)
 
 
 
 3、再点击右上角带绿色按钮的“New”，新建一个仓库，名字可以随便起，点击Create repository
 
-![New](https://github.com/TheLittleQuteGDH/gdhblog.github.io/blob/main/img/hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/5.PNG?raw=true)
+![添加新存储库](photo/添加新存储库.png)
 
 
 
@@ -101,6 +101,8 @@ lang: ''
 > [!IMPORTANT]
 >
 > 这里有个重要事项，添加路由填写的域名后面一定要加/*！！很重要！
+>
+> 例如，xxxx.com/*
 
 好了，接下来请返回Cloudflare的主界面，找到你的域名，点开，然后找到DNS记录，添加一条CNAME记录，名称填写你的前缀，接着可以填写你自己找的优选域名，关于优选域名记录可以参考这两篇文章[CloudFlare，Edgeone优选域名记录](https://blog.thelittlequtegdh.dpdns.org/2025/08/20/CloudFlare%EF%BC%8CEdgeone%E4%BC%98%E9%80%89%E5%9F%9F%E5%90%8D/)，和[CloudFlare中国大陆地区优选方案汇总](https://blog.cmliussss.com/p/CloudFlare优选/#我维护的优选官方域名，查看更多：https-cf-090227-xyz)
 
