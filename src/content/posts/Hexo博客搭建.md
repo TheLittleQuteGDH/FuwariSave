@@ -52,6 +52,7 @@ npm install
 
 ![运行hexo s](photo/运行Hexos.PNG)
 
+
 ![初始化界面](photo/初始化界面预览.PNG)
 
 #### 4、插入一篇新文章
