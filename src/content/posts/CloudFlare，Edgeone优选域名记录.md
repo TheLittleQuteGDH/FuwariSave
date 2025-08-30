@@ -9,13 +9,13 @@ draft: false
 lang: ''
 ---
 
-# Cloudflare+Edgeone优选域名记录
+# Cloudflare+Edgeone优选域名记录（在网上找的，流畅性请自行去[ItDog](https://itdog.cn)进行Ping）
 
 
 
-## 以下是一些Cloudflare的优选域名（出自[2x.nz](https://2x.nz)和[https://blog.cmliussss.com/](https://blog.cmliussss.com/)）
+## 以下是一些Cloudflare的优选域名
 
-```html
+```
 fenliu.072103.xyz
 cf.090227.xyz
 cloudflare.182682.xyz
@@ -34,9 +34,9 @@ xn--b6gac.eu.org
 freeyx.cloudflare88.eu.org
 ```
 
-## 以下是一些Cloudflare的优选域名（出自[2x.nz](https://2x.nz)和[https://www.landiannews.com/archives/109441.html](https://www.landiannews.com/archives/109441.html)）
+## 以下是一些Edgeone的优选域名
 
-```HTML
+```
 下面为Edgeone优选域名
 eo.072103.xyz
 *.edgeone.182682.xyz
@@ -85,13 +85,12 @@ eo.072103.xyz
 43.159.98.16
 43.175.130.34
 43.174.150.176
-```
 
-## 
+```
 
 ## 以下是一些其他的官方优选域名记录（出自[https://blog.cmliussss.com/](https://blog.cmliussss.com/)）
 
-```html
+```
 shopify.com
 time.is
 icook.hk
