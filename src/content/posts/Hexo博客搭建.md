@@ -50,7 +50,7 @@ npm install
 
 如图所示，将localhost:4000复制进入浏览器查看Hexo博客效果
 
-![运行hexo s](photo/运行Hexo s.PNG)
+![运行hexo s](photo/运行Hexos.PNG)
 
 ![初始化界面](photo/初始化界面预览.PNG)
 
