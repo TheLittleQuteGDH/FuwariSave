@@ -58,14 +58,14 @@ export const profileConfig: ProfileConfig = {
 	links: [
 		{
 			name: "哔哩哔哩",
-			icon: "fa-brands fa-bilibili", // Visit https://icones.js.org/ for icon codes
+			icon: "fa6-brands:bilibili", // Visit https://icones.js.org/ for icon codes
 			// You will need to install the corresponding icon set if it's not already included
 			// `pnpm add @iconify-json/<icon-set-name>`
 			url: "https://space.bilibili.com/1759955728",
 		},
 		{
 			name: "饭店网站",
-			icon: "fa-solid fa-utensils",
+			icon: "fa:cutlery",
 			url: "https://sqt.xx.kg",
 		},
 		{
