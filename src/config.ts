@@ -57,21 +57,21 @@ export const profileConfig: ProfileConfig = {
 	bio: "Happy,喵~分享技术教程的博客",
 	links: [
 		{
-			name: "Twitter",
-			icon: "fa6-brands:twitter", // Visit https://icones.js.org/ for icon codes
+			name: "哔哩哔哩",
+			icon: "fa-brands fa-bilibili", // Visit https://icones.js.org/ for icon codes
 			// You will need to install the corresponding icon set if it's not already included
 			// `pnpm add @iconify-json/<icon-set-name>`
-			url: "https://twitter.com",
+			url: "https://space.bilibili.com/1759955728",
 		},
 		{
-			name: "Steam",
-			icon: "fa6-brands:steam",
-			url: "https://store.steampowered.com",
+			name: "饭店网站",
+			icon: "fa-solid fa-utensils",
+			url: "https://sqt.xx.kg",
 		},
 		{
 			name: "GitHub",
 			icon: "fa6-brands:github",
-			url: "https://github.com/saicaca/fuwari",
+			url: "https://github.com/TheLittleQuteGDH",
 		},
 	],
 };
