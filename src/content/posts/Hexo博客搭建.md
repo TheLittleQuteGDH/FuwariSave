@@ -86,4 +86,4 @@ hexo clean #清理缓存
 
 ## 到这里你已经拥有博客框架了，那么本期教程就结束了，886~
 
-托管到Cloudflare请查看[将Hexo免费托管到Cloudflare](/将Hexo免费托管到Cloudflare.md)
+托管到Cloudflare请查看[将Hexo免费托管到Cloudflare](https://blog.thelittlequtegdh.dpdns.org/posts/将hexo免费托管到cloudflare)
