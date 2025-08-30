@@ -64,11 +64,6 @@ export const profileConfig: ProfileConfig = {
 			url: "https://space.bilibili.com/1759955728",
 		},
 		{
-			name: "饭店网站",
-			icon: "fa:cutlery",
-			url: "https://sqt.xx.kg",
-		},
-		{
 			name: "GitHub",
 			icon: "fa6-brands:github",
 			url: "https://github.com/TheLittleQuteGDH",
