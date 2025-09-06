@@ -57,6 +57,8 @@ DownloadURL:[https://steampp.net/download](https://steampp.net/download)
 
 新建一个文本文档，后缀名改为.reg，编辑粘贴以下代码：
 
+接着双击导入成功，右键点击Hosts文件，点击“管理员获得使用权”就可以修改文件力～
+
 ```
 Windows Registry Editor Version 5.00
 
@@ -75,9 +77,4 @@ Windows Registry Editor Version 5.00
 [HKEY_CLASSES_ROOT\Directory\shell\runas\command]
 @="cmd.exe /c takeown /f \"%1\\*\" /r /d y && icacls \"%1\\*\" /grant administrators:F /t"
 "IsolatedCommand"="cmd.exe /c takeown /f \"%1\\*\" /r /d y && icacls \"%1\\*\" /grant administrators:F /t"
-
 '''
-
-复制保存，双击导入成功后，右键点击Hosts文件，点击“管理员获得使用权”按钮，即可更改Hosts文件
-
-好了，就写这么多，拜拜
