@@ -39,7 +39,7 @@ DownloadURL:[https://steampp.net/download](https://steampp.net/download)
 （权限问题提示不能修改请看文章最底部）
 这里的IP地址如何获得，使用[ipdog](https://ipdog.cn)去Ping一下Github.com就行了，选一个没有超时的IP，然后复制上去就行了，我刚刚的记录就是使用IPdog去Ping出来的一个IP
 
-![Ping Github](/photo/ping.jpg)
+![Ping Github](photo/ping.jpg)
 
 ## 3、使用Github Desktop版（只能用于上传下载项目，同样适用于Github大规模封端口）
 
@@ -57,7 +57,7 @@ DownloadURL:[https://steampp.net/download](https://steampp.net/download)
 
 新建一个文本文档，后缀名改为.reg，编辑粘贴以下代码：
 
-'''
+```
 Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\*\shell\runas]
