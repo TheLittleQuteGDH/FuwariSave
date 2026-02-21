@@ -9,39 +9,83 @@ draft: false
 lang: ''
 ---
 
-# Cloudflare+Edgeone优选域名记录（在网上找的，流畅性请自行去[ItDog](https://itdog.cn)进行Ping）
+# Cloudflare,Edgeone优选域名记录
 
+要想检查其连通性和速度，请访问[itdog](https://itdog.cn)
 
-
-## 以下是一些Cloudflare的优选域名
+## 以下是Cloudflare的优选域名
 
 ```
-fenliu.072103.xyz
-cf.090227.xyz
-cloudflare.182682.xyz
-*.cloudflare.182682.xyz
-*.tencentapp.cn
-bestcf.top
-cf.877774.xyz
-cfip.xxxxxxxx.tk
+Cloudflare官方优选域名如下表：
+http://shopify.com
+time.is
+http://icook.hk
+http://icook.tw
+ip.sb
+http://japan.com
+http://malaysia.com
+http://russia.com
+http://singapore.com
+skk.moe
+www.visa.com.sg
+http://www.visa.com.hk
+http://www.visa.com.tw
+http://www.visa.co.jp
+http://www.visakorea.com
+www.gco.gov.qa
+www.gov.se
+www.gov.ua
+
+第三方维护域名如下表：（前面带*的代表可以解析到任意前缀）
+cloudflare.182682.xyz#wetest.vip维护
+tencentapp.cn#ktff维护
+cf.877774.xyz#秋名山维护
+cfip.xxxxxxxx.tk#OTC维护
+bestcf.030101.xyz#MingYu维护
+777.ai7777777.xyz
 cdn.2020111.xyz
 cfip.cfcdn.vip
+*.cf.licdn.top
 cf.0sm.com
 cfip.1323123.xyz
-cloudflare-ip.mofashi.ltd
 cf.877771.xyz
+cf.900501.xyz
+cdns.doon.eu.org
+fn.130519.xyz
+nrt.xxxxxxxx.nyc.mn
+nrtcfdns.zone.id
+saas.sin.fan
+linux.do
+cloudflare-ip.mofashi.ltd
+cnamefuckxxs.yuchen.icu
+cname.xirancdn.us
+8.889288.xyz
+speed.marisalnc.com
+cdn.tzpro.xyz
+cf.877771.xyz
+115155.xyz
+*.cf.959923.xyz
+*.cf.cname.vvhan.com
 xn--b6gac.eu.org
 freeyx.cloudflare88.eu.org
+cf.zhetengsha.eu.org
+cloudflare.9jy.cc
+cf.zerone-cdn.pp.ua
+bestcf.top
+cf.090227.xyz #CM大佬维护
 ```
 
 ## 以下是一些Edgeone的优选域名
 
 ```
-下面为Edgeone优选域名
-eo.072103.xyz
-*.edgeone.182682.xyz
+Edgeone优选域名列表
+*.edgeone.cnae.top #NB 优选服务
+*.edgeone.byoip.top #NB 优选服务
+*.edgeone.182682.xyz #微测网维护
+eo.072103.xyz        #二叉树树维护
+*.v4.eo.fastlydns.cn #小周维护
 
-下面的为Edgeone优选IP
+Edgeone的优选IP
 43.174.150.199
 43.174.150.119
 43.174.151.16
