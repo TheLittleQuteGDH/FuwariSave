@@ -132,26 +132,5 @@ Edgeone的优选IP
 
 ```
 
-## 以下是一些其他的官方优选域名记录（出自[https://blog.cmliussss.com/](https://blog.cmliussss.com/)）
 
-```
-shopify.com
-time.is
-icook.hk
-icook.tw
-ip.sb
-japan.com
-malaysia.com
-russia.com
-singapore.com
-skk.moe
-www.visa.com.sg
-www.visa.com.hk
-www.visa.com.tw
-www.visa.co.jp
-www.visakorea.com
-www.gco.gov.qa
-www.gov.se
-www.gov.ua
-```
 
