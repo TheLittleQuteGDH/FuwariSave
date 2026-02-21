@@ -22,25 +22,28 @@ lang: ''
 ## 准备工作
 
 1. 请注册好1个Cloudflare帐号，Cloudflare官网：[https://dash.cloudflare.com，如果卡在加载界面可打开科学上网](https://dash.cloudflare.com)
-2. 准备好1个已经托管到Cloudflare的域名，例如：thelittlequtegdh.dpdns.org
-3. 准备好1个Github帐号（如果要托管到CloudFlare Pages可以忽略这一步），Github官网：[https://github.com](https://github.com)
-4. 准备一个华为云国际版帐号（如果你使用Cloudflare Worker进行托管，可忽略这一步），华为云国际版官网：[点我进入（如果频繁跳转到中国站登录界面请打开全局代理模式，必须是国际版！）](https://auth.huaweicloud.com/authui/login.html?service=https%3A%2F%2Fconsole-intl.huaweicloud.com%2Fdns%2F#/login)
+   
+2.准备好1个已经托管到Cloudflare的域名，例如：thelittlequtegdh.dpdns.org或gdh.us.kg，这两个域名都是免费的，可以访问[nic.us.kg](https://nic.us.kg)注册一个类似的域名，教程网上有可以自己百度一下
 
+3. 准备好1个Github帐号，Github官网：[https://github.com](https://github.com)
 
+4.准备一个华为云国际版帐号（如果你使用Cloudflare Worker进行托管，可忽略这一步），华为云国际版官网：[点我进入（如果频繁跳转到中国站登录界面请打开全局代理模式，必须是国际版！）](https://auth.huaweicloud.com/authui/login.html?service=https%3A%2F%2Fconsole-intl.huaweicloud.com%2Fdns%2F#/login)
+
+！注意，免费的二级域名dpdns.org并不能托管至华为云国际版dns服务，如果想托管到华为云dns，请使用us.kg域名（这个要付费￥15）！
 
 ## 注册账号
 
-1、Cloudflare
+1、Cloudflare的注册
 
-打开Cloudflare官网-点击右上角登录（有账号可直接输入账号密码登录）-点击左下角注册-输入您的电子邮件和密码-选择创建帐户。
+打开Cloudflare官网-点击右上角登录（有账号可直接输入账号密码登录）-点击左下角注册-输入您的电子邮件和密码-选择创建帐户。如果注册失败请百度或必应一下
 
-2、Github
+2、Github的注册
 
 打开Github官网-点击Sign in-填写昵称（用户名）注册邮箱和密码-进行人机验证
 
-3、华为云国际版（如果你使用Cloudflare Worker进行托管，可忽略这一步）
+3、华为云国际版的注册（如果你使用Cloudflare Worker进行托管，可忽略这一步）
 
-打开华为云国际版官网（国际版不需要实名，如果注册时频繁跳转国内版本，请打开全局代理模式注册）-设置您的安全手机（可以直接跳过）-跳转到完善信息页面说明注册已完成，无视绑定提示即可。直接点左上角返回
+打开华为云国际版官网（国际版不需要实名，如果注册时频繁跳转国内版本，请打开全局代理模式注册）-注册完之后会提示设置您的安全手机，出现这一步就是成功注册了，点击跳过即可-跳转到完善信息页面说明注册已完成，无视绑定提示即可。直接点左上角返回
 
 
 
@@ -128,6 +131,4 @@ pages的话稍稍有些麻烦，先完成Worker部分的1、2步，接着在第�
 
 4、给你将要使用的域名（比如我这里叫thelittlequtegdh.dpdns.org），添加4条华为云NS类型（就是你刚刚复制出来的那四个）的解析记录，即可生效。
 
-
-
-好了，将Hexo博客托管到Cloudflare的教程结束了，感谢你能看到这里！
+至此，你的个人博客就已经搭建完成了
