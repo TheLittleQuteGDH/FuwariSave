@@ -8,14 +8,14 @@
 
 **申请方式**：请在您的网站添加本站链接后，通过以下方式联系我：
 
-- 📧 邮箱：`your-email@example.com`
-- 💻 GitHub：[@your-username](https://github.com/your-username)
+- 📧 邮箱：[gdh@gdh.us.kg，👉点击发送](mailto:gdh@gdh.us.kg)
+- 💻 GitHub：[@TheLittleQuteGDH](https://github.com/TheLittleQuteGDH)
 
 **本站信息**：
 
-- **网站名称**：您的网站名称
-- **网站链接**：`https://your-domain.com`
-- **网站描述**：您的网站描述
+- **网站名称**：GDHのBlog
+- **网站链接**：`https://blog.gdh.us.kg`
+- **网站描述**：一个技术博客
 
 ---
 
@@ -46,6 +46,6 @@
 
 <div style="text-align: center; color: var(--text-secondary); margin-top: 2rem;">
 
-**最后更新**：2025年1月
+**最后更新**：2026-05-01
 
 </div>
