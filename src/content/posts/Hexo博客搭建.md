@@ -2,7 +2,7 @@
 title: Hexo博客搭建
 published: 2025-08-25
 description: ''
-image: ''
+image: 'photo/初始化界面预览.PNG'
 tags: [博客搭建]
 category: '教程'
 draft: false 

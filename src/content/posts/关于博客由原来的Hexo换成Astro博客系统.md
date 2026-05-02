@@ -1,8 +1,8 @@
 ---
 title: 关于博客由原来的Hexo换成Astro博客系统
 published: 2025-08-25
-description: ''
-image: ''
+description: '博客换框架了'
+image: 'photo/Astro博客.PNG'
 tags: [杂谈]
 category: '杂谈'
 draft: false 

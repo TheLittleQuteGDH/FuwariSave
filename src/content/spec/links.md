@@ -28,24 +28,22 @@
 - **网站描述**：一句话描述您的网站
 - **头像链接**：网站头像/Logo 的图片 URL（可选）
 
-**头像支持三种格式**：
+最好就是直接将以下源代码发送给我（毕竟我也懒得自己写）
 
-1. **外部链接**：以 `http://` 或 `https://` 开头
+```
+  {
+    name: "示例友链",
+    url: "https://example.com",
+    description: "这是一个示例友链的描述",
+    avatar: "https://example.com/avatar.jpg",
+  },
+```
 
-   头像链接：`https://example.com/avatar.jpg`
 
-2. **public 目录**：以 `/` 开头，图片放在 `public` 目录下
-
-   头像链接：`/images/avatar.jpg`  （对应 public/images/avatar.jpg）
-
-3. **本地路径**：相对于 `src` 目录，图片放在 `src` 目录下
-
-   头像链接：`assets/images/avatar.jpg`  （对应 src/assets/images/avatar.jpg）
 
 ---
 
 <div style="text-align: center; color: var(--text-secondary); margin-top: 2rem;">
-
 **最后更新**：2026-05-01
 
 </div>

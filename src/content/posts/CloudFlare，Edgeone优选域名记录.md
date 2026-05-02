@@ -1,6 +1,6 @@
 ---
 title: CloudFlare优选域名记录
-published: 2025-08-25
+published: 2024-08-25
 description: ''
 image: ''
 tags: [优选域名IP]
@@ -37,11 +37,11 @@ www.gov.se
 www.gov.ua
 
 第三方维护域名如下表：（前面带*的代表可以解析到任意前缀）
-cloudflare.182682.xyz#wetest.vip维护
-tencentapp.cn#ktff维护
-cf.877774.xyz#秋名山维护
-cfip.xxxxxxxx.tk#OTC维护
-bestcf.030101.xyz#MingYu维护
+cloudflare.182682.xyz #wetest.vip维护
+tencentapp.cn #ktff维护
+cf.877774.xyz #秋名山维护
+cfip.xxxxxxxx.tk #OTC维护
+bestcf.030101.xyz #MingYu维护
 777.ai7777777.xyz
 cdn.2020111.xyz
 cfip.cfcdn.vip
@@ -74,9 +74,4 @@ cf.zerone-cdn.pp.ua
 bestcf.top
 cf.090227.xyz #CM大佬维护
 ```
-
-
-```
-
-
 
