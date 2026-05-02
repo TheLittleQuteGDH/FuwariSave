@@ -53,7 +53,7 @@ Worker优选是最简单的，主要分以下两种情况：
 
 <img src="photo/CW.PNG" style="zoom:75%;" />
 
-随后，回到你的域名，为你的域名添加一条记录，如果是像我一样，blog.gdh.us.kg，就直接添加一条@的CNAME记录，如果你是像我一样用blog.gdh.us.kg的话，就添加一条blog的CNAME记录，接着目标填上你找的优选域名，比如我找的是youxuan.cf.090227.xyz，需要关闭小黄云，点击保存，打开此域名，发现你已经成功了。![添加DNS记录](photo\添加DNS记录.png)
+随后，回到你的域名，为你的域名添加一条记录，如果是像我一样，blog.gdh.us.kg，就直接添加一条@的CNAME记录，如果你是像我一样用blog.gdh.us.kg的话，就添加一条blog的CNAME记录，接着目标填上你找的优选域名，比如我找的是youxuan.cf.090227.xyz，需要关闭小黄云，点击保存，打开此域名，发现你已经成功了。![添加DNS记录](photo/添加DNS记录.png)
 
 ### 2、反代你的原站（摘自试试Cloudflare IP优选！让Cloudflare在国内再也不是减速器！ | 二叉树树的博客](https://blog.2x.nz/posts/cf-fastip/)）
 
