@@ -111,10 +111,29 @@ const jsonLd = {
         </div>
     </div>
 
-<div class="card-base base z-10 px-6 py-6 mt-4 relative w-full">
-  <div id="giscus_container"></div>
-</div>
+    <div class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full">
+        <a href={entry.data.nextSlug ? getPostUrlBySlug(entry.data.nextSlug) : "#"}
+           class:list={["w-full font-bold overflow-hidden active:scale-95", {"pointer-events-none": !entry.data.nextSlug}]}>
+            {entry.data.nextSlug && <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-start gap-4" >
+                <Icon name="material-symbols:chevron-left-rounded" class="text-[2rem] text-[var(--primary)]" />
+                <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
+                    {entry.data.nextTitle}
+                </div>
+            </div>
+        </a>
 
+        <a href={entry.data.prevSlug ? getPostUrlBySlug(entry.data.prevSlug) : "#"}
+           class:list={["w-full font-bold overflow-hidden active:scale-95", {"pointer-events-none": !entry.data.prevSlug}]}>
+            {entry.data.prevSlug && <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-end gap-4">
+                <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
+                    {entry.data.prevTitle}
+                </div>
+                <Icon name="material-symbols:chevron-right-rounded" class="text-[2rem] text-[var(--primary)]" />
+            </div>}
+        </a>
+    </div>
+
+</MainGridLayout>
 <script src="https://giscus.app/client.js"
         data-repo="TheLittleQuteGDH/GiscusComments"
         data-repo-id="R_kgDOSSLTEg"
@@ -131,67 +150,3 @@ const jsonLd = {
         crossorigin="anonymous"
         async>
 </script>
-
-    const container = document.getElementById('giscus_container');
-    if (container) {
-      container.innerHTML = '';
-      container.appendChild(giscus);
-    }
-  }
-
-  const light = 'catppuccin_latte';
-  const dark = 'catppuccin_mocha';
-
-  function getGiscusTheme() {
-    return document.documentElement.classList.contains('dark') ? dark : light;
-  }
-
-  function updateGiscusTheme() {
-    const theme = getGiscusTheme();
-    const iframe = document.querySelector('iframe.giscus-frame');
-    if (!iframe) return;
-    iframe.contentWindow.postMessage({ giscus: { setConfig: { theme } } }, 'https://giscus.app');
-  }
-
-  // 初始載入
-  const initialTheme = getGiscusTheme();
-  loadGiscus(initialTheme);
-
-  // 監聽主題變更
-  const observer = new MutationObserver(() => {
-    updateGiscusTheme();
-  });
-
-  // 監聽 class 屬性變更
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
-  // 監聽 Astro 頁面載入事件
-  document.addEventListener('astro:page-load', () => {
-    const initialTheme = getGiscusTheme();
-    loadGiscus(initialTheme);
-  });
-</script>
-
-    <div class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full">
-        <a href={entry.data.nextSlug ? getPostUrlBySlug(entry.data.nextSlug) : "#"}
-           class:list={["w-full font-bold overflow-hidden active:scale-95", {"pointer-events-none": !entry.data.nextSlug}]}>
-            {entry.data.nextSlug && <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-start gap-4" >
-                <Icon name="material-symbols:chevron-left-rounded" class="text-[2rem] text-[var(--primary)]" />
-                <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
-                    {entry.data.nextTitle}
-                </div>
-            </div>}
-        </a>
-
-        <a href={entry.data.prevSlug ? getPostUrlBySlug(entry.data.prevSlug) : "#"}
-           class:list={["w-full font-bold overflow-hidden active:scale-95", {"pointer-events-none": !entry.data.prevSlug}]}>
-            {entry.data.prevSlug && <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-end gap-4">
-                <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
-                    {entry.data.prevTitle}
-                </div>
-                <Icon name="material-symbols:chevron-right-rounded" class="text-[2rem] text-[var(--primary)]" />
-            </div>}
-        </a>
-    </div>
-
-</MainGridLayout>
