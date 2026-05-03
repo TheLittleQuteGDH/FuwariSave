@@ -1,0 +1,87 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  name: string;
+  img: string;
+  icon: string;
+  color: string;
+  description: string;
+  layout?: "vertical" | "horizontal";
+  isSingleCard?: boolean;
+}
+
+const { name, img, icon, color, description, layout = "vertical", isSingleCard = false } = Astro.props;
+
+const imagePath = img.startsWith("./")
+  ? `/src/content/spec/${img.slice(2)}`
+  : img;
+---
+<div class="block md:hidden">
+  <div class="group relative flex flex-col items-center p-8 rounded-[var(--radius-large)] bg-neutral-50/50 dark:bg-neutral-900/50 border border-neutral-200/50 dark:border-neutral-800/50 bg-white dark:bg-neutral-800">
+    <div class="absolute top-6 left-8 opacity-20 group-hover:opacity-100 transition-opacity duration-300">
+      <Icon name={icon} class="text-3xl" style={`color: ${color}`} />
+    </div>
+    <div class="relative w-48 h-48 mb-6 p-3 bg-white rounded-[var(--radius-large)]">
+      <img
+        src={imagePath}
+        alt={name}
+        class="w-full h-full object-cover rounded-[var(--radius-large)]"
+      />
+      <!-- Decorative corners -->
+      <div class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 rounded-tl-lg" style={`border-color: ${color}`}></div>
+      <div class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 rounded-br-lg" style={`border-color: ${color}`}></div>
+    </div>
+    <h3 class="text-xl font-bold text-90 mb-1">{name}</h3>
+    <p class="text-sm text-50 font-normal">{description}</p>
+  </div>
+</div>
+
+<div class="hidden md:block">
+  {layout === "vertical" ? (
+    <div class="group relative flex flex-col items-center p-8 rounded-[var(--radius-large)] bg-neutral-50/50 dark:bg-neutral-900/50 border border-neutral-200/50 dark:border-neutral-800/50 bg-white dark:bg-neutral-800">
+      <div class="absolute top-6 left-8 opacity-20 group-hover:opacity-100 transition-opacity duration-300">
+        <Icon name={icon} class="text-3xl" style={`color: ${color}`} />
+      </div>
+      <div class="relative w-48 h-48 mb-6 p-3 bg-white rounded-[var(--radius-large)]">
+        <img
+          src={imagePath}
+          alt={name}
+          class="w-full h-full object-cover rounded-[var(--radius-large)]"
+        />
+        <!-- Decorative corners -->
+        <div class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 rounded-tl-lg" style={`border-color: ${color}`}></div>
+        <div class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 rounded-br-lg" style={`border-color: ${color}`}></div>
+      </div>
+      <h3 class="text-xl font-bold text-90 mb-1">{name}</h3>
+      <p class="text-sm text-50 font-normal">{description}</p>
+    </div>
+  ) : (
+    <div class="group relative flex flex-row items-center p-10 rounded-[var(--radius-large)] bg-neutral-50/50 dark:bg-neutral-900/50 border border-neutral-200/50 dark:border-neutral-800/50 bg-white dark:bg-neutral-800 gap-10 max-w-3xl">
+      <div class="relative w-64 h-64 p-4 bg-white rounded-[var(--radius-large)] flex-shrink-0">
+        {!isSingleCard && (
+          <div class="absolute -top-6 -left-6 opacity-20 group-hover:opacity-100 transition-opacity duration-300 z-10">
+            <Icon name={icon} class="text-4xl" style={`color: ${color}`} />
+          </div>
+        )}
+        <img
+          src={imagePath}
+          alt={name}
+          class="w-full h-full object-cover rounded-[calc(var(--radius-large)-0.25rem)]"
+        />
+        <!-- Decorative corners -->
+        <div class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 rounded-tl-lg" style={`border-color: ${color}`}></div>
+        <div class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 rounded-br-lg" style={`border-color: ${color}`}></div>
+      </div>
+      <div class="flex flex-col justify-center items-start flex-1">
+        <h3 class="text-2xl font-bold text-90 mb-3">{name}</h3>
+        <p class="text-base text-50 font-normal leading-relaxed mb-6">{description}</p>
+      </div>
+      {isSingleCard && (
+        <div class="absolute bottom-6 right-6 opacity-20 group-+hover:opacity-100 transition-opacity duration-300 z-10">
+          <Icon name={icon} class="text-8xl" style={`color: +${color}`} />
+        </div>
+      )}
+    </div>
+  )}
+</div>
