@@ -105,6 +105,46 @@ const jsonLd = {
 
             <Markdown class="mb-6 markdown-content onload-animation">
                 <Content />
+<!-- 分享 + 赞助 -->
+<section class="post-actions mt-10 pt-6 border-t border-gray-200 dark:border-gray-700">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <!-- 分享 -->
+    <div class="share-buttons flex items-center gap-3">
+      <span class="text-sm text-gray-500 dark:text-gray-400">分享：</span>
+      <a
+        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(Astro.url.href)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-gray-600 dark:text-gray-300 hover:text-primary"
+      >
+        <i class="i-simple-icons-twitter text-lg"></i>
+      </a>
+      <a
+        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.url.href)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-gray-600 dark:text-gray-300 hover:text-primary"
+      >
+        <i class="i-simple-icons-facebook text-lg"></i>
+      </a>
+      <button
+        onclick="navigator.clipboard.writeText(window.location.href).then(()=>alert('链接已复制！'))"
+        class="text-gray-600 dark:text-gray-300 hover:text-primary"
+      >
+        <i class="i-heroicons-link-20-solid text-lg"></i>
+      </button>
+    </div>
+
+    <!-- 赞助（跳转到你之前做的赞助页） -->
+    <a
+      href="/sponsor"
+      class="sponsor-btn inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 transition"
+    >
+      <i class="i-heroicons-heart-20-solid"></i>
+      <span>赞助</span>
+    </a>
+  </div>
+</section>
    </Markdown>
 
             {licenseConfig.enable && <License title={entry.data.title} slug={entry.slug} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
