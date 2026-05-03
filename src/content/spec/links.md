@@ -45,5 +45,3 @@
 
 <div style="text-align: center; color: var(--text-secondary); margin-top: 2rem;">
 **最后更新**：2026-05-01
-
-</div>
