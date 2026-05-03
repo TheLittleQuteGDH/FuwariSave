@@ -14,6 +14,7 @@ import PostMetadata from "../../components/PostMeta.astro";
 import { profileConfig, siteConfig } from "../../config";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
 import GiscusComments from "../../components/misc/GiscusComments.astro";
+import SponsorCard from "../../components/SponsorCard.astro";
 
 export async function getStaticPaths() {
 	const blogEntries = await getSortedPosts();
