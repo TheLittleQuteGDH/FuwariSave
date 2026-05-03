@@ -1,0 +1,169 @@
+---
+import { getEntry } from "astro:content";
+import Markdown from "@components/misc/Markdown.astro";
+import SponsorCard from "@components/SponsorCard.astro";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+import SupportAndShare from "@components/misc/SupportAndShare.astro";
+import MarkdownIt from 'markdown-it';
+
+const sponsorPost = await getEntry("spec", "sponsor");
+
+if (!sponsorPost) {
+  throw new Error("sponsor page content not found");
+}
+
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true
+});
+
+interface SponsorBlock {
+  name: string;
+  img: string;
+  icon: string;
+  color: string;
+  description: string;
+  index: number; // 在内容中的位置
+}
+
+interface ContentSegment {
+  type: 'markdown' | 'sponsors';
+  content?: string;
+  htmlContent?: string;
+  sponsors?: SponsorBlock[];
+}
+
+function parseContentWithSponsors(content: string): { segments: ContentSegment[], sponsorBlocks: SponsorBlock[] } {
+  const segments: ContentSegment[] = [];
+  const sponsorBlocks: SponsorBlock[] = [];
+  const regex = /:::sponsor\s*([\s\S]*?):::/g;
+  let lastIndex = 0;
+  let match;
+  let sponsorIndex = 0;
+  let consecutiveSponsors: SponsorBlock[] = [];
+
+  const renderMd = (text: string) => {
+    const processed = text.replace(/:::(tip|note|important|caution|warning)\s*([\s\S]*?):::/g, (_, type, inner) => {
+      const renderedInner = md.render(inner.trim());
+      return `<blockquote class="admonition bdm-${type}"><div class="bdm-title">${type.toUpperCase()}</div>${renderedInner}</blockquote>`;
+    });
+    return md.render(processed);
+  };
+
+  while ((match = regex.exec(content)) !== null) {
+    const markdownBetween = content.substring(lastIndex, match.index).trim();
+
+    if (markdownBetween) {
+      if (consecutiveSponsors.length > 0) {
+        segments.push({ type: 'sponsors', sponsors: [...consecutiveSponsors] });
+        consecutiveSponsors = [];
+      }
+      segments.push({
+        type: 'markdown',
+        content: markdownBetween,
+        htmlContent: renderMd(markdownBetween)
+      });
+    }
+
+    const blockContent = match[1];
+    const block: Record<string, string> = {};
+
+    blockContent.split('\n').forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return;
+      const colonIdx = trimmed.indexOf(':');
+      if (colonIdx === -1) return;
+      const key = trimmed.substring(0, colonIdx).trim();
+      let value = trimmed.substring(colonIdx + 1).trim();
+      value = value.replace(/,\s*$/, '');
+      block[key] = value;
+    });
+
+    const sponsor: SponsorBlock = {
+      name: block.name || '',
+      img: block.img || '',
+      icon: block.icon || '',
+      color: block.color || '',
+      description: block.description || '',
+      index: sponsorIndex++
+    };
+    sponsorBlocks.push(sponsor);
+    consecutiveSponsors.push(sponsor);
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (consecutiveSponsors.length > 0) {
+    segments.push({ type: 'sponsors', sponsors: [...consecutiveSponsors] });
+  }
+
+  if (lastIndex < content.length) {
+    const markdownContent = content.substring(lastIndex).trim();
+    if (markdownContent) {
+      segments.push({
+        type: 'markdown',
+        content: markdownContent,
+        htmlContent: renderMd(markdownContent)
+      });
+    }
+  }
+
+  return { segments, sponsorBlocks };
+}
+
+const { segments, sponsorBlocks } = parseContentWithSponsors(sponsorPost.body);
+---
+<MainGridLayout title={i18n(I18nKey.sponsor)} description={i18n(I18nKey.sponsor)}>
+    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+        <div class="card-base z-10 px-9 py-6 relative w-full ">
+            <!-- Header section with Flutter-like M3 style -->
+            <div class="flex flex-col mb-8 mt-4">
+                <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">{i18n(I18nKey.sponsor)}</h1>
+            </div>
+
+            <!-- 渲染分段内容：Markdown 和 Sponsor Cards 交替出现 -->
+            {segments.map((segment, idx) => {
+                if (segment.type === 'markdown' && segment.htmlContent) {
+                    return (
+                        <Markdown class="mt-2 text-75 leading-relaxed max-w-2xl mx-auto">
+                            <div set:html={segment.htmlContent} />
+                        </Markdown>
+                    );
+                } else if (segment.type === 'sponsors' && segment.sponsors) {
+                    const sponsors = segment.sponsors;
+                    const isSingleCard = sponsors.length === 1;
+
+                    return isSingleCard ? (
+                        <div class="flex justify-center mt-12 mb-12 px-2 sm:px-10">
+                            <SponsorCard
+                                name={sponsors[0].name}
+                                img={sponsors[0].img}
+                                icon={sponsors[0].icon}
+                                color={sponsors[0].color}
+                                description={sponsors[0].description}
+                                layout="horizontal"
+                                isSingleCard={true}
+                            />
+                        </div>
+                    ) : (
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 mb-12 px-2 sm:px-10 max-w-4xl mx-auto">
+                            {sponsors.map((sponsor) => (
+                                <SponsorCard
+                                    name={sponsor.name}
+                                    img={sponsor.img}
+                                    icon={sponsor.icon}
+                                    color={sponsor.color}
+                                    description={sponsor.description}
+                                    layout="vertical"
+                                />
+                            ))}
+                        </div>
+                    );
+                }
+            })}
+        </div>
+    </div>
+</MainGridLayout>
