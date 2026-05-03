@@ -1,6 +1,5 @@
-<<<<<<< HEAD
 ---
-title: 如何给Fuwari主题添加Giscus评论区
+title: 为你的Fuwari添加Giscus评论
 published: 2026-05-02
 description: ''
 image: 'photo/Giscus评论区.png'
@@ -8,8 +7,6 @@ tags: [博客搭建]
 category: '教程'
 draft: false 
 lang: ''
-
-
 
 ---
 
