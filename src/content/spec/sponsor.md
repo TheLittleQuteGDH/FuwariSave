@@ -2,7 +2,7 @@
 
 :::sponsor
 name: 支付宝,
-img: ./assets/sponsor/你的支付码名字.jpg,
+img: ./sponsor/你的支付码名字.jpg,
 icon: fa6-brands:alipay,
 color: #1677FF,
 description: 目前暂不支持支付宝支付哦，可以先用微信喵～
@@ -10,7 +10,7 @@ description: 目前暂不支持支付宝支付哦，可以先用微信喵～
 
 :::sponsor
 name: 微信支付,
-img: ./assets/images/Weixin.png,
+img: ./sponsor/Weixin.png,
 icon: fa6-brands:weixin,
 color: #07C160,
 description: 谢谢支持喵～,
