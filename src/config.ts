@@ -74,7 +74,7 @@ export const profileConfig: ProfileConfig = {
 		},
 		{
 			name: "Tencent QQ",
-			icon: "fa-brands fa-qq",
+			icon: "fa6-brands:qq",
 			url: "https://qm.qq.com/q/R0eekcJ6ue",
 		},
 	],
