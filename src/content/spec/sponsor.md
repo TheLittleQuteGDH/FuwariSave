@@ -9,7 +9,7 @@ description: 目前暂不支持支付宝支付哦，可以先用微信喵～
 
 :::sponsor
 name: 微信支付,
-img: Weixin.png,
+img: https://raw.githubusercontent.com/TheLittleQuteGDH/FuwariSave/refs/heads/main/src/content/spec/Weixin.png,
 icon: fa6-brands:weixin,
 color: #07C160,
 description: 谢谢支持喵～,
