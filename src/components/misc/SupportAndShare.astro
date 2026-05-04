@@ -3,13 +3,13 @@ import { Icon } from "astro-icon/components";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 
-// 支持自定义文案与跳转地址，默认和截图完全一致
 interface Props {
   title?: string;
   description?: string;
   sponsorUrl?: string;
 }
 
+// 默认文案完全匹配截图，支持自定义覆盖
 const { 
   title = "支持与分享", 
   description = "如果这篇文章对你有帮助，欢迎分享给更多人或赞助支持！",
@@ -17,34 +17,36 @@ const {
 } = Astro.props;
 ---
 
-<div class="w-full rounded-[var(--radius-large)] overflow-hidden bg-neutral-100/80 dark:bg-neutral-800/30 px-6 py-5">
+<!-- 复用Fuwari原生card-base，和全站卡片视觉完全统一 -->
+<div class="card-base w-full px-6 py-5 mb-6">
   <div class="flex flex-col sm:flex-row w-full items-center justify-between gap-4">
-    <!-- 左侧：爱心图标+文字区域 -->
+    <!-- 左侧：图标+文案区域 -->
     <div class="flex items-center gap-4 w-full sm:w-auto">
-      <div class="w-12 h-12 rounded-lg bg-blue-500 flex items-center justify-center flex-shrink-0">
+      <!-- 爱心图标容器，使用全站主题色，自动适配自定义配色 -->
+      <div class="w-12 h-12 rounded-[var(--radius-large)] bg-[var(--color-primary)] flex items-center justify-center flex-shrink-0">
         <Icon name="fa6-solid:heart" class="text-white text-xl" />
       </div>
       <div class="flex flex-col">
-        <h3 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">{title}</h3>
-        <p class="text-base text-neutral-500 dark:text-neutral-400 mt-0.5">{description}</p>
+        <h3 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100 leading-tight">{title}</h3>
+        <p class="text-base text-neutral-600 dark:text-neutral-400 mt-0.5 leading-relaxed">{description}</p>
       </div>
     </div>
 
-    <!-- 右侧：按钮组 -->
+    <!-- 右侧：按钮组，严格对齐Fuwari原生按钮规范 -->
     <div class="flex items-center gap-4 w-full sm:w-auto justify-end flex-shrink-0">
-      <!-- 分享按钮 -->
+      <!-- 次要按钮：分享 -->
       <button 
         id="share-button"
-        class="flex items-center gap-2 px-6 py-3 rounded-[var(--radius-large)] bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium transition-all duration-300 hover:bg-blue-200 dark:hover:bg-blue-800/40"
+        class="flex items-center gap-2 px-6 py-3 rounded-[var(--radius-large)] bg-neutral-200/80 dark:bg-neutral-700/50 text-neutral-800 dark:text-neutral-200 font-medium transition-all duration-300 hover:bg-neutral-300 dark:hover:bg-neutral-700 hover:scale-[1.02] active:scale-[0.98]"
       >
         <Icon name="fa6-solid:share-nodes" class="text-lg" />
-        <span>分享</span>
+        <span>{i18n(I18nKey.share) ?? "分享"}</span>
       </button>
 
-      <!-- 赞助按钮 -->
+      <!-- 主要按钮：赞助，使用主题色，和全站主按钮统一 -->
       <a 
         href={sponsorUrl}
-        class="flex items-center gap-2 px-8 py-3 rounded-[var(--radius-large)] bg-blue-500 text-white font-medium transition-all duration-300 hover:bg-blue-600 hover:scale-[1.02] active:scale-[0.98]"
+        class="flex items-center gap-2 px-8 py-3 rounded-[var(--radius-large)] bg-[var(--color-primary)] text-white font-medium transition-all duration-300 hover:brightness-110 hover:scale-[1.02] active:scale-[0.98]"
       >
         <span>{i18n(I18nKey.sponsor)}</span>
         <Icon name="fa6-solid:arrow-right" class="text-lg" />
@@ -53,7 +55,7 @@ const {
   </div>
 </div>
 
-<!-- 分享功能客户端脚本，兼容原生分享+降级复制链接 -->
+<!-- 分享功能脚本，兼容全平台，优化交互反馈 -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const shareButton = document.getElementById('share-button');
@@ -80,13 +82,13 @@ const {
         }
       }
 
-      // 不支持原生分享则自动复制链接到剪贴板
+      // 降级方案：自动复制链接到剪贴板
       try {
         await navigator.clipboard.writeText(pageUrl);
         alert('链接已复制到剪贴板，快去分享吧~');
       } catch (err) {
-        console.error('复制链接失败:', err);
-        // 极致降级兼容
+        console.error('复制失败:', err);
+        // 极致兼容降级
         const input = document.createElement('input');
         input.value = pageUrl;
         document.body.appendChild(input);
