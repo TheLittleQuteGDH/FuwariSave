@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentHost = window.location.origin;
     const savedNode = localStorage.getItem('preferred-node');
     
-    // 设置当前激活状态
+    // 自动高亮当前节点
     buttons.forEach(btn => {
         const nodeUrl = btn.dataset.node;
         if (nodeUrl === currentHost || (savedNode && nodeUrl === savedNode)) {
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.classList.add('active');
         }
         
-        // 点击切换节点
+        // 点击切换（保持当前页面路径）
         btn.addEventListener('click', () => {
             const targetNode = btn.dataset.node;
             if (targetNode === currentHost) return;
@@ -42,9 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <style is:global>
+/* 100% 匹配Fuwari主题标签按钮样式 */
 .node-btn {
     @apply px-2.5 py-1 text-sm rounded-md transition-all duration-200 
-           bg-black/5 dark:bg-white/10;
+           bg-black/5 dark:bg-white/10 cursor-pointer;
 }
 
 .node-btn:hover {
