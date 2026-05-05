@@ -2,6 +2,9 @@
 import { profileConfig } from "../config";
 import { url } from "../utils/url-utils";
 const currentYear = new Date().getFullYear();
+
+// 构建时直接注入变量，页面加载就显示
+const deployNode = import.meta.env.PUBLIC_DEPLOY_NODE || "本地开发";
 ---
 
 <footer class="mt-auto flex flex-col items-center py-8 text-center text-sm text-gray-500 dark:text-gray-400">
@@ -11,63 +14,9 @@ const currentYear = new Date().getFullYear();
     <a href="https://github.com/saicaca/fuwari" target="_blank" rel="noopener noreferrer">Fuwari</a>
   </div>
   
-  <!-- 节点显示 - 自动检测实际回源节点 -->
+  <!-- 节点显示 - 纯静态，无任何加载延迟 -->
   <div class="mt-2 flex items-center gap-1.5">
-    <span id="node-indicator" class="inline-block w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
-    <span>当前节点：<span id="deploy-node" class="font-medium text-primary">检测中...</span></span>
+    <span class="inline-block w-2 h-2 rounded-full bg-green-500"></span>
+    <span>当前节点：<span class="font-medium text-primary">{deployNode}</span></span>
   </div>
 </footer>
-
-<script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const nodeIndicator = document.getElementById('node-indicator');
-    const nodeText = document.getElementById('deploy-node');
-    const hostname = window.location.hostname;
-    
-    // 先快速判断子域名
-    if (hostname.includes('vercel.app')) {
-      showNode('Vercel');
-      return;
-    }
-    if (hostname.includes('pages.dev')) {
-      showNode('Cloudflare Pages');
-      return;
-    }
-    if (hostname.includes('edgeone.ai')) {
-      showNode('EdgeOne Pages');
-      return;
-    }
-    
-    // 主域名：检测实际回源节点
-    try {
-      // 加时间戳防止缓存
-      const timestamp = Date.now();
-      
-      // 并行检测所有节点，哪个能成功就是哪个
-      const results = await Promise.allSettled([
-        fetch(`/vercel.txt?t=${timestamp}`).then(r => r.text()),
-        fetch(`/cloudflare.txt?t=${timestamp}`).then(r => r.text()),
-        fetch(`/edgeone.txt?t=${timestamp}`).then(r => r.text())
-      ]);
-      
-      // 找到成功的那个
-      const successResult = results.find(r => r.status === 'fulfilled');
-      if (successResult) {
-        showNode(successResult.value.trim());
-      } else {
-        showNode('检测失败');
-      }
-    } catch (e) {
-      showNode('检测失败');
-    }
-    
-    function showNode(name) {
-      nodeText.textContent = name;
-      // 指示灯变绿色
-      nodeIndicator.classList.remove('bg-yellow-500');
-      nodeIndicator.classList.add('bg-green-500');
-      // 停止跳动
-      nodeIndicator.classList.remove('animate-pulse');
-    }
-  });
-</script>
