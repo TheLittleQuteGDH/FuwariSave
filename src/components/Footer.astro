@@ -3,8 +3,8 @@ import { profileConfig } from "../config";
 import { url } from "../utils/url-utils";
 const currentYear = new Date().getFullYear();
 
-// 构建时直接注入变量，页面加载就显示
-const deployNode = import.meta.env.PUBLIC_DEPLOY_NODE || "本地开发";
+// 构建时变量作为初始值和主域名兜底
+const initialNode = import.meta.env.PUBLIC_DEPLOY_NODE || "未知节点";
 ---
 
 <footer class="mt-auto flex flex-col items-center py-8 text-center text-sm text-gray-500 dark:text-gray-400">
@@ -14,9 +14,27 @@ const deployNode = import.meta.env.PUBLIC_DEPLOY_NODE || "本地开发";
     <a href="https://github.com/saicaca/fuwari" target="_blank" rel="noopener noreferrer">Fuwari</a>
   </div>
   
-  <!-- 节点显示 - 纯静态，无任何加载延迟 -->
   <div class="mt-2 flex items-center gap-1.5">
     <span class="inline-block w-2 h-2 rounded-full bg-green-500"></span>
-    <span>当前节点：<span class="font-medium text-primary">{deployNode}</span></span>
+    <span>当前节点：<span id="deploy-node" class="font-medium text-primary">{initialNode}</span></span>
   </div>
 </footer>
+
+<script>
+  // 页面加载后立即修正节点显示（解决CDN缓存问题）
+  document.addEventListener('DOMContentLoaded', () => {
+    const hostname = window.location.hostname;
+    const nodeElement = document.getElementById('deploy-node');
+    
+    // 子域名强制修正（100%准确，不受CDN缓存影响）
+    if (hostname.includes('vercel.app')) {
+      nodeElement.textContent = 'Vercel';
+    } else if (hostname.includes('pages.dev')) {
+      nodeElement.textContent = 'Cloudflare Pages';
+    } else if (hostname.includes('edgeone.ai')) {
+      nodeElement.textContent = 'EdgeOne Pages';
+    }
+    
+    // 主域名保持构建时变量（显示实际回源节点）
+  });
+</script>
