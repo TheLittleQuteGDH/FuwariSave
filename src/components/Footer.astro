@@ -2,9 +2,6 @@
 import { profileConfig } from "../config";
 import { url } from "../utils/url-utils";
 const currentYear = new Date().getFullYear();
-
-// 静态站点只能用构建时注入的变量
-const deployNode = import.meta.env.PUBLIC_DEPLOY_NODE || "本地开发";
 ---
 
 <footer class="mt-auto flex flex-col items-center py-8 text-center text-sm text-gray-500 dark:text-gray-400">
@@ -14,9 +11,31 @@ const deployNode = import.meta.env.PUBLIC_DEPLOY_NODE || "本地开发";
     <a href="https://github.com/saicaca/fuwari" target="_blank" rel="noopener noreferrer">Fuwari</a>
   </div>
   
-  <!-- 节点显示 -->
+  <!-- 节点显示 - 纯前端自动检测 -->
   <div class="mt-2 flex items-center gap-1.5">
     <span class="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-    <span>当前节点：<span class="font-medium text-primary">{deployNode}</span></span>
+    <span>当前节点：<span id="deploy-node" class="font-medium text-primary">加载中...</span></span>
   </div>
 </footer>
+
+<script>
+  // 页面加载后自动检测节点
+  document.addEventListener('DOMContentLoaded', () => {
+    const hostname = window.location.hostname;
+    let nodeName = "未知节点";
+    
+    // 根据你的域名配置修改这里
+    if (hostname.includes('vercel.app')) {
+      nodeName = "Vercel";
+    } else if (hostname.includes('pages.dev')) {
+      nodeName = "Cloudflare Pages";
+    } else if (hostname.includes('edgeone.ai')) {
+      nodeName = "EdgeOne Pages";
+    } else if (hostname === 'blog.thelittlequtegdh.fun') {
+      // 主域名显示你CDN默认解析的节点
+      nodeName = "Cloudflare CDN";
+    }
+    
+    document.getElementById('deploy-node').textContent = nodeName;
+  });
+</script>
