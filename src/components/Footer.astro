@@ -1,40 +1,22 @@
 ---
 import { profileConfig } from "../config";
 import { url } from "../utils/url-utils";
-const currentYear = new Date().getFullYear();
-
-// 构建时变量作为初始值和主域名兜底
-const initialNode = import.meta.env.PUBLIC_DEPLOY_NODE || "未知节点";
+const currentYear = new Date().getFullYear()
+// 新增：读取部署节点环境变量
+const deployPlatform = import.meta.env.PUBLIC_DEPLOY_PLATFORM || "未知节点";
 ---
 
-<footer class="mt-auto flex flex-col items-center py-8 text-center text-sm text-gray-500 dark:text-gray-400">
-  <div class="flex items-center gap-2">
-    <span>&copy; {currentYear} {profileConfig.name}</span>
-    <span>·</span>
-    <a href="https://github.com/saicaca/fuwari" target="_blank" rel="noopener noreferrer">Fuwari</a>
-  </div>
-  
-  <div class="mt-2 flex items-center gap-1.5">
-    <span class="inline-block w-2 h-2 rounded-full bg-green-500"></span>
-    <span>当前节点：<span id="deploy-node" class="font-medium text-primary">{initialNode}</span></span>
-  </div>
+<footer class="mt-8 flex flex-col items-center justify-center gap-4 py-8 text-center text-sm">
+  <!-- 新增：当前节点标识，和主题样式完全适配 -->
+  <p class="text-gray-500 dark:text-gray-400">
+    当前节点：{deployPlatform}
+  </p>
+  <!-- 原有版权信息代码，保留不动 -->
+  <p class="text-gray-500 dark:text-gray-400">
+    &copy; {currentYear} {siteConfig.author}. All rights reserved.
+  </p>
+  <p class="text-gray-400 dark:text-gray-500">
+    Powered by <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>
+    & <a href="https://github.com/saicaca/fuwari" target="_blank" rel="noopener noreferrer">Fuwari</a>
+  </p>
 </footer>
-
-<script>
-  // 页面加载后立即修正节点显示（解决CDN缓存问题）
-  document.addEventListener('DOMContentLoaded', () => {
-    const hostname = window.location.hostname;
-    const nodeElement = document.getElementById('deploy-node');
-    
-    // 子域名强制修正（100%准确，不受CDN缓存影响）
-    if (hostname.includes('vercel.app')) {
-      nodeElement.textContent = 'Vercel';
-    } else if (hostname.includes('pages.dev')) {
-      nodeElement.textContent = 'Cloudflare Pages';
-    } else if (hostname.includes('edgeone.ai')) {
-      nodeElement.textContent = 'EdgeOne Pages';
-    }
-    
-    // 主域名保持构建时变量（显示实际回源节点）
-  });
-</script>
