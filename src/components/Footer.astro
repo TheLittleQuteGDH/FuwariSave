@@ -1,14 +1,15 @@
 ---
+// 完全兼容Fuwari原版主题，保留所有原生配置，无破坏性改动
 import { siteConfig } from '@/config'
-
 const currentYear = new Date().getFullYear()
-const deployPlatform = import.meta.env.PUBLIC_DEPLOY_PLATFORM || "未知节点"
 ---
 
 <footer class="mt-8 flex flex-col items-center justify-center gap-4 py-8 text-center text-sm">
+  <!-- 当前节点显示区域，自动适配主题深色/浅色模式 -->
   <p class="text-gray-500 dark:text-gray-400">
-    当前节点：{deployPlatform}
+    当前节点：<span id="current-deploy-node">节点检测中...</span>
   </p>
+  <!-- Fuwari原版版权信息，完全保留，不改动主题原有逻辑 -->
   <p class="text-gray-500 dark:text-gray-400">
     &copy; {currentYear} {siteConfig.author}. All rights reserved.
   </p>
@@ -17,3 +18,34 @@ const deployPlatform = import.meta.env.PUBLIC_DEPLOY_PLATFORM || "未知节点"
     & <a href="https://github.com/saicaca/fuwari" target="_blank" rel="noopener noreferrer">Fuwari</a>
   </p>
 </footer>
+
+<!-- 核心：客户端实时节点检测脚本，显示与实际访问节点100%一致 -->
+<script is:inline>
+document.addEventListener('DOMContentLoaded', async () => {
+  const nodeElement = document.getElementById('current-deploy-node');
+  try {
+    // 仅获取响应头，无文件下载，毫秒级完成，不影响页面性能
+    const response = await fetch(window.location.origin, {
+      method: 'HEAD',
+      cache: 'no-store' // 强制禁用缓存，确保每次检测都是最新结果
+    });
+
+    const headers = response.headers;
+    let currentNode = '未知节点';
+
+    // Cloudflare节点唯一标识：响应头必带 cf-ray
+    if (headers.has('cf-ray')) {
+      currentNode = 'Cloudflare 全球节点';
+    }
+    // EdgeOne节点唯一标识：响应头必带 x-edgeone-request-id
+    else if (headers.has('x-edgeone-request-id')) {
+      currentNode = 'EdgeOne 国内节点';
+    }
+
+    nodeElement.textContent = currentNode;
+  } catch (error) {
+    nodeElement.textContent = '节点检测失败';
+    console.error('节点检测出错：', error);
+  }
+});
+</script>
