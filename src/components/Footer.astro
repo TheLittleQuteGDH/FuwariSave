@@ -11,31 +11,63 @@ const currentYear = new Date().getFullYear();
     <a href="https://github.com/saicaca/fuwari" target="_blank" rel="noopener noreferrer">Fuwari</a>
   </div>
   
-  <!-- 节点显示 - 纯前端自动检测 -->
+  <!-- 节点显示 - 自动检测实际回源节点 -->
   <div class="mt-2 flex items-center gap-1.5">
-    <span class="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-    <span>当前节点：<span id="deploy-node" class="font-medium text-primary">加载中...</span></span>
+    <span id="node-indicator" class="inline-block w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+    <span>当前节点：<span id="deploy-node" class="font-medium text-primary">检测中...</span></span>
   </div>
 </footer>
 
 <script>
-  // 页面加载后自动检测节点
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
+    const nodeIndicator = document.getElementById('node-indicator');
+    const nodeText = document.getElementById('deploy-node');
     const hostname = window.location.hostname;
-    let nodeName = "未知节点";
     
-    // 根据你的域名配置修改这里
+    // 先快速判断子域名
     if (hostname.includes('vercel.app')) {
-      nodeName = "Vercel";
-    } else if (hostname.includes('pages.dev')) {
-      nodeName = "Cloudflare Pages";
-    } else if (hostname.includes('edgeone.ai')) {
-      nodeName = "EdgeOne Pages";
-    } else if (hostname === 'blog.thelittlequtegdh.fun') {
-      // 主域名显示你CDN默认解析的节点
-      nodeName = "Cloudflare CDN";
+      showNode('Vercel');
+      return;
+    }
+    if (hostname.includes('pages.dev')) {
+      showNode('Cloudflare Pages');
+      return;
+    }
+    if (hostname.includes('edgeone.ai')) {
+      showNode('EdgeOne Pages');
+      return;
     }
     
-    document.getElementById('deploy-node').textContent = nodeName;
+    // 主域名：检测实际回源节点
+    try {
+      // 加时间戳防止缓存
+      const timestamp = Date.now();
+      
+      // 并行检测所有节点，哪个能成功就是哪个
+      const results = await Promise.allSettled([
+        fetch(`/vercel.txt?t=${timestamp}`).then(r => r.text()),
+        fetch(`/cloudflare.txt?t=${timestamp}`).then(r => r.text()),
+        fetch(`/edgeone.txt?t=${timestamp}`).then(r => r.text())
+      ]);
+      
+      // 找到成功的那个
+      const successResult = results.find(r => r.status === 'fulfilled');
+      if (successResult) {
+        showNode(successResult.value.trim());
+      } else {
+        showNode('检测失败');
+      }
+    } catch (e) {
+      showNode('检测失败');
+    }
+    
+    function showNode(name) {
+      nodeText.textContent = name;
+      // 指示灯变绿色
+      nodeIndicator.classList.remove('bg-yellow-500');
+      nodeIndicator.classList.add('bg-green-500');
+      // 停止跳动
+      nodeIndicator.classList.remove('animate-pulse');
+    }
   });
 </script>
