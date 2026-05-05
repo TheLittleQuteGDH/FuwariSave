@@ -1,15 +1,14 @@
 ---
-// 完全兼容Fuwari原版主题，保留所有原生配置，无破坏性改动
 import { siteConfig } from '@/config'
 const currentYear = new Date().getFullYear()
+// 构建时先注入默认值（兜底方案，即使客户端检测失败也能显示）
+const buildTimeNode = import.meta.env.PUBLIC_DEPLOY_PLATFORM || "节点检测中"
 ---
 
 <footer class="mt-8 flex flex-col items-center justify-center gap-4 py-8 text-center text-sm">
-  <!-- 当前节点显示区域，自动适配主题深色/浅色模式 -->
   <p class="text-gray-500 dark:text-gray-400">
-    当前节点：<span id="current-deploy-node">节点检测中...</span>
+    当前节点：<span id="current-deploy-node">{buildTimeNode}</span>
   </p>
-  <!-- Fuwari原版版权信息，完全保留，不改动主题原有逻辑 -->
   <p class="text-gray-500 dark:text-gray-400">
     &copy; {currentYear} {siteConfig.author}. All rights reserved.
   </p>
@@ -19,33 +18,61 @@ const currentYear = new Date().getFullYear()
   </p>
 </footer>
 
-<!-- 核心：客户端实时节点检测脚本，显示与实际访问节点100%一致 -->
 <script is:inline>
 document.addEventListener('DOMContentLoaded', async () => {
   const nodeElement = document.getElementById('current-deploy-node');
+  
+  // 超时保护：3秒后若未完成检测，直接使用构建时默认值
+  const timeoutId = setTimeout(() => {
+    console.warn('节点检测超时，已使用构建时默认值');
+  }, 3000);
+
   try {
-    // 仅获取响应头，无文件下载，毫秒级完成，不影响页面性能
-    const response = await fetch(window.location.origin, {
-      method: 'HEAD',
-      cache: 'no-store' // 强制禁用缓存，确保每次检测都是最新结果
+    // 方案1：优先通过响应头检测（最准确）
+    const controller = new AbortController();
+    const timeoutSignal = setTimeout(() => controller.abort(), 2000); // 2秒超时
+
+    const response = await fetch(window.location.origin + '/?' + Date.now(), {
+      method: 'GET', // 改用GET更兼容，加随机数强制禁用缓存
+      signal: controller.signal,
+      credentials: 'same-origin'
     });
 
+    clearTimeout(timeoutSignal);
     const headers = response.headers;
-    let currentNode = '未知节点';
+    let detectedNode = null;
 
-    // Cloudflare节点唯一标识：响应头必带 cf-ray
+    // Cloudflare 核心标识：必带 cf-ray
     if (headers.has('cf-ray')) {
-      currentNode = 'Cloudflare 全球节点';
+      detectedNode = 'Cloudflare 全球节点';
     }
-    // EdgeOne节点唯一标识：响应头必带 x-edgeone-request-id
+    // EdgeOne 核心标识：必带 x-edgeone-request-id
     else if (headers.has('x-edgeone-request-id')) {
-      currentNode = 'EdgeOne 国内节点';
+      detectedNode = 'EdgeOne 国内节点';
     }
 
-    nodeElement.textContent = currentNode;
+    // 方案2：响应头检测失败时，通过URL/性能API辅助检测
+    if (!detectedNode) {
+      const perfEntries = performance.getEntriesByType('navigation');
+      if (perfEntries.length > 0) {
+        const navEntry = perfEntries[0];
+        // 检查是否通过Cloudflare访问（备用逻辑）
+        if (navEntry.serverTiming?.some(st => st.name.includes('cf'))) {
+          detectedNode = 'Cloudflare 全球节点';
+        }
+      }
+    }
+
+    // 更新显示（仅当检测到明确节点时）
+    if (detectedNode) {
+      nodeElement.textContent = detectedNode;
+    }
+
   } catch (error) {
-    nodeElement.textContent = '节点检测失败';
-    console.error('节点检测出错：', error);
+    console.warn('客户端节点检测失败，已自动使用构建时默认值：', error);
+    // 检测失败时不修改显示，直接使用构建时注入的默认值
+  } finally {
+    clearTimeout(timeoutId);
   }
 });
 </script>
