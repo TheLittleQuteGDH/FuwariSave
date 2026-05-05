@@ -1,17 +1,14 @@
 ---
-import { profileConfig } from "../config";
-import { url } from "../utils/url-utils";
+import { siteConfig } from '@/config'
+
 const currentYear = new Date().getFullYear()
-// 新增：读取部署节点环境变量
-const deployPlatform = import.meta.env.PUBLIC_DEPLOY_PLATFORM || "未知节点";
+const deployPlatform = import.meta.env.PUBLIC_DEPLOY_PLATFORM || "未知节点"
 ---
 
 <footer class="mt-8 flex flex-col items-center justify-center gap-4 py-8 text-center text-sm">
-  <!-- 新增：当前节点标识，和主题样式完全适配 -->
   <p class="text-gray-500 dark:text-gray-400">
     当前节点：{deployPlatform}
   </p>
-  <!-- 原有版权信息代码，保留不动 -->
   <p class="text-gray-500 dark:text-gray-400">
     &copy; {currentYear} {siteConfig.author}. All rights reserved.
   </p>
