@@ -1,61 +1,62 @@
 ---
-interface Props {
-    class?: string;
-}
+const nodes = [
+  { name: "EdgeOne", url: "https://edgeone.thelittlequtegdh.fun", icon: "🌐" },
+  { name: "Cloudflare", url: "https://blog.thelittlequtegdh.fun", icon: "☁️" },
+  { name: "Vercel", url: "https://vercel.thelittlequtegdh.fun", icon: "▲" }
+];
 
-const className = Astro.props.class || "";
+// 获取当前域名
+const currentUrl = new URL(Astro.url);
+const currentHost = currentUrl.host;
 ---
 
-<div id="node-switcher" class:list={["flex flex-wrap gap-2", className]}>
-    <button class="node-btn active" data-node="https://blog.thelIttlequtegdh.fun">Cloudflare</button>
-    <button class="node-btn" data-node="https://edgeone.theLittleQuteGDH.fun">EdgeOne</button>
-    <button class="node-btn" data-node="https://vercel.thelittlequtegdh.fun">Vercel</button>
+<div class="card p-4">
+  <div class="flex items-center gap-2 mb-3">
+    <span class="i-carbon-network-3 text-lg"></span>
+    <span class="font-semibold">节点</span>
+  </div>
+  
+  <div class="flex flex-col gap-2">
+    {nodes.map((node) => {
+      const nodeHost = new URL(node.url).host;
+      const isActive = nodeHost === currentHost;
+      
+      return (
+        <a 
+          href={node.url}
+          class:list={[
+            "flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300",
+            isActive 
+              ? "bg-primary text-white shadow-md" 
+              : "hover:bg-gray-100 dark:hover:bg-gray-800"
+          ]}
+          data-node={node.name}
+        >
+          <span>{node.icon}</span>
+          <span>{node.name}</span>
+          {isActive && (
+            <span class="ml-auto text-xs bg-white/20 px-2 py-0.5 rounded-full">当前</span>
+          )}
+        </a>
+      );
+    })}
+  </div>
 </div>
 
-<script is:inline>
-document.addEventListener('DOMContentLoaded', () => {
-    const switcher = document.getElementById('node-switcher');
-    if (!switcher) return;
-    
-    const buttons = switcher.querySelectorAll('.node-btn');
-    const currentHost = window.location.origin;
+<script>
+  // 页面加载时检查并应用节点切换
+  document.addEventListener('DOMContentLoaded', () => {
     const savedNode = localStorage.getItem('preferred-node');
-    
-    // 自动高亮当前节点
-    buttons.forEach(btn => {
-        const nodeUrl = btn.dataset.node;
-        if (nodeUrl === currentHost || (savedNode && nodeUrl === savedNode)) {
-            buttons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-        
-        // 点击切换（保持当前页面路径）
-        btn.addEventListener('click', () => {
-            const targetNode = btn.dataset.node;
-            if (targetNode === currentHost) return;
-            
-            localStorage.setItem('preferred-node', targetNode);
-            window.location.href = targetNode + window.location.pathname + window.location.search;
+    if (savedNode) {
+      const nodeLinks = document.querySelectorAll('[data-node]');
+      nodeLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetUrl = link.getAttribute('href');
+          localStorage.setItem('preferred-node', link.dataset.node);
+          window.location.href = targetUrl;
         });
-    });
-});
+      });
+    }
+  });
 </script>
-
-<style is:global>
-/* 100% 匹配Fuwari主题标签按钮样式 */
-.node-btn {
-    @apply px-2.5 py-1 text-sm rounded-md transition-all duration-200 
-           bg-black/5 dark:bg-white/10 cursor-pointer;
-}
-
-.node-btn:hover {
-    background-color: rgba(var(--primary-rgb), 0.1);
-    color: var(--primary);
-}
-
-.node-btn.active {
-    background-color: rgba(var(--primary-rgb), 0.15);
-    color: var(--primary);
-    font-weight: 500;
-}
-</style>
