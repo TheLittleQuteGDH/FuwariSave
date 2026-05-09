@@ -5,9 +5,8 @@ const nodes = [
   { name: "Vercel", url: "https://vercel.thelittlequtegdh.fun", icon: "▲" }
 ];
 
-// 获取当前域名
-const currentUrl = new URL(Astro.url);
-const currentHost = currentUrl.host;
+// 精确获取当前域名
+const currentHost = Astro.url.hostname;
 ---
 
 <div class="card p-4">
@@ -18,66 +17,73 @@ const currentHost = currentUrl.host;
   
   <div class="flex flex-col gap-2">
     {nodes.map((node) => {
-      const nodeHost = new URL(node.url).host;
+      const nodeUrl = new URL(node.url);
+      const nodeHost = nodeUrl.hostname;
       const isActive = nodeHost === currentHost;
       
       return (
-        <a 
-          href={node.url}
+        <button 
+          type="button"
           class:list={[
-            "flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 relative overflow-hidden",
+            "flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 w-full text-left",
             isActive 
-              ? "bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg" 
+              ? "!bg-primary !text-white shadow-lg" 
               : "hover:bg-gray-100 dark:hover:bg-gray-800"
           ]}
           data-node={node.name}
+          data-url={node.url}
           data-active={isActive}
         >
-          {isActive && (
-            <div class="absolute inset-0 bg-white/10 animate-pulse rounded-lg"></div>
-          )}
-          
-          <span class="relative z-10">{node.icon}</span>
-          <span class="relative z-10">{node.name}</span>
+          <span>{node.icon}</span>
+          <span>{node.name}</span>
           
           {isActive && (
-            <>
-              <span class="ml-auto relative z-10 text-xs bg-white/20 px-2 py-0.5 rounded-full">当前</span>
-              <div class="absolute -inset-1 bg-primary/30 rounded-lg blur-md -z-10 animate-pulse"></div>
-            </>
+            <span class="ml-auto text-xs bg-white/20 px-2 py-0.5 rounded-full">当前</span>
           )}
-        </a>
+        </button>
       );
     })}
   </div>
 </div>
 
-<style>
-  @keyframes glow {
-    0%, 100% {
-      box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.5), 0 0 10px rgba(var(--primary-rgb), 0.3);
-    }
-    50% {
-      box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.8), 0 0 20px rgba(var(--primary-rgb), 0.5), 0 0 30px rgba(var(--primary-rgb), 0.3);
-    }
+<style is:global>
+  [data-active="true"] {
+    background-color: var(--primary) !important;
+    color: white !important;
+    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.4) !important;
+    animation: nodeGlow 2s ease-in-out infinite !important;
   }
   
-  [data-active="true"] {
-    animation: glow 2s ease-in-out infinite;
+  @keyframes nodeGlow {
+    0%, 100% {
+      box-shadow: 0 0 8px rgba(var(--primary-rgb), 0.3), 0 0 15px rgba(var(--primary-rgb), 0.2);
+    }
+    50% {
+      box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5), 0 0 25px rgba(var(--primary-rgb), 0.3);
+    }
   }
 </style>
 
 <script>
-  // 为所有节点链接添加点击事件
+  // 页面加载完成后执行
   document.addEventListener('DOMContentLoaded', () => {
-    const nodeLinks = document.querySelectorAll('[data-node]');
-    nodeLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetUrl = link.getAttribute('href');
-        localStorage.setItem('preferred-node', link.dataset.node);
+    // 为所有节点按钮添加点击事件
+    document.querySelectorAll('[data-node]').forEach(button => {
+      button.addEventListener('click', () => {
+        const targetUrl = button.dataset.url;
+        localStorage.setItem('preferred-node', button.dataset.node);
         window.location.href = targetUrl;
       });
+    });
+    
+    // 强制应用当前节点样式（双重保险）
+    const currentHost = window.location.hostname;
+    document.querySelectorAll('[data-node]').forEach(button => {
+      const nodeUrl = new URL(button.dataset.url);
+      if (nodeUrl.hostname === currentHost) {
+        button.setAttribute('data-active', 'true');
+        button.classList.add('!bg-primary', '!text-white', 'shadow-lg');
+      }
     });
   });
 </script>
