@@ -1,10 +1,10 @@
 ---
 // 节点配置（按推荐优先级排序）
 const nodes = [
-  { name: "Cloudflare", url: "https://blog.thelittlequtegdh.fun", icon: "☁️", color: "#F38020" },
-  { name: "EdgeOne", url: "https://edgeone.thelittlequtegdh.fun", icon: "🌐", color: "#0066FF" },
-  { name: "Netlify", url: "https://netlify.thelittlequtegdh.fun", icon: "🔷", color: "#00C7B7" },
-  { name: "Vercel", url: "https://vercel.thelittlequtegdh.fun", icon: "▲", color: "#000000" }
+  { name: "Cloudflare", url: "https://blog.thelittlequtegdh.fun", icon: "☁️" },
+  { name: "EdgeOne", url: "https://edgeone.thelittlequtegdh.fun", icon: "🌐" },
+  { name: "Netlify", url: "https://netlify.thelittlequtegdh.fun", icon: "🔷" },
+  { name: "Vercel", url: "https://vercel.thelittlequtegdh.fun", icon: "▲" }
 ];
 
 // 精确获取当前域名
@@ -80,27 +80,30 @@ const currentHost = Astro.url.hostname;
     }
   }
   
-  .latency.good { color: #10b981; }
-  .latency.medium { color: #f59e0b; }
-  .latency.bad { color: #ef4444; }
+  .latency.good { color: #10b981 !important; }
+  .latency.medium { color: #f59e0b !important; }
+  .latency.bad { color: #ef4444 !important; }
 </style>
 
 <script>
-  // 延迟检测函数
-  async function pingNode(host) {
-    const start = performance.now();
-    try {
-      // 使用favicon.ico进行无跨域问题的延迟检测
-      await fetch(`https://${host}/favicon.ico`, {
-        method: 'HEAD',
-        cache: 'no-store',
-        mode: 'no-cors'
-      });
-      const latency = Math.round(performance.now() - start);
-      return latency;
-    } catch (e) {
-      return Infinity;
-    }
+  // 图片测速法（100%无跨域问题）
+  function pingNode(host) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const start = performance.now();
+      const timeout = setTimeout(() => {
+        resolve(Infinity);
+      }, 5000); // 5秒超时
+      
+      img.onload = img.onerror = () => {
+        clearTimeout(timeout);
+        const latency = Math.round(performance.now() - start);
+        resolve(latency);
+      };
+      
+      // 使用随机参数防止缓存
+      img.src = `https://${host}/favicon.ico?${Math.random()}`;
+    });
   }
   
   // 更新延迟显示
@@ -109,7 +112,7 @@ const currentHost = Astro.url.hostname;
     if (!element) return;
     
     if (latency === Infinity) {
-      element.textContent = "离线";
+      element.textContent = "超时";
       element.className = "latency bad";
     } else {
       element.textContent = `${latency}ms`;
@@ -132,23 +135,26 @@ const currentHost = Astro.url.hostname;
     const nodes = document.querySelectorAll('[data-host]');
     const results = [];
     
-    for (const node of nodes) {
+    // 并行测速（更快）
+    const promises = Array.from(nodes).map(async (node) => {
       const host = node.dataset.host;
       const latency = await pingNode(host);
       updateLatency(host, latency);
       results.push({ host, latency });
-    }
+    });
+    
+    await Promise.all(promises);
     
     // 找出最快节点
-    const fastest = results.reduce((min, curr) => 
-      curr.latency < min.latency ? curr : min
-    );
-    
-    if (fastest.latency !== Infinity) {
+    const validResults = results.filter(r => r.latency !== Infinity);
+    if (validResults.length > 0) {
+      const fastest = validResults.reduce((min, curr) => 
+        curr.latency < min.latency ? curr : min
+      );
       const fastestNode = document.querySelector(`[data-host="${fastest.host}"]`).dataset.node;
       document.getElementById('fastest-node').textContent = `最快节点: ${fastestNode} (${fastest.latency}ms)`;
     } else {
-      document.getElementById('fastest-node').textContent = "所有节点均不可达";
+      document.getElementById('fastest-node').textContent = "所有节点均超时";
     }
     
     button.textContent = "测速";
@@ -178,8 +184,5 @@ const currentHost = Astro.url.hostname;
     
     // 绑定测速按钮事件
     document.getElementById('ping-all').addEventListener('click', pingAllNodes);
-    
-    // 自动检测一次延迟（可选）
-    // setTimeout(pingAllNodes, 1000);
   });
 </script>
