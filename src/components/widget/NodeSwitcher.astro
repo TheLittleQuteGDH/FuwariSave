@@ -1,7 +1,7 @@
 ---
 const nodes = [
-  { name: "EdgeOne", url: "https://edgeone.thelittlequtegdh.fun", icon: "🌐" },
   { name: "Cloudflare", url: "https://blog.thelittlequtegdh.fun", icon: "☁️" },
+  { name: "EdgeOne", url: "https://edgeone.thelittlequtegdh.fun", icon: "🌐" },
   { name: "Vercel", url: "https://vercel.thelittlequtegdh.fun", icon: "▲" }
 ];
 
@@ -25,17 +25,26 @@ const currentHost = currentUrl.host;
         <a 
           href={node.url}
           class:list={[
-            "flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300",
+            "flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 relative overflow-hidden",
             isActive 
-              ? "bg-primary text-white shadow-md" 
+              ? "bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg" 
               : "hover:bg-gray-100 dark:hover:bg-gray-800"
           ]}
           data-node={node.name}
+          data-active={isActive}
         >
-          <span>{node.icon}</span>
-          <span>{node.name}</span>
           {isActive && (
-            <span class="ml-auto text-xs bg-white/20 px-2 py-0.5 rounded-full">当前</span>
+            <div class="absolute inset-0 bg-white/10 animate-pulse rounded-lg"></div>
+          )}
+          
+          <span class="relative z-10">{node.icon}</span>
+          <span class="relative z-10">{node.name}</span>
+          
+          {isActive && (
+            <>
+              <span class="ml-auto relative z-10 text-xs bg-white/20 px-2 py-0.5 rounded-full">当前</span>
+              <div class="absolute -inset-1 bg-primary/30 rounded-lg blur-md -z-10 animate-pulse"></div>
+            </>
           )}
         </a>
       );
@@ -43,20 +52,32 @@ const currentHost = currentUrl.host;
   </div>
 </div>
 
-<script>
-  // 页面加载时检查并应用节点切换
-  document.addEventListener('DOMContentLoaded', () => {
-    const savedNode = localStorage.getItem('preferred-node');
-    if (savedNode) {
-      const nodeLinks = document.querySelectorAll('[data-node]');
-      nodeLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const targetUrl = link.getAttribute('href');
-          localStorage.setItem('preferred-node', link.dataset.node);
-          window.location.href = targetUrl;
-        });
-      });
+<style>
+  @keyframes glow {
+    0%, 100% {
+      box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.5), 0 0 10px rgba(var(--primary-rgb), 0.3);
     }
+    50% {
+      box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.8), 0 0 20px rgba(var(--primary-rgb), 0.5), 0 0 30px rgba(var(--primary-rgb), 0.3);
+    }
+  }
+  
+  [data-active="true"] {
+    animation: glow 2s ease-in-out infinite;
+  }
+</style>
+
+<script>
+  // 为所有节点链接添加点击事件
+  document.addEventListener('DOMContentLoaded', () => {
+    const nodeLinks = document.querySelectorAll('[data-node]');
+    nodeLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetUrl = link.getAttribute('href');
+        localStorage.setItem('preferred-node', link.dataset.node);
+        window.location.href = targetUrl;
+      });
+    });
   });
 </script>
