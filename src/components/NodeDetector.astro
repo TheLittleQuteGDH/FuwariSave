@@ -15,85 +15,9 @@ if (!currentNode) {
     currentNode = 'EdgeOne Pages';
   }
 }
-
-const nodeClass = currentNode.toLowerCase().replace(/\s+/g, '-');
 ---
 
-<span class="node-detector">
-  当前节点是：<strong class="node-name node-{nodeClass}">{currentNode}</strong>
-  <span class="response-time" id="response-time"></span>
-</span>
-
-<script is:inline>
-  // 计算页面加载时间（纯客户端，不影响性能）
-  window.addEventListener('load', function() {
-    if (performance.timing.loadEventEnd) {
-      const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
-      document.getElementById('response-time').textContent = ` (${loadTime}ms)`;
-    }
-  });
-</script>
-
-<style>
-.node-detector {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  margin-top: 0.5rem;
-  display: block;
-  text-align: center;
-}
-
-.node-name {
-  font-weight: 600;
-}
-
-.response-time {
-  opacity: 0.7;
-  margin-left: 0.25rem;
-}
-
-/* 浅色模式颜色 */
-:root {
-  --node-cloudflare-pages: #F38020;
-  --node-edgeone-pages: #0066CC;
-  --node-netlify: #00C7B7;
-  --node-vercel: #111827;
-  --node-本地开发: #6B7280;
-  --node-未知节点: #DC2626;
-}
-
-/* 修复：Fuwari使用.dark类而不是[data-theme="dark"] */
-.dark {
-  --node-cloudflare-pages: #FB923C;
-  --node-edgeone-pages: #3B82F6;
-  --node-netlify: #2DD4BF;
-  --node-vercel: #F9FAFB;
-  --node-本地开发: #9CA3AF;
-  --node-未知节点: #F87171;
-}
-
-/* 自动应用对应节点的颜色 */
-.node-cloudflare-pages {
-  color: var(--node-cloudflare-pages);
-}
-
-.node-edgeone-pages {
-  color: var(--node-edgeone-pages);
-}
-
-.node-netlify {
-  color: var(--node-netlify);
-}
-
-.node-vercel {
-  color: var(--node-vercel);
-}
-
-.node-本地开发 {
-  color: var(--node-本地开发);
-}
-
-.node-未知节点 {
-  color: var(--node-未知节点);
-}
-</style>
+<p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
+  当前节点是：
+  <span class="font-semibold text-orange-500 dark:text-orange-400">{currentNode}</span>
+</p>
