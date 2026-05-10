@@ -1,5 +1,4 @@
 ---
-// 节点配置
 const nodes = [
   { name: "Cloudflare", url: "https://blog.thelittlequtegdh.fun", icon: "☁️" },
   { name: "EdgeOne", url: "https://edgeone.thelittlequtegdh.fun", icon: "🌐" },
@@ -7,22 +6,18 @@ const nodes = [
   { name: "Vercel", url: "https://vercel.thelittlequtegdh.fun", icon: "▲" }
 ];
 
-// 精确获取当前域名
 const currentHost = Astro.url.hostname;
 ---
 
 <div class="card p-4">
   <div class="flex items-center gap-2 mb-3">
-    <!-- 与分类、标签完全一致的左侧蓝色竖线 -->
     <div class="w-1.5 h-6 bg-primary rounded-full"></div>
-    <!-- 修复：添加深色模式文字颜色 -->
     <span class="font-semibold text-xl text-gray-900 dark:text-white">节点</span>
   </div>
   
   <div class="flex flex-col gap-2">
     {nodes.map((node) => {
-      const nodeUrl = new URL(node.url);
-      const nodeHost = nodeUrl.hostname;
+      const nodeHost = new URL(node.url).hostname;
       const isActive = nodeHost === currentHost;
       
       return (
@@ -34,13 +29,10 @@ const currentHost = Astro.url.hostname;
               ? "!bg-primary !text-white shadow-lg" 
               : "text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
           ]}
-          data-node={node.name}
-          data-url={node.url}
-          data-active={isActive}
+          onclick={`window.location.href='${node.url}'`}
         >
           <span>{node.icon}</span>
           <span>{node.name}</span>
-          
           {isActive && (
             <span class="ml-auto text-xs bg-white/20 px-2 py-0.5 rounded-full">当前</span>
           )}
@@ -52,42 +44,11 @@ const currentHost = Astro.url.hostname;
 
 <style is:global>
   [data-active="true"] {
-    background-color: var(--primary) !important;
-    color: white !important;
-    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.4) !important;
     animation: nodeGlow 2s ease-in-out infinite !important;
   }
   
   @keyframes nodeGlow {
-    0%, 100% {
-      box-shadow: 0 0 8px rgba(var(--primary-rgb), 0.3), 0 0 15px rgba(var(--primary-rgb), 0.2);
-    }
-    50% {
-      box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5), 0 0 25px rgba(var(--primary-rgb), 0.3);
-    }
+    0%, 100% { box-shadow: 0 0 8px rgba(var(--primary-rgb), 0.3), 0 0 15px rgba(var(--primary-rgb), 0.2); }
+    50% { box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5), 0 0 25px rgba(var(--primary-rgb), 0.3); }
   }
 </style>
-
-<script>
-  // 页面加载完成后执行
-  document.addEventListener('DOMContentLoaded', () => {
-    // 为所有节点按钮添加点击事件
-    document.querySelectorAll('[data-node]').forEach(button => {
-      button.addEventListener('click', () => {
-        const targetUrl = button.dataset.url;
-        localStorage.setItem('preferred-node', button.dataset.node);
-        window.location.href = targetUrl;
-      });
-    });
-    
-    // 强制应用当前节点样式（双重保险）
-    const currentHost = window.location.hostname;
-    document.querySelectorAll('[data-node]').forEach(button => {
-      const nodeUrl = new URL(button.dataset.url);
-      if (nodeUrl.hostname === currentHost) {
-        button.setAttribute('data-active', 'true');
-        button.classList.add('!bg-primary', '!text-white', 'shadow-lg');
-      }
-    });
-  });
-</script>
