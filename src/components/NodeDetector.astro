@@ -1,79 +1,82 @@
 ---
-const nodes = [
-  { name: "Cloudflare", url: "https://blog.thelittlequtegdh.fun", icon: "☁️" },
-  { name: "EdgeOne", url: "https://edgeone.thelittlequtegdh.fun", icon: "🌐" },
-  { name: "Netlify", url: "https://netlify.thelittlequtegdh.fun", icon: "🔷" },
-  { name: "Vercel", url: "https://vercel.thelittlequtegdh.fun", icon: "▲" }
-];
+// 纯静态构建，零运行时开销
+let currentNode = import.meta.env.SITE_NODE_NAME;
 
-const currentHost = Astro.url.hostname;
+if (!currentNode) {
+  if (import.meta.env.CF_PAGES) {
+    currentNode = 'Cloudflare Pages';
+  } else if (import.meta.env.NETLIFY) {
+    currentNode = 'Netlify';
+  } else if (import.meta.env.VERCEL) {
+    currentNode = 'Vercel';
+  } else if (import.meta.env.DEV) {
+    currentNode = '本地开发';
+  } else {
+    currentNode = 'EdgeOne Pages';
+  }
+}
+
+// 将节点名称转换为CSS安全的类名
+const nodeClass = currentNode.toLowerCase().replace(/\s+/g, '-');
 ---
 
-<div class="card p-4">
-  <!-- 标题栏 和 分类标签样式完全一致 -->
-  <div class="flex items-center gap-2 mb-3">
-    <div class="w-1.5 h-6 bg-primary rounded-full"></div>
-    <span class="font-semibold text-xl text-gray-700 dark:text-gray-100">节点</span>
-  </div>
+<span class="node-detector">
+  当前节点是：<strong class="node-name node-{nodeClass}">{currentNode}</strong>
+</span>
 
-  <div class="flex flex-col gap-2">
-    {nodes.map((node) => {
-      const nodeHost = new URL(node.url).hostname;
-      const isActive = nodeHost === currentHost;
-      return (
-        <button
-          type="button"
-          data-active={isActive}
-          class:list={[
-            "flex items-center gap-2 px-3 py-2 rounded-lg w-full text-left transition-all duration-300",
-            // 普通态：深浅模式文字+hover 完美适配主题
-            "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/60",
-            // 当前激活节点：点亮主色背景白字
-            isActive && "!bg-primary !text-white shadow-md"
-          ]}
-          onclick={`window.location.href='${node.url}'`}
-        >
-          <span>{node.icon}</span>
-          <span>{node.name}</span>
-          {isActive && (
-            <span class="ml-auto text-xs bg-white/20 px-2 py-0.5 rounded-full">当前</span>
-          )}
-        </button>
-      );
-    })}
-  </div>
-</div>
+<style>
+.node-detector {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
 
-<style is:global>
-  /* 当前节点 点燃发光效果 */
-  [data-active="true"] {
-    box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.35) !important;
-    animation: nodeGlow 2s ease-in-out infinite;
-  }
+.node-name {
+  font-weight: 600;
+}
 
-  @keyframes nodeGlow {
-    0%, 100% {
-      box-shadow: 0 0 6px rgba(var(--primary-rgb), 0.25),
-                  0 0 12px rgba(var(--primary-rgb), 0.15);
-    }
-    50% {
-      box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.45),
-                  0 0 20px rgba(var(--primary-rgb), 0.25);
-    }
-  }
+/* 浅色模式颜色 */
+:root {
+  --node-cloudflare-pages: #F38020;
+  --node-edgeone-pages: #0066CC;
+  --node-netlify: #00C7B7;
+  --node-vercel: #000000;
+  --node-本地开发: #6B7280;
+  --node-未知节点: #DC2626;
+}
+
+/* 暗黑模式颜色 */
+[data-theme="dark"] {
+  --node-cloudflare-pages: #FB923C;
+  --node-edgeone-pages: #3B82F6;
+  --node-netlify: #2DD4BF;
+  --node-vercel: #FFFFFF;
+  --node-本地开发: #9CA3AF;
+  --node-未知节点: #F87171;
+}
+
+/* 自动应用对应节点的颜色 */
+.node-cloudflare-pages {
+  color: var(--node-cloudflare-pages);
+}
+
+.node-edgeone-pages {
+  color: var(--node-edgeone-pages);
+}
+
+.node-netlify {
+  color: var(--node-netlify);
+}
+
+.node-vercel {
+  color: var(--node-vercel);
+}
+
+.node-本地开发 {
+  color: var(--node-本地开发);
+}
+
+.node-未知节点 {
+  color: var(--node-未知节点);
+}
 </style>
-
-<script>
-  // 客户端二次校准，保证一定点亮
-  document.addEventListener('DOMContentLoaded', () => {
-    const curHost = window.location.hostname;
-    document.querySelectorAll('button[data-active]').forEach(btn => {
-      const link = btn.getAttribute('onclick').split("'")[1];
-      const host = new URL(link).hostname;
-      if (host === curHost) {
-        btn.dataset.active = "true";
-        btn.classList.add('!bg-primary','!text-white','shadow-md');
-      }
-    });
-  });
-</script>
