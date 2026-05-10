@@ -1,37 +1,23 @@
 ---
-// 这个组件必须在服务端渲染
-export const prerender = false;
+// 🔥 不需要 prerender = false！纯静态构建
+// 🔥 构建时直接获取环境变量，永久写入HTML
 
-// 优先使用环境变量定义的节点名称
+// 优先使用你自定义的节点名称
 let currentNode = import.meta.env.SITE_NODE_NAME;
 
-// 如果环境变量未设置，回退到请求头检测
-if (!currentNode || currentNode === '本地开发') {
-  const headers = Astro.request.headers;
-  
-  // Cloudflare Pages 检测
-  if (headers.has('cf-ray')) {
+// 如果没有设置自定义名称，自动检测构建平台
+if (!currentNode) {
+  if (import.meta.env.CF_PAGES) {
     currentNode = 'Cloudflare Pages';
-  }
-  // Vercel 检测
-  else if (headers.has('x-vercel-id')) {
-    currentNode = 'Vercel';
-  }
-  // Netlify 检测
-  else if (headers.has('x-nf-request-id')) {
+  } else if (import.meta.env.NETLIFY) {
     currentNode = 'Netlify';
-  }
-  // EdgeOne Pages 检测
-  else if (headers.has('eo-log-uuid')) {
-    currentNode = 'EdgeOne Pages';
-  }
-  // 本地开发环境
-  else if (import.meta.env.DEV) {
+  } else if (import.meta.env.VERCEL) {
+    currentNode = 'Vercel';
+  } else if (import.meta.env.DEV) {
     currentNode = '本地开发';
-  }
-  // 无法识别的节点
-  else {
-    currentNode = '未知节点';
+  } else {
+    // EdgeOne Pages没有内置环境变量，必须手动设置
+    currentNode = 'EdgeOne Pages';
   }
 }
 
