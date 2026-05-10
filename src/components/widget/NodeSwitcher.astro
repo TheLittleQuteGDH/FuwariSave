@@ -29,6 +29,7 @@ const currentHost = Astro.url.hostname;
               ? "!bg-primary !text-white shadow-lg" 
               : "text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
           ]}
+          data-active={isActive}
           onclick={`window.location.href='${node.url}'`}
         >
           <span>{node.icon}</span>
@@ -44,11 +45,32 @@ const currentHost = Astro.url.hostname;
 
 <style is:global>
   [data-active="true"] {
+    background-color: var(--primary) !important;
+    color: white !important;
+    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.4) !important;
     animation: nodeGlow 2s ease-in-out infinite !important;
   }
   
   @keyframes nodeGlow {
-    0%, 100% { box-shadow: 0 0 8px rgba(var(--primary-rgb), 0.3), 0 0 15px rgba(var(--primary-rgb), 0.2); }
-    50% { box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5), 0 0 25px rgba(var(--primary-rgb), 0.3); }
+    0%, 100% {
+      box-shadow: 0 0 8px rgba(var(--primary-rgb), 0.3), 0 0 15px rgba(var(--primary-rgb), 0.2);
+    }
+    50% {
+      box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5), 0 0 25px rgba(var(--primary-rgb), 0.3);
+    }
   }
 </style>
+
+<script>
+  // 客户端双重保险：强制应用当前节点样式
+  document.addEventListener('DOMContentLoaded', () => {
+    const currentHost = window.location.hostname;
+    document.querySelectorAll('button[data-active]').forEach(button => {
+      const nodeUrl = new URL(button.getAttribute('onclick').split("'")[1]);
+      if (nodeUrl.hostname === currentHost) {
+        button.setAttribute('data-active', 'true');
+        button.classList.add('!bg-primary', '!text-white', 'shadow-lg');
+      }
+    });
+  });
+</script>
