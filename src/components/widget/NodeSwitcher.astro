@@ -15,7 +15,8 @@ const currentHost = Astro.url.hostname;
   <div class="flex items-center gap-2 mb-3">
     <!-- 与分类、标签完全一致的左侧蓝色竖线 -->
     <div class="w-1.5 h-6 bg-primary rounded-full"></div>
-    <span class="font-semibold text-xl">节点</span>
+    <!-- 修复：添加深色模式文字颜色 -->
+    <span class="font-semibold text-xl text-gray-900 dark:text-white">节点</span>
   </div>
   
   <div class="flex flex-col gap-2">
