@@ -1,0 +1,61 @@
+---
+// 这个组件必须在服务端渲染
+export const prerender = false;
+
+// 优先使用环境变量定义的节点名称
+let currentNode = import.meta.env.SITE_NODE_NAME;
+
+// 如果环境变量未设置，回退到请求头检测
+if (!currentNode || currentNode === '本地开发') {
+  const headers = Astro.request.headers;
+  
+  // Cloudflare Pages 检测
+  if (headers.has('cf-ray')) {
+    currentNode = 'Cloudflare Pages';
+  }
+  // Vercel 检测
+  else if (headers.has('x-vercel-id')) {
+    currentNode = 'Vercel';
+  }
+  // Netlify 检测
+  else if (headers.has('x-nf-request-id')) {
+    currentNode = 'Netlify';
+  }
+  // EdgeOne Pages 检测
+  else if (headers.has('eo-log-uuid')) {
+    currentNode = 'EdgeOne Pages';
+  }
+  // 本地开发环境
+  else if (import.meta.env.DEV) {
+    currentNode = '本地开发';
+  }
+  // 无法识别的节点
+  else {
+    currentNode = '未知节点';
+  }
+}
+
+// 节点颜色配置
+const nodeColors: Record<string, string> = {
+  'Cloudflare Pages': '#F38020',
+  'EdgeOne Pages': '#00A4FF',
+  'Netlify': '#00C7B7',
+  'Vercel': '#000000',
+  '本地开发': '#6B7280',
+  '未知节点': '#EF4444'
+};
+
+const nodeColor = nodeColors[currentNode] || nodeColors['未知节点'];
+---
+
+<span class="node-detector">
+  当前节点是：<strong style="color: {nodeColor}">{currentNode}</strong>
+</span>
+
+<style>
+.node-detector {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+</style>
