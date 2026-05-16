@@ -7,6 +7,8 @@ const nodes = [
   { name: "Netlify", url: "https://netlify.thelittlequtegdh.fun", icon: "🔷", description: "静态网站托管平台" },
   { name: "Vercel", url: "https://vercel.thelittlequtegdh.fun", icon: "▲", description: "前端开发者首选平台" }
 ];
+
+const currentHost = Astro.url.hostname;
 ---
 
 <Layout title="节点状态" description="博客各节点实时状态与延迟检测">
@@ -15,47 +17,56 @@ const nodes = [
       <h1 class="text-3xl font-bold mb-2">节点状态</h1>
       <p class="text-gray-600 dark:text-gray-400">实时检测各节点延迟，选择最快的节点访问</p>
       <p class="mt-2 text-lg">
-        当前节点：<span id="current-node" class="font-semibold text-primary"></span>
+        当前节点：<span id="current-node" class="font-semibold text-primary">
+          {nodes.find(n => new URL(n.url).hostname === currentHost)?.name || "未知"}
+        </span>
       </p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-      {nodes.map((node) => (
-        <div 
-          class="card p-6 transition-all duration-300 hover:shadow-lg node-card"
-          data-node={node.name}
-          data-url={node.url}
-        >
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-3">
-              <span class="text-2xl">{node.icon}</span>
-              <div>
-                <h3 class="text-xl font-semibold">{node.name}</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400">{node.description}</p>
+      {nodes.map((node) => {
+        const nodeHost = new URL(node.url).hostname;
+        const isCurrent = nodeHost === currentHost;
+        
+        return (
+          <div 
+            class:list={[
+              "card p-6 transition-all duration-300 hover:shadow-lg",
+              isCurrent && "border-2 border-primary shadow-lg"
+            ]}
+            data-node={node.name}
+            data-host={nodeHost}
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">{node.icon}</span>
+                <div>
+                  <h3 class="text-xl font-semibold">{node.name}</h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">{node.description}</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-2xl font-bold latency" data-host={nodeHost}>--</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">平均延迟</div>
               </div>
             </div>
-            <div class="text-right">
-              <div class="text-2xl font-bold latency">--</div>
-              <div class="text-xs text-gray-500 dark:text-gray-400">平均延迟</div>
+            
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full status-indicator bg-gray-400" data-host={nodeHost}></span>
+                <span class="text-sm status-text" data-host={nodeHost}>检测中...</span>
+              </div>
+              <a 
+                href={node.url}
+                class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors inline-block"
+                rel="noopener noreferrer"
+              >
+                跳转
+              </a>
             </div>
           </div>
-          
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full status-indicator bg-gray-400"></span>
-              <span class="text-sm status-text">检测中...</span>
-            </div>
-            <!-- 使用a标签而不是button，兼容swup转场 -->
-            <a 
-              href={node.url}
-              class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors inline-block"
-              data-swup-link
-            >
-              跳转
-            </a>
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
 
     <div class="text-center text-gray-500 dark:text-gray-400">
@@ -69,124 +80,111 @@ const nodes = [
   </div>
 </Layout>
 
-<!-- 移除所有is:global样式，避免污染全局 -->
 <style>
-  .node-current {
-    border: 2px solid var(--primary) !important;
-    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.3) !important;
-  }
-  
   .latency-good { color: #10b981; }
   .latency-medium { color: #f59e0b; }
   .latency-bad { color: #ef4444; }
 </style>
 
-<script>
-  // 只在当前页面执行，避免影响其他页面
-  if (window.location.pathname === '/nodes') {
-    const pingResults = {};
-    const pingCount = {};
-    
-    // 初始化结果对象
-    document.querySelectorAll('.node-card').forEach(card => {
-      const nodeName = card.dataset.node;
-      pingResults[nodeName] = [];
-      pingCount[nodeName] = 0;
-    });
-    
-    // 显示当前节点
-    const currentHost = window.location.hostname;
-    document.querySelectorAll('.node-card').forEach(card => {
-      const nodeUrl = new URL(card.dataset.url);
-      if (nodeUrl.hostname === currentHost) {
-        card.classList.add('node-current');
-        document.getElementById('current-node').textContent = card.dataset.node;
-      }
-    });
-    
-    // 图片测速法（100%无跨域问题）
-    function pingNode(card) {
-      return new Promise((resolve) => {
-        const nodeUrl = new URL(card.dataset.url);
-        const host = nodeUrl.hostname;
-        const nodeName = card.dataset.node;
-        
-        const img = new Image();
-        const start = performance.now();
-        const timeout = setTimeout(() => {
-          resolve(Infinity);
-        }, 5000);
-        
-        img.onload = img.onerror = () => {
-          clearTimeout(timeout);
-          const latency = Math.round(performance.now() - start);
-          resolve(latency);
-        };
-        
-        // 使用随机参数防止缓存
-        img.src = `https://${host}/favicon.ico?${Math.random()}`;
-      });
+<!-- 使用client:only确保脚本只在客户端执行，并且页面切换时会被完全销毁 -->
+<script client:only>
+  const pingResults = {};
+  const pingCount = {};
+  let intervalId = null;
+  
+  // 初始化结果对象
+  document.querySelectorAll('[data-host]').forEach(el => {
+    const host = el.dataset.host;
+    if (!pingResults[host]) {
+      pingResults[host] = [];
+      pingCount[host] = 0;
     }
-    
-    // 更新延迟显示
-    function updateLatency(card, latency) {
-      const latencyEl = card.querySelector('.latency');
-      const indicator = card.querySelector('.status-indicator');
-      const statusText = card.querySelector('.status-text');
+  });
+  
+  // 单个节点ping函数（最可靠的版本）
+  function pingNode(host) {
+    return new Promise((resolve) => {
+      const start = Date.now();
+      const timeout = setTimeout(() => resolve(Infinity), 3000);
       
-      if (latency === Infinity) {
-        latencyEl.textContent = '超时';
-        latencyEl.className = 'text-2xl font-bold latency latency-bad';
-        indicator.className = 'w-3 h-3 rounded-full status-indicator bg-red-500';
-        statusText.textContent = '超时';
-      } else {
-        latencyEl.textContent = `${latency}ms`;
-        
-        if (latency < 100) {
-          latencyEl.className = 'text-2xl font-bold latency latency-good';
-          indicator.className = 'w-3 h-3 rounded-full status-indicator bg-green-500';
-          statusText.textContent = '正常';
-        } else if (latency < 300) {
-          latencyEl.className = 'text-2xl font-bold latency latency-medium';
-          indicator.className = 'w-3 h-3 rounded-full status-indicator bg-yellow-500';
-          statusText.textContent = '较慢';
-        } else {
-          latencyEl.className = 'text-2xl font-bold latency latency-bad';
-          indicator.className = 'w-3 h-3 rounded-full status-indicator bg-red-500';
-          statusText.textContent = '较慢';
-        }
-      }
-    }
-    
-    // 检测所有节点
-    async function pingAllNodes() {
-      const cards = document.querySelectorAll('.node-card');
-      for (const card of cards) {
-        const latency = await pingNode(card);
-        const nodeName = card.dataset.node;
-        
-        // 更新结果
-        pingResults[nodeName].push(latency);
-        pingCount[nodeName]++;
-        
-        // 计算平均延迟
-        const avgLatency = Math.round(
-          pingResults[nodeName].reduce((a, b) => a + b, 0) / pingResults[nodeName].length
-        );
-        
-        updateLatency(card, avgLatency);
-      }
-    }
-    
-    // 页面加载时立即检测一次
-    pingAllNodes();
-    
-    // 每5秒自动检测一次
-    const intervalId = setInterval(pingAllNodes, 5000);
-    
-    // 页面离开时清除定时器，避免内存泄漏
-    window.addEventListener('beforeunload', () => {
-      clearInterval(intervalId);
+      const img = new Image();
+      img.onload = () => {
+        clearTimeout(timeout);
+        resolve(Date.now() - start);
+      };
+      img.onerror = () => {
+        clearTimeout(timeout);
+        // 即使图片加载失败，也说明服务器响应了
+        resolve(Date.now() - start);
+      };
+      
+      img.src = `https://${host}/favicon.ico?${Date.now()}`;
     });
   }
+  
+  // 更新延迟显示
+  function updateLatency(host, latency) {
+    const latencyEl = document.querySelector(`.latency[data-host="${host}"]`);
+    const indicator = document.querySelector(`.status-indicator[data-host="${host}"]`);
+    const statusText = document.querySelector(`.status-text[data-host="${host}"]`);
+    
+    if (!latencyEl || !indicator || !statusText) return;
+    
+    if (latency === Infinity) {
+      latencyEl.textContent = '超时';
+      latencyEl.className = 'text-2xl font-bold latency latency-bad';
+      indicator.className = 'w-3 h-3 rounded-full status-indicator bg-red-500';
+      statusText.textContent = '超时';
+    } else {
+      latencyEl.textContent = `${Math.round(latency)}ms`;
+      
+      if (latency < 100) {
+        latencyEl.className = 'text-2xl font-bold latency latency-good';
+        indicator.className = 'w-3 h-3 rounded-full status-indicator bg-green-500';
+        statusText.textContent = '正常';
+      } else if (latency < 300) {
+        latencyEl.className = 'text-2xl font-bold latency latency-medium';
+        indicator.className = 'w-3 h-3 rounded-full status-indicator bg-yellow-500';
+        statusText.textContent = '较慢';
+      } else {
+        latencyEl.className = 'text-2xl font-bold latency latency-bad';
+        indicator.className = 'w-3 h-3 rounded-full status-indicator bg-red-500';
+        statusText.textContent = '较慢';
+      }
+    }
+  }
+  
+  // 检测所有节点
+  async function pingAllNodes() {
+    const hosts = Object.keys(pingResults);
+    for (const host of hosts) {
+      const latency = await pingNode(host);
+      pingResults[host].push(latency);
+      pingCount[host]++;
+      
+      // 计算平均延迟（只保留最近10次结果）
+      if (pingResults[host].length > 10) {
+        pingResults[host].shift();
+      }
+      
+      const avgLatency = pingResults[host].reduce((a, b) => a + b, 0) / pingResults[host].length;
+      updateLatency(host, avgLatency);
+    }
+  }
+  
+  // 立即执行一次
+  pingAllNodes();
+  
+  // 每5秒自动检测一次
+  intervalId = setInterval(pingAllNodes, 5000);
+  
+  // 页面离开时清理所有资源
+  window.addEventListener('beforeunload', () => {
+    if (intervalId) clearInterval(intervalId);
+  });
+  
+  // 监听swup页面离开事件（关键！解决返回按钮崩溃问题）
+  document.addEventListener('swup:willReplaceContent', () => {
+    if (intervalId) clearInterval(intervalId);
+  });
 </script>
