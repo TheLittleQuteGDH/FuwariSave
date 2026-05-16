@@ -44,7 +44,10 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.Archive,
 		LinkPreset.About,
 		LinkPreset.Sponsor,
-		{ name: "节点", url: "/nodes/" },
+		{
+		name: "节点", 
+		url: "/nodes/" 
+		}
 		{
       name: "友链",
       url: "/links/", // 友链页面路径
