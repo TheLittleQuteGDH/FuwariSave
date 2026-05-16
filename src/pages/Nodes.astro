@@ -22,7 +22,7 @@ const nodes = [
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
       {nodes.map((node) => (
         <div 
-          class="card p-6 transition-all duration-300 hover:shadow-lg"
+          class="card p-6 transition-all duration-300 hover:shadow-lg node-card"
           data-node={node.name}
           data-url={node.url}
         >
@@ -45,12 +45,14 @@ const nodes = [
               <span class="w-3 h-3 rounded-full status-indicator bg-gray-400"></span>
               <span class="text-sm status-text">检测中...</span>
             </div>
-            <button 
-              class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-              onclick={`window.location.href='${node.url}'`}
+            <!-- 使用a标签而不是button，兼容swup转场 -->
+            <a 
+              href={node.url}
+              class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors inline-block"
+              data-swup-link
             >
               跳转
-            </button>
+            </a>
           </div>
         </div>
       ))}
@@ -67,110 +69,124 @@ const nodes = [
   </div>
 </Layout>
 
-<style is:global>
+<!-- 移除所有is:global样式，避免污染全局 -->
+<style>
   .node-current {
     border: 2px solid var(--primary) !important;
     box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.3) !important;
   }
+  
+  .latency-good { color: #10b981; }
+  .latency-medium { color: #f59e0b; }
+  .latency-bad { color: #ef4444; }
 </style>
 
 <script>
-  const pingResults = {};
-  const pingCount = {};
-  
-  // 初始化结果对象
-  document.querySelectorAll('[data-node]').forEach(card => {
-    const nodeName = card.dataset.node;
-    pingResults[nodeName] = [];
-    pingCount[nodeName] = 0;
-  });
-  
-  // 显示当前节点
-  const currentHost = window.location.hostname;
-  document.querySelectorAll('[data-node]').forEach(card => {
-    const nodeUrl = new URL(card.dataset.url);
-    if (nodeUrl.hostname === currentHost) {
-      card.classList.add('node-current');
-      document.getElementById('current-node').textContent = card.dataset.node;
-    }
-  });
-  
-  // 单个节点ping函数
-  async function pingNode(card) {
-    const nodeUrl = new URL(card.dataset.url);
-    const host = nodeUrl.hostname;
-    const nodeName = card.dataset.node;
+  // 只在当前页面执行，避免影响其他页面
+  if (window.location.pathname === '/nodes') {
+    const pingResults = {};
+    const pingCount = {};
     
-    const start = performance.now();
-    const timeout = 5000;
+    // 初始化结果对象
+    document.querySelectorAll('.node-card').forEach(card => {
+      const nodeName = card.dataset.node;
+      pingResults[nodeName] = [];
+      pingCount[nodeName] = 0;
+    });
     
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), timeout);
-      
-      await fetch(`https://${host}/favicon.ico?${Math.random()}`, {
-        method: 'HEAD',
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      const latency = Math.round(performance.now() - start);
-      
-      // 更新结果
-      pingResults[nodeName].push(latency);
-      pingCount[nodeName]++;
-      
-      // 计算平均延迟
-      const avgLatency = Math.round(
-        pingResults[nodeName].reduce((a, b) => a + b, 0) / pingResults[nodeName].length
-      );
-      
-      // 更新显示
-      card.querySelector('.latency').textContent = `${avgLatency}ms`;
-      
-      // 更新状态
-      const indicator = card.querySelector('.status-indicator');
-      const statusText = card.querySelector('.status-text');
-      
-      if (avgLatency < 100) {
-        indicator.className = 'w-3 h-3 rounded-full status-indicator bg-green-500';
-        statusText.textContent = '正常';
-        card.querySelector('.latency').className = 'text-2xl font-bold latency text-green-500';
-      } else if (avgLatency < 300) {
-        indicator.className = 'w-3 h-3 rounded-full status-indicator bg-yellow-500';
-        statusText.textContent = '较慢';
-        card.querySelector('.latency').className = 'text-2xl font-bold latency text-yellow-500';
-      } else {
-        indicator.className = 'w-3 h-3 rounded-full status-indicator bg-red-500';
-        statusText.textContent = '较慢';
-        card.querySelector('.latency').className = 'text-2xl font-bold latency text-red-500';
+    // 显示当前节点
+    const currentHost = window.location.hostname;
+    document.querySelectorAll('.node-card').forEach(card => {
+      const nodeUrl = new URL(card.dataset.url);
+      if (nodeUrl.hostname === currentHost) {
+        card.classList.add('node-current');
+        document.getElementById('current-node').textContent = card.dataset.node;
       }
-      
-    } catch (e) {
-      // 超时或错误
+    });
+    
+    // 图片测速法（100%无跨域问题）
+    function pingNode(card) {
+      return new Promise((resolve) => {
+        const nodeUrl = new URL(card.dataset.url);
+        const host = nodeUrl.hostname;
+        const nodeName = card.dataset.node;
+        
+        const img = new Image();
+        const start = performance.now();
+        const timeout = setTimeout(() => {
+          resolve(Infinity);
+        }, 5000);
+        
+        img.onload = img.onerror = () => {
+          clearTimeout(timeout);
+          const latency = Math.round(performance.now() - start);
+          resolve(latency);
+        };
+        
+        // 使用随机参数防止缓存
+        img.src = `https://${host}/favicon.ico?${Math.random()}`;
+      });
+    }
+    
+    // 更新延迟显示
+    function updateLatency(card, latency) {
+      const latencyEl = card.querySelector('.latency');
       const indicator = card.querySelector('.status-indicator');
       const statusText = card.querySelector('.status-text');
       
-      indicator.className = 'w-3 h-3 rounded-full status-indicator bg-red-500';
-      statusText.textContent = '超时';
-      card.querySelector('.latency').textContent = '超时';
-      card.querySelector('.latency').className = 'text-2xl font-bold latency text-red-500';
+      if (latency === Infinity) {
+        latencyEl.textContent = '超时';
+        latencyEl.className = 'text-2xl font-bold latency latency-bad';
+        indicator.className = 'w-3 h-3 rounded-full status-indicator bg-red-500';
+        statusText.textContent = '超时';
+      } else {
+        latencyEl.textContent = `${latency}ms`;
+        
+        if (latency < 100) {
+          latencyEl.className = 'text-2xl font-bold latency latency-good';
+          indicator.className = 'w-3 h-3 rounded-full status-indicator bg-green-500';
+          statusText.textContent = '正常';
+        } else if (latency < 300) {
+          latencyEl.className = 'text-2xl font-bold latency latency-medium';
+          indicator.className = 'w-3 h-3 rounded-full status-indicator bg-yellow-500';
+          statusText.textContent = '较慢';
+        } else {
+          latencyEl.className = 'text-2xl font-bold latency latency-bad';
+          indicator.className = 'w-3 h-3 rounded-full status-indicator bg-red-500';
+          statusText.textContent = '较慢';
+        }
+      }
     }
-  }
-  
-  // 检测所有节点
-  async function pingAllNodes() {
-    const cards = document.querySelectorAll('[data-node]');
-    for (const card of cards) {
-      await pingNode(card);
+    
+    // 检测所有节点
+    async function pingAllNodes() {
+      const cards = document.querySelectorAll('.node-card');
+      for (const card of cards) {
+        const latency = await pingNode(card);
+        const nodeName = card.dataset.node;
+        
+        // 更新结果
+        pingResults[nodeName].push(latency);
+        pingCount[nodeName]++;
+        
+        // 计算平均延迟
+        const avgLatency = Math.round(
+          pingResults[nodeName].reduce((a, b) => a + b, 0) / pingResults[nodeName].length
+        );
+        
+        updateLatency(card, avgLatency);
+      }
     }
-  }
-  
-  // 页面加载时立即检测一次
-  document.addEventListener('DOMContentLoaded', () => {
+    
+    // 页面加载时立即检测一次
     pingAllNodes();
     
     // 每5秒自动检测一次
-    setInterval(pingAllNodes, 5000);
-  });
+    const intervalId = setInterval(pingAllNodes, 5000);
+    
+    // 页面离开时清除定时器，避免内存泄漏
+    window.addEventListener('beforeunload', () => {
+      clearInterval(intervalId);
+    });
+  }
 </script>
