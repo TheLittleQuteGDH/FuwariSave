@@ -1,0 +1,52 @@
+---
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+
+// 节点列表 自行修改
+const nodeList = [
+  { name: "Cloudflare", link: "https://blog.thelittlequtegdh.fun", desc: "全球CDN节点" },
+  { name: "EdgeOne", link: "https://edgeone.thelittlequtegdh.fun", desc: "腾讯边缘节点" },
+  { name: "Netlify", link: "https://netlify.thelittlequtegdh.fun", desc: "海外静态托管" },
+  { name: "Vercel", link: "https://vercel.thelittlequtegdh.fun", desc: "前端优选节点" }
+];
+
+const nowHost = Astro.url.hostname;
+---
+
+<MainGridLayout title="节点切换" description="博客多线路节点快速切换">
+  <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32 mb-6">
+    <div class="card-base z-10 px-9 py-6 relative w-full">
+      <div class="flex items-center gap-3 mb-6">
+        <h2 class="text-2xl font-bold text-[var(--primary)]">线路节点</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {nodeList.map(item => {
+          const itemHost = new URL(item.link).hostname;
+          const isCur = itemHost === nowHost;
+          return (
+            <a
+              href={item.link}
+              class:list={[
+                "flex items-center p-4 rounded-[var(--radius)] transition-all",
+                "hover:bg-gray-100 dark:hover:bg-gray-800"
+              ]}
+              style:list={isCur ? "border:2px solid var(--primary)" : ""}
+            >
+              <div class="flex-1">
+                <div class="font-semibold">{item.name}</div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">{item.desc}</div>
+              </div>
+              {isCur && <span class="text-xs px-2 py-1 rounded bg-[var(--primary)] text-white">当前</span>}
+            </a>
+          )
+        })}
+      </div>
+    </div>
+  </div>
+
+  <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+    <div class="card-base z-10 px-9 py-6 relative w-full text-center text-sm text-gray-500 dark:text-gray-400">
+      选择访问速度最快的节点进入博客
+    </div>
+  </div>
+</MainGridLayout>
