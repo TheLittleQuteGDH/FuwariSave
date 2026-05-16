@@ -51,7 +51,7 @@ export const navBarConfig: NavBarConfig = {
     },
 		{
       name: "节点",
-      url: "/nodes/", // 友链页面路径
+      url: "/Nodes/", // 友链页面路径
       external: false,
     },
 		{
