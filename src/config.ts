@@ -45,8 +45,13 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.About,
 		LinkPreset.Sponsor,
 		{
-      name: "友链与节点",
+      name: "友链",
       url: "/links/", // 友链页面路径
+      external: false,
+		},
+		{
+      name: "节点",
+      url: "/nodes/", // 友链页面路径
       external: false,
 		},
 		{
