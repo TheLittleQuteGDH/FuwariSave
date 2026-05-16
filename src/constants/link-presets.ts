@@ -18,5 +18,9 @@ export const LinkPresets: { [key in LinkPreset]: NavBarLink } = {
 	[LinkPreset.Sponsor]: {
     name: i18n(I18nKey.sponsor),
     url: "/sponsor/",
+	},
+	[LinkPreset.node]: {
+    name: i18n(I18nKey.node),
+    url: "/nodes/",
   },
 };
