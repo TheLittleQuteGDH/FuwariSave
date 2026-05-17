@@ -1,8 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro'
-import { getSiteConfig } from '../config'
 
-const siteConfig = getSiteConfig()
 const currentNode = import.meta.env.SITE_NODE_NAME || '未知节点'
 
 const nodes = [
