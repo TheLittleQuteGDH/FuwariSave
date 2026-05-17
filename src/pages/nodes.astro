@@ -7,83 +7,102 @@ const nodes = [
   {
     name: 'Cloudflare Pages',
     url: 'https://blog.thelittlequtegdh.fun',
-    envName: 'Cloudflare Pages'
+    envName: 'Cloudflare Pages',
+    icon: '☁️',
+    desc: 'Cloudflare全球CDN节点'
   },
   {
     name: 'Edgeone Pages',
     url: 'https://edgeone.thelittlequtegdh.fun',
-    envName: 'EdgeonePages'
+    envName: 'EdgeonePages',
+    icon: '⚡',
+    desc: 'Edgeone国内加速节点'
   },
   {
     name: 'Netlify',
     url: 'https://netlify.thelittlequtegdh.fun',
-    envName: 'Netlify'
+    envName: 'Netlify',
+    icon: '🌐',
+    desc: 'Netlify海外节点'
   },
   {
     name: 'Vercel',
     url: 'https://vercel.thelittlequtegdh.fun',
-    envName: 'Vercel'
+    envName: 'Vercel',
+    icon: '🚀',
+    desc: 'Vercel海外节点'
   }
 ]
 ---
 
 <Layout title="节点监控" description="博客多节点实时延迟监控">
   <div class="max-w-3xl mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-2 text-center">节点监控</h1>
+    <h1 class="text-3xl font-bold mb-2 text-center">
+      <span class="inline-flex items-center gap-2">
+        <span class="text-blue-500">🌐</span>
+        节点监控
+      </span>
+    </h1>
     <p class="text-center text-gray-500 dark:text-gray-400 mb-8">
-      当前节点: <span class="font-semibold text-primary">{currentNode}</span>
+      当前节点: <span class="font-semibold text-blue-500">{currentNode}</span>
     </p>
 
-    <div class="grid gap-4 md:grid-cols-2">
+    <div class="space-y-3">
       {nodes.map((node) => (
-        <div 
-          class="node-card bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-md"
+        <a 
+          href={node.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="node-card flex items-center gap-4 p-4 rounded-xl bg-sky-50 dark:bg-sky-900/20 hover:bg-sky-100 dark:hover:bg-sky-900/30 transition-colors"
           data-url={node.url}
           data-name={node.name}
           data-env={node.envName}
         >
-          <div class="flex justify-between items-center mb-3">
-            <h3 class="text-lg font-semibold flex items-center">
-              <span class="w-2 h-2 rounded-full mr-2 bg-gray-300 status-indicator"></span>
-              {node.name}
-              {node.envName === currentNode && (
-                <span class="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">当前</span>
-              )}
-            </h3>
-            <span class="latency text-gray-400 font-mono">-- ms</span>
+          <div class="flex-shrink-0 w-14 h-14 rounded-full bg-white dark:bg-gray-800 shadow flex items-center justify-center text-2xl">
+            {node.icon}
           </div>
           
-          <a 
-            href={node.url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors truncate block"
-          >
-            {node.url}
-          </a>
-        </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <h3 class="text-lg font-semibold truncate">
+                {node.name}
+                {node.envName === currentNode && (
+                  <span class="ml-2 text-xs bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded-full">当前</span>
+                )}
+              </h3>
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+              {node.desc}
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="latency text-gray-400 font-mono text-sm">-- ms</span>
+            <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </div>
+        </a>
       ))}
     </div>
 
     <div class="mt-8 text-center text-sm text-gray-400 dark:text-gray-500">
-      <p>每3秒自动刷新延迟 | 点击节点地址可直接跳转</p>
+      <p>每3秒自动刷新延迟 | 点击卡片可直接跳转</p>
       <p class="mt-1">延迟仅供参考，实际访问速度可能因网络环境而异</p>
     </div>
   </div>
 
   <script is:inline>
-    // 节点ping检测函数
     async function pingNode(url) {
       const startTime = performance.now()
       const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 5000) // 5秒超时
+      const timeoutId = setTimeout(() => controller.abort(), 5000)
 
       try {
-        // 使用favicon.ico进行轻量级请求，避免跨域问题
         await fetch(`${url}/favicon.ico?${Date.now()}`, {
           method: 'HEAD',
           signal: controller.signal,
-          mode: 'no-cors' // 关键：使用no-cors模式避免跨域错误
+          mode: 'no-cors'
         })
         const latency = Math.round(performance.now() - startTime)
         clearTimeout(timeoutId)
@@ -97,46 +116,34 @@ const nodes = [
       }
     }
 
-    // 更新单个节点状态
     async function updateNodeStatus(card) {
       const url = card.dataset.url
-      const statusIndicator = card.querySelector('.status-indicator')
       const latencyElement = card.querySelector('.latency')
-
       const result = await pingNode(url)
 
       if (result.success) {
         latencyElement.textContent = `${result.latency} ms`
         
-        // 根据延迟设置颜色
         if (result.latency < 100) {
-          statusIndicator.className = 'w-2 h-2 rounded-full mr-2 bg-green-500 status-indicator'
-          latencyElement.className = 'latency text-green-500 font-mono font-semibold'
+          latencyElement.className = 'latency text-green-500 font-mono text-sm font-semibold'
         } else if (result.latency < 300) {
-          statusIndicator.className = 'w-2 h-2 rounded-full mr-2 bg-yellow-500 status-indicator'
-          latencyElement.className = 'latency text-yellow-500 font-mono font-semibold'
+          latencyElement.className = 'latency text-yellow-500 font-mono text-sm font-semibold'
         } else {
-          statusIndicator.className = 'w-2 h-2 rounded-full mr-2 bg-orange-500 status-indicator'
-          latencyElement.className = 'latency text-orange-500 font-mono font-semibold'
+          latencyElement.className = 'latency text-orange-500 font-mono text-sm font-semibold'
         }
       } else {
         latencyElement.textContent = result.error
-        statusIndicator.className = 'w-2 h-2 rounded-full mr-2 bg-red-500 status-indicator'
-        latencyElement.className = 'latency text-red-500 font-mono font-semibold'
+        latencyElement.className = 'latency text-red-500 font-mono text-sm font-semibold'
       }
     }
 
-    // 更新所有节点
     async function updateAllNodes() {
       const cards = document.querySelectorAll('.node-card')
-      // 并行执行所有ping请求
       await Promise.all(Array.from(cards).map(card => updateNodeStatus(card)))
     }
 
-    // 页面加载完成后立即执行
     document.addEventListener('DOMContentLoaded', () => {
       updateAllNodes()
-      // 每3秒自动更新
       setInterval(updateAllNodes, 3000)
     })
   </script>
