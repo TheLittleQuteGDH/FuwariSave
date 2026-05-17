@@ -77,7 +77,7 @@ const nodes = [
           </div>
 
           <div class="flex items-center gap-2">
-            <span class="latency text-gray-400 font-mono text-sm">-- ms</span>
+            <span class="latency text-gray-400 font-mono text-sm">检测中...</span>
             <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
@@ -93,27 +93,33 @@ const nodes = [
   </div>
 
   <script is:inline>
+    // 优化的 ping 方法，用图片加载替代 HEAD 请求，解决首次加载问题
     async function pingNode(url) {
       const startTime = performance.now()
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 5000)
+      const timeout = 5000
 
-      try {
-        await fetch(`${url}/favicon.ico?${Date.now()}`, {
-          method: 'HEAD',
-          signal: controller.signal,
-          mode: 'no-cors'
-        })
-        const latency = Math.round(performance.now() - startTime)
-        clearTimeout(timeoutId)
-        return { success: true, latency }
-      } catch (error) {
-        clearTimeout(timeoutId)
-        if (error.name === 'AbortError') {
-          return { success: false, latency: null, error: '超时' }
+      return new Promise((resolve) => {
+        const img = new Image()
+        const timeoutId = setTimeout(() => {
+          img.onload = img.onerror = null
+          resolve({ success: false, latency: null, error: '超时' })
+        }, timeout)
+
+        img.onload = () => {
+          clearTimeout(timeoutId)
+          const latency = Math.round(performance.now() - startTime)
+          resolve({ success: true, latency })
         }
-        return { success: false, latency: null, error: '无法访问' }
-      }
+
+        img.onerror = () => {
+          clearTimeout(timeoutId)
+          const latency = Math.round(performance.now() - startTime)
+          resolve({ success: true, latency })
+        }
+
+        // 带随机参数的 favicon 地址，避免缓存
+        img.src = `${url}/favicon.ico?ping=${Date.now()}`
+      })
     }
 
     async function updateNodeStatus(card) {
@@ -142,8 +148,13 @@ const nodes = [
       await Promise.all(Array.from(cards).map(card => updateNodeStatus(card)))
     }
 
+    // 页面加载完成后立即执行，同时增加一次额外的重试
     document.addEventListener('DOMContentLoaded', () => {
+      // 第一次 ping
       updateAllNodes()
+      // 额外加一个 500ms 后的重试，防止首次加载异常
+      setTimeout(updateAllNodes, 500)
+      // 每3秒自动刷新
       setInterval(updateAllNodes, 3000)
     })
   </script>
