@@ -34,20 +34,20 @@ const nodes = [
 ---
 
 <MainGridLayout title="节点状态" description="博客各节点运行状态与实时延迟">
-  <!-- 页面标题 -->
-  <div class="text-center mb-12">
+  <!-- 页面标题卡片 -->
+  <div class="card p-6 mb-8 text-center">
     <h1 class="text-4xl font-bold mb-4 text-gray-900 dark:text-white">节点状态</h1>
     <p class="text-gray-600 dark:text-gray-400">实时监控博客各节点的运行状态与网络延迟</p>
   </div>
 
-  <!-- 当前节点提示 -->
+  <!-- 当前节点提示卡片 -->
   <div class="card p-4 mb-8 text-center">
     <span class="text-gray-600 dark:text-gray-400">当前访问节点：</span>
     <span class="font-semibold text-primary" id="current-node-name">检测中...</span>
   </div>
 
   <!-- 节点卡片网格 -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="nodes-grid">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
     {nodes.map((node) => (
       <a 
         href={node.url}
@@ -86,8 +86,8 @@ const nodes = [
     ))}
   </div>
 
-  <!-- 说明信息 -->
-  <div class="mt-12 card p-6">
+  <!-- 说明信息卡片 -->
+  <div class="card p-6">
     <h3 class="text-lg font-bold mb-3 text-gray-900 dark:text-white">💡 使用说明</h3>
     <ul class="space-y-2 text-gray-600 dark:text-gray-300">
       <li>• 延迟数据每30秒自动刷新一次</li>
@@ -125,7 +125,10 @@ const nodes = [
 </style>
 
 <script>
-  // 使用你原来底部节点检测器的成熟ping逻辑
+  // 全局变量存储定时器ID
+  let updateInterval;
+  
+  // 成熟可靠的img标签ping逻辑
   function pingNode(url, timeout = 5000) {
     return new Promise((resolve) => {
       const start = performance.now();
@@ -141,18 +144,18 @@ const nodes = [
         resolve({ success: true, latency });
       };
       
-      // 使用favicon.ico进行测试，这是最可靠的方法
-      img.src = `${new URL(url).origin}/favicon.ico?${Date.now()}`;
+      // 添加随机参数防止缓存
+      img.src = `${new URL(url).origin}/favicon.ico?${Math.random()}`;
     });
   }
 
-  // 页面加载完成后立即执行
-  window.addEventListener('load', async () => {
+  // 立即执行的自调用函数
+  (async () => {
     const currentHost = window.location.hostname;
     const nodeCards = document.querySelectorAll('.node-card');
     const currentNodeName = document.getElementById('current-node-name');
     
-    // 立即检测并高亮当前节点
+    // 第一步：立即识别并显示当前节点（不需要等待ping）
     let currentNodeFound = false;
     nodeCards.forEach(card => {
       const nodeHost = new URL(card.dataset.url).hostname;
@@ -163,7 +166,7 @@ const nodes = [
       }
     });
     
-    // 如果没有找到匹配的节点，显示当前域名
+    // 兜底：如果没有找到匹配的节点，显示当前域名
     if (!currentNodeFound) {
       currentNodeName.textContent = currentHost;
     }
@@ -198,7 +201,7 @@ const nodes = [
       }
     }
     
-    // 串行更新所有节点（避免同时请求过多导致被拦截）
+    // 串行更新所有节点（避免同时请求过多）
     async function updateAllNodes() {
       for (const card of nodeCards) {
         await updateNodeStatus(card);
@@ -208,7 +211,12 @@ const nodes = [
     // 立即开始第一次检测
     await updateAllNodes();
     
-    // 每30秒自动刷新一次
-    setInterval(updateAllNodes, 30000);
-  });
+    // 清除可能存在的旧定时器
+    if (updateInterval) {
+      clearInterval(updateInterval);
+    }
+    
+    // 每30秒自动刷新一次（确保定时器正确设置）
+    updateInterval = setInterval(updateAllNodes, 3000);
+  })();
 </script>
