@@ -1,33 +1,32 @@
 ---
 import MainGridLayout from '../layouts/MainGridLayout.astro';
-import Icon from '@iconify/svelte';
 
 const nodes = [
   {
     name: "Cloudflare",
     url: "https://blog.thelittlequtegdh.fun",
-    icon: "simple-icons:cloudflare",
+    icon: "☁️",
     description: "Cloudflare Pages 全球CDN加速",
     location: "全球边缘节点"
   },
   {
     name: "EdgeOne",
     url: "https://edgeone.thelittlequtegdh.fun",
-    icon: "simple-icons:tencent",
+    icon: "🌐",
     description: "腾讯云EdgeOne 国内优化",
     location: "中国境内加速"
   },
   {
     name: "Netlify",
     url: "https://netlify.thelittlequtegdh.fun",
-    icon: "simple-icons:netlify",
+    icon: "🔷",
     description: "Netlify 静态托管平台",
     location: "美国东部"
   },
   {
     name: "Vercel",
     url: "https://vercel.thelittlequtegdh.fun",
-    icon: "simple-icons:vercel",
+    icon: "▲",
     description: "Vercel 前端开发首选",
     location: "美国东部"
   }
@@ -59,7 +58,7 @@ const nodes = [
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl">
-              <Icon icon={node.icon} class="text-gray-700 dark:text-gray-300" />
+              {node.icon}
             </div>
             <div>
               <h3 class="text-xl font-bold text-gray-900 dark:text-white">{node.name}</h3>
@@ -126,45 +125,47 @@ const nodes = [
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  // 使用你原来底部节点检测器的成熟ping逻辑
+  function pingNode(url, timeout = 5000) {
+    return new Promise((resolve) => {
+      const start = performance.now();
+      const img = new Image();
+      
+      const timer = setTimeout(() => {
+        resolve({ success: false, latency: timeout });
+      }, timeout);
+      
+      img.onload = img.onerror = () => {
+        clearTimeout(timer);
+        const latency = Math.round(performance.now() - start);
+        resolve({ success: true, latency });
+      };
+      
+      // 使用favicon.ico进行测试，这是最可靠的方法
+      img.src = `${new URL(url).origin}/favicon.ico?${Date.now()}`;
+    });
+  }
+
+  // 页面加载完成后立即执行
+  window.addEventListener('load', async () => {
     const currentHost = window.location.hostname;
     const nodeCards = document.querySelectorAll('.node-card');
     const currentNodeName = document.getElementById('current-node-name');
     
-    // 高亮当前节点
+    // 立即检测并高亮当前节点
+    let currentNodeFound = false;
     nodeCards.forEach(card => {
       const nodeHost = new URL(card.dataset.url).hostname;
       if (nodeHost === currentHost) {
         card.classList.add('current-node');
         currentNodeName.textContent = card.dataset.name;
+        currentNodeFound = true;
       }
     });
     
-    // 改进的Ping测试函数（更稳定）
-    async function pingNode(url) {
-      const start = performance.now();
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
-      
-      try {
-        // 使用fetch API测试，添加no-cors模式
-        await fetch(`${new URL(url).origin}/favicon.ico?${Date.now()}`, {
-          method: 'HEAD',
-          mode: 'no-cors',
-          signal: controller.signal
-        });
-        
-        clearTimeout(timeoutId);
-        const latency = Math.round(performance.now() - start);
-        return { success: true, latency };
-      } catch (e) {
-        clearTimeout(timeoutId);
-        // 即使是跨域错误也认为节点在线（只是无法获取精确延迟）
-        if (e.name === 'AbortError') {
-          return { success: false, latency: 5000 };
-        }
-        return { success: true, latency: Math.round(performance.now() - start) };
-      }
+    // 如果没有找到匹配的节点，显示当前域名
+    if (!currentNodeFound) {
+      currentNodeName.textContent = currentHost;
     }
     
     // 更新单个节点状态
@@ -197,14 +198,15 @@ const nodes = [
       }
     }
     
-    // 并行更新所有节点
+    // 串行更新所有节点（避免同时请求过多导致被拦截）
     async function updateAllNodes() {
-      const promises = Array.from(nodeCards).map(card => updateNodeStatus(card));
-      await Promise.all(promises);
+      for (const card of nodeCards) {
+        await updateNodeStatus(card);
+      }
     }
     
     // 立即开始第一次检测
-    updateAllNodes();
+    await updateAllNodes();
     
     // 每30秒自动刷新一次
     setInterval(updateAllNodes, 30000);
