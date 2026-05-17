@@ -1,8 +1,81 @@
 ---
 import MainGridLayout from '../layouts/MainGridLayout.astro';
-import NodeStatus from '../components/NodeStatus.svelte';
+
+const siteList = [
+  { name: 'Cloudflare', host: 'blog.thelittlequtegdh.fun', icon: '☁️', desc: '全球CDN加速' },
+  { name: 'EdgeOne', host: 'edgeone.thelittlequtegdh.fun', icon: '🌐', desc: '国内高速节点' },
+  { name: 'Netlify', host: 'netlify.thelittlequtegdh.fun', icon: '🔷', desc: '海外稳定节点' },
+  { name: 'Vercel', host: 'vercel.thelittlequtegdh.fun', icon: '▲', desc: '主流托管节点' }
+];
+const nowHost = Astro.site.hostname;
 ---
 
-<MainGridLayout title="节点状态" description="博客各节点运行状态与实时延迟">
-  <NodeStatus />
+<MainGridLayout title="节点测速" description="实时节点延迟检测">
+<div class="card p-5 mb-6">
+  <h2 class="text-xl font-bold text-center">博客多节点测速</h2>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  {siteList.map(item => {
+    const isCurrent = item.host === nowHost;
+    return (
+      <a href={`https://${item.host}`} target="_blank" class={`card p-4 relative block ${isCurrent ? 'ring-2 ring-primary' : ''}`} data-host={item.host}>
+        {isCurrent && <span class="absolute top-2 right-2 bg-primary text-white text-xs px-2 py-1 rounded">当前</span>}
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">{item.icon}</span>
+          <div>
+            <h3 class="font-bold">{item.name}</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{item.desc}</p>
+          </div>
+        </div>
+        <div class="mt-3 flex justify-between items-center">
+          <span class="status-text text-sm">等待检测</span>
+          <span class="delay-text font-bold">-- ms</span>
+        </div>
+      </a>
+    )
+  })}
+</div>
 </MainGridLayout>
+
+<script>
+// 纯原生极速ping，1.5秒超时
+function pingUrl(host){
+  return new Promise(resolve=>{
+    let s=performance.now();
+    let img=new Image();
+    let t=setTimeout(()=>resolve(9999),1500);
+    img.onload=img.onerror=()=>{
+      clearTimeout(t);
+      resolve(Math.round(performance.now()-s));
+    };
+    img.src=`https://${host}/favicon.ico?_=${Date.now()}`;
+  })
+}
+
+// 页面载入立刻执行
+window.addEventListener('DOMContentLoaded',async()=>{
+  let cards=document.querySelectorAll('[data-host]');
+  for(let card of cards){
+    let h=card.dataset.host;
+    let st=card.querySelector('.status-text');
+    let dl=card.querySelector('.delay-text');
+    st.innerText="检测中";
+    let d=await pingUrl(h);
+    if(d>=1500){
+      st.innerText="离线";
+      dl.innerText="超时";
+      dl.style.color="#ef4444";
+    }else{
+      st.innerText="在线";
+      dl.innerText=`${d} ms`;
+      if(d<100) dl.style.color="#10b981";
+      else if(d<300) dl.style.color="#f59e0b";
+      else dl.style.color="#ef4444";
+    }
+  }
+})
+
+// 兼容swup跳转
+document.addEventListener('swup:contentReplaced',()=>window.dispatchEvent(new Event('DOMContentLoaded')))
+</script>
