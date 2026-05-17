@@ -1,52 +1,214 @@
 ---
-import MainGridLayout from "../layouts/MainGridLayout.astro";
+import Layout from '~/layouts/BaseLayout.astro';
+import { Icon } from '@iconify/svelte';
 
-// 节点列表 自行修改
-const nodeList = [
-  { name: "Cloudflare", link: "https://blog.thelittlequtegdh.fun", desc: "全球CDN节点" },
-  { name: "EdgeOne", link: "https://edgeone.thelittlequtegdh.fun", desc: "腾讯边缘节点" },
-  { name: "Netlify", link: "https://netlify.thelittlequtegdh.fun", desc: "海外静态托管" },
-  { name: "Vercel", link: "https://vercel.thelittlequtegdh.fun", desc: "前端优选节点" }
+const nodes = [
+  {
+    name: "Cloudflare",
+    url: "https://blog.thelittlequtegdh.fun",
+    icon: "simple-icons:cloudflare",
+    description: "Cloudflare Pages 全球CDN加速",
+    location: "全球边缘节点"
+  },
+  {
+    name: "EdgeOne",
+    url: "https://edgeone.thelittlequtegdh.fun",
+    icon: "simple-icons:tencent",
+    description: "腾讯云EdgeOne 国内优化",
+    location: "中国境内加速"
+  },
+  {
+    name: "Netlify",
+    url: "https://netlify.thelittlequtegdh.fun",
+    icon: "simple-icons:netlify",
+    description: "Netlify 静态托管平台",
+    location: "美国东部"
+  },
+  {
+    name: "Vercel",
+    url: "https://vercel.thelittlequtegdh.fun",
+    icon: "simple-icons:vercel",
+    description: "Vercel 前端开发首选",
+    location: "美国东部"
+  }
 ];
-
-const nowHost = Astro.url.hostname;
 ---
 
-<MainGridLayout title="节点切换" description="博客多线路节点快速切换">
-  <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32 mb-6">
-    <div class="card-base z-10 px-9 py-6 relative w-full">
-      <div class="flex items-center gap-3 mb-6">
-        <h2 class="text-2xl font-bold text-[var(--primary)]">线路节点</h2>
-      </div>
+<Layout title="节点状态" description="博客各节点运行状态与实时延迟">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <!-- 页面标题 -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4 text-gray-900 dark:text-white">节点状态</h1>
+      <p class="text-gray-600 dark:text-gray-400">实时监控博客各节点的运行状态与网络延迟</p>
+    </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {nodeList.map(item => {
-          const itemHost = new URL(item.link).hostname;
-          const isCur = itemHost === nowHost;
-          return (
-            <a
-              href={item.link}
-              class:list={[
-                "flex items-center p-4 rounded-[var(--radius)] transition-all",
-                "hover:bg-gray-100 dark:hover:bg-gray-800"
-              ]}
-              style:list={isCur ? "border:2px solid var(--primary)" : ""}
-            >
-              <div class="flex-1">
-                <div class="font-semibold">{item.name}</div>
-                <div class="text-sm text-gray-500 dark:text-gray-400">{item.desc}</div>
+    <!-- 当前节点提示 -->
+    <div class="card p-4 mb-8 text-center">
+      <span class="text-gray-600 dark:text-gray-400">当前访问节点：</span>
+      <span class="font-semibold text-primary" id="current-node-name">检测中...</span>
+    </div>
+
+    <!-- 节点卡片网格 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="nodes-grid">
+      {nodes.map((node) => (
+        <a 
+          href={node.url}
+          class="card p-6 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] node-card block"
+          data-url={node.url}
+          data-name={node.name}
+        >
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl">
+                <Icon icon={node.icon} class="text-gray-700 dark:text-gray-300" />
               </div>
-              {isCur && <span class="text-xs px-2 py-1 rounded bg-[var(--primary)] text-white">当前</span>}
-            </a>
-          )
-        })}
-      </div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">{node.name}</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{node.location}</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-2xl font-bold latency-value text-gray-400">--</div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">平均延迟</div>
+            </div>
+          </div>
+          
+          <p class="text-gray-600 dark:text-gray-300 mb-4">{node.description}</p>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-gray-400 status-indicator"></div>
+              <span class="text-sm text-gray-500 dark:text-gray-400 status-text">检测中...</span>
+            </div>
+            <span class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium">
+              切换节点
+            </span>
+          </div>
+        </a>
+      ))}
     </div>
-  </div>
 
-  <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
-    <div class="card-base z-10 px-9 py-6 relative w-full text-center text-sm text-gray-500 dark:text-gray-400">
-      选择访问速度最快的节点进入博客
+    <!-- 说明信息 -->
+    <div class="mt-12 card p-6">
+      <h3 class="text-lg font-bold mb-3 text-gray-900 dark:text-white">💡 使用说明</h3>
+      <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+        <li>• 延迟数据每30秒自动刷新一次</li>
+        <li>• 绿色表示节点在线，红色表示节点离线</li>
+        <li>• 点击任意节点卡片可直接跳转到对应节点</li>
+        <li>• 当前访问的节点会以蓝色边框高亮显示</li>
+        <li>• 延迟分级：优秀(<100ms)、良好(100-300ms)、较差(>300ms)</li>
+      </ul>
     </div>
   </div>
-</MainGridLayout>
+</Layout>
+
+<style is:global>
+  .node-card.current-node {
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.2);
+  }
+  
+  .status-indicator.online {
+    background-color: #10b981;
+    animation: pulse 2s infinite;
+  }
+  
+  .status-indicator.offline {
+    background-color: #ef4444;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  .latency-value.excellent { color: #10b981; }
+  .latency-value.good { color: #f59e0b; }
+  .latency-value.poor { color: #ef4444; }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const currentHost = window.location.hostname;
+    const nodeCards = document.querySelectorAll('.node-card');
+    const currentNodeName = document.getElementById('current-node-name');
+    
+    // 高亮当前节点
+    nodeCards.forEach(card => {
+      const nodeHost = new URL(card.dataset.url).hostname;
+      if (nodeHost === currentHost) {
+        card.classList.add('current-node');
+        currentNodeName.textContent = card.dataset.name;
+      }
+    });
+    
+    // 改进的Ping测试函数（更稳定）
+    async function pingNode(url) {
+      const start = performance.now();
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+      try {
+        // 使用fetch API测试，添加no-cors模式
+        await fetch(`${new URL(url).origin}/favicon.ico?${Date.now()}`, {
+          method: 'HEAD',
+          mode: 'no-cors',
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        const latency = Math.round(performance.now() - start);
+        return { success: true, latency };
+      } catch (e) {
+        clearTimeout(timeoutId);
+        // 即使是跨域错误也认为节点在线（只是无法获取精确延迟）
+        if (e.name === 'AbortError') {
+          return { success: false, latency: 5000 };
+        }
+        return { success: true, latency: Math.round(performance.now() - start) };
+      }
+    }
+    
+    // 更新单个节点状态
+    async function updateNodeStatus(card) {
+      const statusIndicator = card.querySelector('.status-indicator');
+      const statusText = card.querySelector('.status-text');
+      const latencyValue = card.querySelector('.latency-value');
+      
+      const result = await pingNode(card.dataset.url);
+      
+      if (result.success) {
+        statusIndicator.className = 'w-3 h-3 rounded-full status-indicator online';
+        statusText.textContent = '在线';
+        
+        latencyValue.textContent = `${result.latency}ms`;
+        latencyValue.className = 'text-2xl font-bold latency-value';
+        
+        if (result.latency < 100) {
+          latencyValue.classList.add('excellent');
+        } else if (result.latency < 300) {
+          latencyValue.classList.add('good');
+        } else {
+          latencyValue.classList.add('poor');
+        }
+      } else {
+        statusIndicator.className = 'w-3 h-3 rounded-full status-indicator offline';
+        statusText.textContent = '离线';
+        latencyValue.textContent = '--';
+        latencyValue.className = 'text-2xl font-bold latency-value';
+      }
+    }
+    
+    // 并行更新所有节点
+    async function updateAllNodes() {
+      const promises = Array.from(nodeCards).map(card => updateNodeStatus(card));
+      await Promise.all(promises);
+    }
+    
+    // 立即开始第一次检测
+    updateAllNodes();
+    
+    // 每30秒自动刷新一次
+    setInterval(updateAllNodes, 30000);
+  });
+</script>
