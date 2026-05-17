@@ -1,161 +1,95 @@
 ---
 import MainGridLayout from '../layouts/MainGridLayout.astro'
+const nowNode = import.meta.env.SITE_NODE_NAME || "未知节点"
 
-const currentNode = import.meta.env.SITE_NODE_NAME || '未知节点'
-
-const nodes = [
+const nodeList = [
   {
-    name: 'Cloudflare Pages',
-    url: 'https://blog.thelittlequtegdh.fun',
-    envName: 'Cloudflare Pages',
-    icon: '☁️',
-    desc: 'Cloudflare 全球 CDN 节点'
+    name: "Cloudflare Pages",
+    host: "https://blog.thelittlequtegdh.fun",
+    tag: "Cloudflare Pages"
   },
   {
-    name: 'Edgeone Pages',
-    url: 'https://edgeone.thelittlequtegdh.fun',
-    envName: 'EdgeonePages',
-    icon: '⚡',
-    desc: 'Edgeone 国内加速节点'
+    name: "EdgeonePages",
+    host: "https://edgeone.thelittlequtegdh.fun",
+    tag: "EdgeonePages"
   },
   {
-    name: 'Netlify',
-    url: 'https://netlify.thelittlequtegdh.fun',
-    envName: 'Netlify',
-    icon: '🌐',
-    desc: 'Netlify 海外节点'
+    name: "Netlify",
+    host: "https://netlify.thelittlequtegdh.fun",
+    tag: "Netlify"
   },
   {
-    name: 'Vercel',
-    url: 'https://vercel.thelittlequtegdh.fun',
-    envName: 'Vercel',
-    icon: '🚀',
-    desc: 'Vercel 海外节点'
+    name: "Vercel",
+    host: "https://vercel.thelittlequtegdh.fun",
+    tag: "Vercel"
   }
 ]
 ---
 
-<MainGridLayout title="节点监控" description="博客多节点实时延迟监控">
-  <div class="max-w-3xl mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-2 text-center">
-      <span class="inline-flex items-center gap-2">
-        <span class="text-blue-500">🌐</span>
-        节点监控
-      </span>
-    </h1>
-    <p class="text-center text-gray-500 dark:text-gray-400 mb-8">
-      当前节点: <span class="font-semibold text-blue-500">{currentNode}</span>
-    </p>
+<MainGridLayout title="节点状态" desc="多线路节点延迟监测">
+<div class="py-6 px-2">
+  <h2 class="text-center text-xl font-bold mb-2">多线路节点监测</h2>
+  <p class="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">
+    当前运行节点：<strong class="text-primary">{nowNode || "未识别"}</strong>
+  </p>
 
-    <div class="space-y-3">
-      {nodes.map((node) => (
-        <a 
-          href={node.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="node-card flex items-center gap-4 p-4 rounded-xl bg-sky-50 dark:bg-sky-900/20 hover:bg-sky-100 dark:hover:bg-sky-900/30 transition-colors"
-          data-url={node.url}
-          data-name={node.name}
-          data-env={node.envName}
-        >
-          <div class="flex-shrink-0 w-14 h-14 rounded-full bg-white dark:bg-gray-800 shadow flex items-center justify-center text-2xl">
-            {node.icon}
-          </div>
-          
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2">
-              <h3 class="text-lg font-semibold truncate">
-                {node.name}
-                {node.envName === currentNode && (
-                  <span class="ml-2 text-xs bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded-full">当前</span>
-                )}
-              </h3>
-            </div>
-            <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
-              {node.desc}
-            </p>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <span class="latency text-gray-400 font-mono text-sm">检测中...</span>
-            <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </div>
-        </a>
-      ))}
+  <div class="flex flex-col gap-3">
+    {nodeList.map(item => (
+    <div class="border dark:border-gray-700 rounded-lg p-4 flex justify-between items-center bg-gray-50 dark:bg-gray-800">
+      <div>
+        <div class="font-medium">
+          {item.name}
+          {item.tag === nowNode && <span class="ml-2 text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">当前</span>}
+        </div>
+        <div class="text-xs text-gray-400 mt-1">{item.host}</div>
+      </div>
+      <div class="speed-data text-sm font-mono" data-domain={item.host}>正在检测</div>
     </div>
-
-    <div class="mt-8 text-center text-sm text-gray-400 dark:text-gray-500">
-      <p>每3秒自动刷新延迟 | 点击卡片可直接跳转</p>
-      <p class="mt-1">延迟仅供参考，实际访问速度可能因网络环境而异</p>
-    </div>
+    ))}
   </div>
 
-  <script is:inline>
-    // 优化的 ping 方法，用图片加载替代 HEAD 请求，解决首次加载问题
-    async function pingNode(url) {
-      const startTime = performance.now()
-      const timeout = 5000
+  <p class="text-center text-xs text-gray-400 mt-6">自动3秒刷新延迟 · 打开页面立即测速</p>
+</div>
 
-      return new Promise((resolve) => {
-        const img = new Image()
-        const timeoutId = setTimeout(() => {
-          img.onload = img.onerror = null
-          resolve({ success: false, latency: null, error: '超时' })
-        }, timeout)
-
-        img.onload = () => {
-          clearTimeout(timeoutId)
-          const latency = Math.round(performance.now() - startTime)
-          resolve({ success: true, latency })
-        }
-
-        img.onerror = () => {
-          clearTimeout(timeoutId)
-          const latency = Math.round(performance.now() - startTime)
-          resolve({ success: true, latency })
-        }
-
-        // 带随机参数的 favicon 地址，避免缓存
-        img.src = `${url}/favicon.ico?ping=${Date.now()}`
-      })
+<script>
+function getLatency(domain) {
+  return new Promise(resolve => {
+    let start = performance.now();
+    let img = new Image();
+    let timer = setTimeout(()=>resolve("超时"),3000);
+    img.src = domain + "/favicon.ico?_t="+Date.now();
+    img.onload = ()=>{
+      clearTimeout(timer);
+      let t = Math.round(performance.now()-start);
+      resolve(t+"ms");
     }
-
-    async function updateNodeStatus(card) {
-      const url = card.dataset.url
-      const latencyElement = card.querySelector('.latency')
-      const result = await pingNode(url)
-
-      if (result.success) {
-        latencyElement.textContent = `${result.latency} ms`
-        
-        if (result.latency < 100) {
-          latencyElement.className = 'latency text-green-500 font-mono text-sm font-semibold'
-        } else if (result.latency < 300) {
-          latencyElement.className = 'latency text-yellow-500 font-mono text-sm font-semibold'
-        } else {
-          latencyElement.className = 'latency text-orange-500 font-mono text-sm font-semibold'
-        }
-      } else {
-        latencyElement.textContent = result.error
-        latencyElement.className = 'latency text-red-500 font-mono text-sm font-semibold'
-      }
+    img.onerror = ()=>{
+      clearTimeout(timer);
+      resolve("连接异常");
     }
+  })
+}
 
-    async function updateAllNodes() {
-      const cards = document.querySelectorAll('.node-card')
-      await Promise.all(Array.from(cards).map(card => updateNodeStatus(card)))
+async function checkAll(){
+  let els = document.querySelectorAll(".speed-data");
+  for(let el of els){
+    let url = el.dataset.domain;
+    let res = await getLatency(url);
+    el.innerText = res;
+    if(res.includes("ms")){
+      let num = parseInt(res);
+      if(num<120) el.className="speed-data text-sm font-mono text-green-500";
+      else if(num<300) el.className="speed-data text-sm font-mono text-yellow-500";
+      else el.className="speed-data text-sm font-mono text-orange-500";
+    }else{
+      el.className="speed-data text-sm font-mono text-red-500";
     }
+  }
+}
 
-    // 页面加载完成后立即执行，同时增加一次额外的重试
-    document.addEventListener('DOMContentLoaded', () => {
-      // 第一次 ping
-      updateAllNodes()
-      // 额外加一个 500ms 后的重试，防止首次加载异常
-      setTimeout(updateAllNodes, 500)
-      // 每3秒自动刷新
-      setInterval(updateAllNodes, 3000)
-    })
-  </script>
+window.addEventListener("DOMContentLoaded",()=>{
+  checkAll();
+  setInterval(checkAll,3000);
+})
+</script>
 </MainGridLayout>
