@@ -124,7 +124,10 @@ const nodes = [
 </style>
 
 <script>
-  // 完全使用你原来底部节点检测器的逻辑
+  // 全局变量存储定时器ID
+  let updateInterval;
+  
+  // 检测当前节点
   function detectCurrentNode() {
     const currentHost = window.location.hostname;
     const nodeCards = document.querySelectorAll('.node-card');
@@ -136,18 +139,23 @@ const nodes = [
       if (nodeHost === currentHost) {
         card.classList.add('current-node');
         card.querySelector('.current-badge').classList.remove('hidden');
+      } else {
+        card.classList.remove('current-node');
+        card.querySelector('.current-badge').classList.add('hidden');
       }
     });
   }
 
-  function pingNode(url, timeout = 5000) {
+  // 1.5秒极速ping检测
+  function pingNode(url) {
     return new Promise((resolve) => {
       const start = performance.now();
       const img = new Image();
       
+      // 改为1.5秒超时
       const timer = setTimeout(() => {
-        resolve({ success: false, latency: timeout });
-      }, timeout);
+        resolve({ success: false, latency: 1500 });
+      }, 1500);
       
       img.onload = img.onerror = () => {
         clearTimeout(timer);
@@ -159,6 +167,7 @@ const nodes = [
     });
   }
 
+  // 更新单个节点状态
   async function updateNodeStatus(card) {
     const statusIndicator = card.querySelector('.status-indicator');
     const statusText = card.querySelector('.status-text');
@@ -188,6 +197,7 @@ const nodes = [
     }
   }
 
+  // 更新所有节点
   async function updateAllNodes() {
     const nodeCards = document.querySelectorAll('.node-card');
     for (const card of nodeCards) {
@@ -195,8 +205,13 @@ const nodes = [
     }
   }
 
-  // 页面一加载就立即执行所有操作
-  (function() {
+  // 初始化函数
+  function initNodePage() {
+    // 清除可能存在的旧定时器
+    if (updateInterval) {
+      clearInterval(updateInterval);
+    }
+    
     // 第一步：立即检测当前节点
     detectCurrentNode();
     
@@ -204,6 +219,17 @@ const nodes = [
     updateAllNodes();
     
     // 第三步：设置自动刷新
-    setInterval(updateAllNodes, 1500);
-  })();
+    updateInterval = setInterval(updateAllNodes, 30000);
+  }
+
+  // 监听Swup页面过渡事件（解决导航栏点击不执行的问题）
+  document.addEventListener('swup:pageView', initNodePage);
+  
+  // 监听DOM加载完成事件（解决第一次整页访问的问题）
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNodePage);
+  } else {
+    // 如果DOM已经加载完成，立即执行
+    initNodePage();
+  }
 </script>
