@@ -1,0 +1,213 @@
+<script>
+  import { onMount } from 'svelte';
+
+  let updateInterval;
+
+  const nodes = [
+    {
+      name: "Cloudflare",
+      url: "https://blog.thelittlequtegdh.fun",
+      icon: "☁️",
+      description: "Cloudflare Pages 全球CDN加速",
+      location: "全球边缘节点"
+    },
+    {
+      name: "EdgeOne",
+      url: "https://edgeone.thelittlequtegdh.fun",
+      icon: "🌐",
+      description: "腾讯云EdgeOne 国内优化",
+      location: "中国境内加速"
+    },
+    {
+      name: "Netlify",
+      url: "https://netlify.thelittlequtegdh.fun",
+      icon: "🔷",
+      description: "Netlify 静态托管平台",
+      location: "美国东部"
+    },
+    {
+      name: "Vercel",
+      url: "https://vercel.thelittlequtegdh.fun",
+      icon: "▲",
+      description: "Vercel 前端开发首选",
+      location: "美国东部"
+    }
+  ];
+
+  function detectCurrentNode() {
+    const currentHost = window.location.hostname;
+    const nodeCards = document.querySelectorAll('.node-card');
+    
+    nodeCards.forEach(card => {
+      const nodeUrl = card.getAttribute('data-url');
+      const nodeHost = new URL(nodeUrl).hostname;
+      
+      if (nodeHost === currentHost) {
+        card.classList.add('current-node');
+        card.querySelector('.current-badge').classList.remove('hidden');
+      } else {
+        card.classList.remove('current-node');
+        card.querySelector('.current-badge').classList.add('hidden');
+      }
+    });
+  }
+
+  function pingNode(url) {
+    return new Promise((resolve) => {
+      const start = performance.now();
+      const img = new Image();
+      
+      const timer = setTimeout(() => {
+        resolve({ success: false, latency: 1500 });
+      }, 1500);
+      
+      img.onload = img.onerror = () => {
+        clearTimeout(timer);
+        const latency = Math.round(performance.now() - start);
+        resolve({ success: true, latency });
+      };
+      
+      img.src = `${new URL(url).origin}/favicon.ico?${Math.random()}`;
+    });
+  }
+
+  async function updateNodeStatus(card) {
+    const statusIndicator = card.querySelector('.status-indicator');
+    const statusText = card.querySelector('.status-text');
+    const latencyValue = card.querySelector('.latency-value');
+    
+    const result = await pingNode(card.getAttribute('data-url'));
+    
+    if (result.success) {
+      statusIndicator.className = 'w-3 h-3 rounded-full status-indicator online';
+      statusText.textContent = '在线';
+      
+      latencyValue.textContent = `${result.latency}ms`;
+      latencyValue.className = 'text-2xl font-bold latency-value';
+      
+      if (result.latency < 100) {
+        latencyValue.classList.add('excellent');
+      } else if (result.latency < 300) {
+        latencyValue.classList.add('good');
+      } else {
+        latencyValue.classList.add('poor');
+      }
+    } else {
+      statusIndicator.className = 'w-3 h-3 rounded-full status-indicator offline';
+      statusText.textContent = '离线';
+      latencyValue.textContent = '--';
+      latencyValue.className = 'text-2xl font-bold latency-value';
+    }
+  }
+
+  async function updateAllNodes() {
+    const nodeCards = document.querySelectorAll('.node-card');
+    for (const card of nodeCards) {
+      await updateNodeStatus(card);
+    }
+  }
+
+  onMount(() => {
+    // 组件挂载时立即执行
+    detectCurrentNode();
+    updateAllNodes();
+    
+    // 设置自动刷新
+    updateInterval = setInterval(updateAllNodes, 30000);
+    
+    // 组件卸载时清理定时器
+    return () => {
+      if (updateInterval) {
+        clearInterval(updateInterval);
+      }
+    };
+  });
+</script>
+
+<!-- 页面标题卡片 -->
+<div class="card p-6 mb-8 text-center">
+  <h1 class="text-4xl font-bold mb-4 text-gray-900 dark:text-white">节点状态</h1>
+  <p class="text-gray-600 dark:text-gray-400">实时监控博客各节点的运行状态与网络延迟</p>
+</div>
+
+<!-- 节点卡片网格 -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+  {#each nodes as node}
+    <a 
+      href={node.url}
+      class="card p-6 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] node-card block relative"
+      data-url={node.url}
+      data-name={node.name}
+    >
+      <!-- 当前节点标签 -->
+      <div class="absolute top-3 right-3 hidden current-badge">
+        <span class="px-2 py-1 bg-primary text-white text-xs rounded-full font-medium">当前</span>
+      </div>
+      
+      <div class="flex items-start justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl">
+            {node.icon}
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">{node.name}</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{node.location}</p>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-2xl font-bold latency-value text-gray-400">--</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">平均延迟</div>
+        </div>
+      </div>
+      
+      <p class="text-gray-600 dark:text-gray-300 mb-4">{node.description}</p>
+      
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 rounded-full bg-gray-400 status-indicator"></div>
+          <span class="text-sm text-gray-500 dark:text-gray-400 status-text">检测中...</span>
+        </div>
+        <span class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium">
+          切换节点
+        </span>
+      </div>
+    </a>
+  {/each}
+</div>
+
+<!-- 说明信息卡片 -->
+<div class="card p-6">
+  <h3 class="text-lg font-bold mb-3 text-gray-900 dark:text-white">💡 使用说明</h3>
+  <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+    <li>• 延迟数据每30秒自动刷新一次</li>
+    <li>• 绿色表示节点在线，红色表示节点离线</li>
+    <li>• 点击任意节点卡片可直接跳转到对应节点</li>
+    <li>• 当前访问的节点右上角会显示"当前"标签</li>
+    <li>• 延迟分级：优秀(<100ms)、良好(100-300ms)、较差(>300ms)</li>
+  </ul>
+</div>
+
+<style is:global>
+  .node-card.current-node {
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.2);
+  }
+  
+  .status-indicator.online {
+    background-color: #10b981;
+    animation: pulse 2s infinite;
+  }
+  
+  .status-indicator.offline {
+    background-color: #ef4444;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  .latency-value.excellent { color: #10b981; }
+  .latency-value.good { color: #f59e0b; }
+  .latency-value.poor { color: #ef4444; }
+</style>
