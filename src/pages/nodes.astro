@@ -1,5 +1,5 @@
 ---
-import Layout from '../layouts/Layout.astro'
+import MainGridLayout from '../layouts/MainGridLayout.astro'
 
 const currentNode = import.meta.env.SITE_NODE_NAME || '未知节点'
 
@@ -9,33 +9,33 @@ const nodes = [
     url: 'https://blog.thelittlequtegdh.fun',
     envName: 'Cloudflare Pages',
     icon: '☁️',
-    desc: 'Cloudflare全球CDN节点'
+    desc: 'Cloudflare 全球 CDN 节点'
   },
   {
     name: 'Edgeone Pages',
     url: 'https://edgeone.thelittlequtegdh.fun',
     envName: 'EdgeonePages',
     icon: '⚡',
-    desc: 'Edgeone国内加速节点'
+    desc: 'Edgeone 国内加速节点'
   },
   {
     name: 'Netlify',
     url: 'https://netlify.thelittlequtegdh.fun',
     envName: 'Netlify',
     icon: '🌐',
-    desc: 'Netlify海外节点'
+    desc: 'Netlify 海外节点'
   },
   {
     name: 'Vercel',
     url: 'https://vercel.thelittlequtegdh.fun',
     envName: 'Vercel',
     icon: '🚀',
-    desc: 'Vercel海外节点'
+    desc: 'Vercel 海外节点'
   }
 ]
 ---
 
-<Layout title="节点监控" description="博客多节点实时延迟监控">
+<MainGridLayout title="节点监控" description="博客多节点实时延迟监控">
   <div class="max-w-3xl mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold mb-2 text-center">
       <span class="inline-flex items-center gap-2">
@@ -147,4 +147,4 @@ const nodes = [
       setInterval(updateAllNodes, 3000)
     })
   </script>
-</Layout>
+</MainGridLayout>
