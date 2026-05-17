@@ -1,95 +1,125 @@
 ---
 import MainGridLayout from '../layouts/MainGridLayout.astro'
-const nowNode = import.meta.env.SITE_NODE_NAME || "未知节点"
+const currentNode = import.meta.env.SITE_NODE_NAME || ""
 
-const nodeList = [
+const nodes = [
   {
     name: "Cloudflare Pages",
-    host: "https://blog.thelittlequtegdh.fun",
-    tag: "Cloudflare Pages"
+    url: "https://blog.thelittlequtegdh.fun",
+    tag: "Cloudflare Pages",
+    icon: "☁️"
   },
   {
-    name: "EdgeonePages",
-    host: "https://edgeone.thelittlequtegdh.fun",
-    tag: "EdgeonePages"
+    name: "Edgeone Pages",
+    url: "https://edgeone.thelittlequtegdh.fun",
+    tag: "EdgeonePages",
+    icon: "⚡"
   },
   {
     name: "Netlify",
-    host: "https://netlify.thelittlequtegdh.fun",
-    tag: "Netlify"
+    url: "https://netlify.thelittlequtegdh.fun",
+    tag: "Netlify",
+    icon: "🌐"
   },
   {
     name: "Vercel",
-    host: "https://vercel.thelittlequtegdh.fun",
-    tag: "Vercel"
+    url: "https://vercel.thelittlequtegdh.fun",
+    tag: "A"
   }
 ]
 ---
 
-<MainGridLayout title="节点状态" desc="多线路节点延迟监测">
-<div class="py-6 px-2">
-  <h2 class="text-center text-xl font-bold mb-2">多线路节点监测</h2>
-  <p class="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">
-    当前运行节点：<strong class="text-primary">{nowNode || "未识别"}</strong>
+<MainGridLayout title="节点监控" description="博客多节点实时延迟监控">
+<div class="max-w-3xl mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold text-center mb-2">🌐 节点监控</h1>
+  <p class="text-center text-gray-500 dark:text-gray-400 mb-6">
+    当前节点: <span class="text-blue-500 font-semibold">{currentNode || "未识别"}</span>
   </p>
 
-  <div class="flex flex-col gap-3">
-    {nodeList.map(item => (
-    <div class="border dark:border-gray-700 rounded-lg p-4 flex justify-between items-center bg-gray-50 dark:bg-gray-800">
-      <div>
-        <div class="font-medium">
-          {item.name}
-          {item.tag === nowNode && <span class="ml-2 text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">当前</span>}
-        </div>
-        <div class="text-xs text-gray-400 mt-1">{item.host}</div>
+  <div class="space-y-3">
+    {nodes.map(node => (
+    <a href={node.url} target="_blank" rel="noopener noreferrer"
+       class="flex items-center gap-4 p-4 rounded-xl bg-sky-50 dark:bg-sky-900/20 hover:bg-sky-100 dark:hover:bg-sky-900/30 transition-colors">
+      <div class="w-14 h-14 rounded-full bg-white dark:bg-gray-800 shadow flex items-center justify-center text-2xl flex-shrink-0">
+        {node.icon}
       </div>
-      <div class="speed-data text-sm font-mono" data-domain={item.host}>正在检测</div>
-    </div>
+      <div class="flex-1 min-w-0">
+        <div class="font-semibold truncate">
+          {node.name}
+          {node.tag === currentNode && <span class="ml-2 text-xs px-2 py-0.5 rounded bg-blue-500/10 text-blue-500">当前</span>}
+        </div>
+        <div class="text-sm text-gray-400 truncate">{node.url}</div>
+      </div>
+      <div class="latency text-sm font-mono text-gray-400 flex-shrink-0" data-url={node.url}>-- ms</div>
+      <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      </svg>
+    </a>
     ))}
   </div>
 
-  <p class="text-center text-xs text-gray-400 mt-6">自动3秒刷新延迟 · 打开页面立即测速</p>
+  <p class="text-center text-xs text-gray-400 mt-8">
+    每3秒自动刷新延迟 · 点击卡片直接跳转
+  </p>
 </div>
 
-<script>
-function getLatency(domain) {
-  return new Promise(resolve => {
-    let start = performance.now();
-    let img = new Image();
-    let timer = setTimeout(()=>resolve("超时"),3000);
-    img.src = domain + "/favicon.ico?_t="+Date.now();
-    img.onload = ()=>{
-      clearTimeout(timer);
-      let t = Math.round(performance.now()-start);
-      resolve(t+"ms");
-    }
-    img.onerror = ()=>{
-      clearTimeout(timer);
-      resolve("连接异常");
-    }
+<script is:inline>
+// 修复版ping函数，解决图片加载问题
+async function pingNode(url) {
+  const startTime = performance.now()
+  const timeout = 3000
+
+  return new Promise((resolve) => {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => {
+      resolve({ success: false, error: "超时" })
+    }, timeout)
+
+    // 改用HEAD请求 + no-cors，同时捕获所有错误
+    fetch(`${url}/?ping=${Date.now()}`, {
+      method: 'HEAD',
+      mode: 'no-cors',
+      signal: controller.signal
+    })
+    .then(() => {
+      clearTimeout(timeoutId)
+      const latency = Math.round(performance.now() - startTime)
+      resolve({ success: true, latency })
+    })
+    .catch(() => {
+      clearTimeout(timeoutId)
+      resolve({ success: false, error: "连接异常" })
+    })
   })
 }
 
-async function checkAll(){
-  let els = document.querySelectorAll(".speed-data");
-  for(let el of els){
-    let url = el.dataset.domain;
-    let res = await getLatency(url);
-    el.innerText = res;
-    if(res.includes("ms")){
-      let num = parseInt(res);
-      if(num<120) el.className="speed-data text-sm font-mono text-green-500";
-      else if(num<300) el.className="speed-data text-sm font-mono text-yellow-500";
-      else el.className="speed-data text-sm font-mono text-orange-500";
-    }else{
-      el.className="speed-data text-sm font-mono text-red-500";
+async function updateLatency() {
+  const elements = document.querySelectorAll('.latency')
+  for (const el of elements) {
+    const url = el.dataset.url
+    const result = await pingNode(url)
+
+    if (result.success) {
+      el.textContent = `${result.latency} ms`
+      if (result.latency < 120) {
+        el.className = 'latency text-sm font-mono text-green-500 flex-shrink-0'
+      } else if (result.latency < 300) {
+        el.className = 'latency text-sm font-mono text-yellow-500 flex-shrink-0'
+      } else {
+        el.className = 'latency text-sm font-mono text-orange-500 flex-shrink-0'
+      }
+    } else {
+      el.textContent = result.error
+      el.className = 'latency text-sm font-mono text-red-500 flex-shrink-0'
     }
   }
 }
 
-window.addEventListener("DOMContentLoaded",()=>{
-  checkAll();
-  setInterval(checkAll,3000);
+// 页面加载后立即执行两次，解决首次加载问题
+document.addEventListener('DOMContentLoaded', () => {
+  updateLatency()
+  setTimeout(updateLatency, 500)
+  setInterval(updateLatency, 3000)
 })
 </script>
 </MainGridLayout>
