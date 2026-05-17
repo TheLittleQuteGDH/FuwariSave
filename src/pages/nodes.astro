@@ -41,7 +41,7 @@ const nodes = [
   </div>
 
   <!-- 节点卡片网格 -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8" id="nodes-container">
     {nodes.map((node) => (
       <a 
         href={node.url}
@@ -124,10 +124,11 @@ const nodes = [
 </style>
 
 <script>
-  // 全局变量存储定时器ID
+  // 全局变量
+  let initialized = false;
   let updateInterval;
   
-  // 检测当前节点
+  // 检测当前节点（同步执行，无任何延迟）
   function detectCurrentNode() {
     const currentHost = window.location.hostname;
     const nodeCards = document.querySelectorAll('.node-card');
@@ -152,7 +153,6 @@ const nodes = [
       const start = performance.now();
       const img = new Image();
       
-      // 改为1.5秒超时
       const timer = setTimeout(() => {
         resolve({ success: false, latency: 1500 });
       }, 1500);
@@ -206,30 +206,56 @@ const nodes = [
   }
 
   // 初始化函数
-  function initNodePage() {
-    // 清除可能存在的旧定时器
-    if (updateInterval) {
-      clearInterval(updateInterval);
-    }
+  function init() {
+    if (initialized) return;
+    initialized = true;
     
-    // 第一步：立即检测当前节点
+    // 立即检测当前节点（页面一显示就看到"当前"标签）
     detectCurrentNode();
     
-    // 第二步：立即开始ping检测
+    // 立即开始ping检测
     updateAllNodes();
     
-    // 第三步：设置自动刷新
+    // 设置自动刷新
     updateInterval = setInterval(updateAllNodes, 30000);
   }
 
-  // 监听Swup页面过渡事件（解决导航栏点击不执行的问题）
-  document.addEventListener('swup:pageView', initNodePage);
-  
-  // 监听DOM加载完成事件（解决第一次整页访问的问题）
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initNodePage);
-  } else {
-    // 如果DOM已经加载完成，立即执行
-    initNodePage();
+  // 方案1：立即尝试执行
+  if (document.getElementById('nodes-container')) {
+    init();
   }
+
+  // 方案2：使用MutationObserver监听DOM变化（最可靠）
+  const observer = new MutationObserver((mutations) => {
+    if (document.getElementById('nodes-container') && !initialized) {
+      init();
+      observer.disconnect();
+    }
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+  // 方案3：监听Swup页面过渡事件（备份）
+  document.addEventListener('swup:pageView', () => {
+    initialized = false;
+    if (document.getElementById('nodes-container')) {
+      init();
+    }
+  });
+
+  // 方案4：每100ms检查一次，持续3秒（终极兜底）
+  let checkCount = 0;
+  const checkInterval = setInterval(() => {
+    checkCount++;
+    if (document.getElementById('nodes-container') && !initialized) {
+      init();
+      clearInterval(checkInterval);
+    }
+    if (checkCount >= 30) {
+      clearInterval(checkInterval);
+    }
+  }, 100);
 </script>
