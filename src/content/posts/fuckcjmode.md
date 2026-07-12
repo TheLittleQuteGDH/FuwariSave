@@ -1,5 +1,5 @@
 ---
-title: 关闭鸿蒙3-4.2的纯净模式
+title: 永久关闭鸿蒙3-4.2的纯净模式
 published: 2026-07-12
 description: ''
 image: 'photo/hwsafe.jpg'
