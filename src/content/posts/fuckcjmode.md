@@ -21,7 +21,7 @@ lang: ''
 
 - Shizuku
 - 爱玩机工具箱
-- [Scene](https://omarea.lanzout.com/iXTwW3rslz8d)
+- Scene
 
 电脑上需准备好以下程序：
 
