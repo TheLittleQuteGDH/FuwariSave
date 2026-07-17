@@ -2,7 +2,7 @@
 title: CloudFlare优选域名记录
 published: 2024-08-25
 description: ''
-image: ''
+image: 'photo/favicon.jpg'
 tags: [优选域名IP]
 category: '优选'
 draft: false 
