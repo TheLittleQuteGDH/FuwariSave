@@ -1,12 +1,7 @@
-## 关于 QWQ
+  ## 作者的联系方式
+  如果要联系博主的话可以通过以下方式进行联系：
 
-Hello，这里是TheLittleQuteGDH的博客，这里记录着一些建站的教程，也有研究电脑＆手机的文章哦
 
-  ## 本博客的来历
-
-如你所见，这是我自己建的博客，基于Astro框架（其实之前用的是Hexo框架，只不过不太好用就停用了），博客使用[Cloudflare](https://cloudflare-cn.com)的Worker功能托管，就连当前博客的域名blog.gdh.us.kg都是在[Digitalplat](https://domain.digitalplat.org/)花了15大洋并托管到Cloudflare上面的，CDN的话，Cloudflare托管域名自带CDN，但是在中国访问的速度实在是太慢了，所以我使用过许多的优选域名，最后我选择了CM大佬的优选域名
-
- （我也试过用腾讯云的CDN，结果好像慢了很多，腾讯云禁用香港优选后就不想用了）
 
   ## 本博客的主题Fuwari
 
