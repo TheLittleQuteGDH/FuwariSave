@@ -77,6 +77,11 @@ export const profileConfig: ProfileConfig = {
 			icon: "fa6-brands:qq",
 			url: "https://qm.qq.com/q/R0eekcJ6ue",
 		},
+		{
+			name: "GDHのFiles",
+			icon: "material-symbols:cloud",
+			url: "https://files.thelittlequtegdh.fun",
+		},
 	],
 };
 
