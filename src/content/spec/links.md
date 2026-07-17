@@ -14,7 +14,7 @@
 **本站信息**：
 
 - **网站名称**：GDHのBlog
-- **网站链接**：`https://blog.gdh.us.kg`
+- **网站链接**：`https://blog.thelittlequtegdh.fun`
 - **网站描述**：一个技术博客
 
 ---
