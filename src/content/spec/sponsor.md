@@ -2,7 +2,7 @@
 
 :::sponsor
 name: 支付宝,
-img: https://github.com/TheLittleQuteGDH/FuwariSave/blob/main/src/content/spec/Alipay.jpg?raw=true,
+img: https://github.com/TheLittleQuteGDH/FuwariSave/blob/main/src/content/spec/Alipay.png?raw=true,
 icon: fa6-brands:alipay,
 color: #1677FF,
 description: 目前暂不支持支付宝支付哦，可以先用微信喵～,
