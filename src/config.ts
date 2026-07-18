@@ -31,7 +31,7 @@ export const siteConfig: SiteConfig = {
 	},
 	favicon: [    // Leave this array empty to use the default favicon
      {
-       src: 'https://blog.thelittlequtegdh.fun/_astro/favicon.CjUJwHn2_Z23Lsmn.webp',    // Path of the favicon, relative to the /public directory
+       src: 'https://photos.gdh.us.kg/images/favicon.jpg',    // Path of the favicon, relative to the /public directory
        //theme: 'light',              // (Optional) Either 'light' or 'dark', set only if you have different favicons for light and dark mode
        sizes: '128x128',              // (Optional) Size of the favicon, set only if you have favicons of different sizes
      }
