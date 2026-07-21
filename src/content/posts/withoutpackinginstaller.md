@@ -15,7 +15,7 @@ lang: ''
 
 如果使用搞机工具箱ADB安装软件则会提示这个
 
-![failure](photo/fail1.png)
+![failure](photo/fail1.PNG)
 
 那么这种情况也很好解决，方法如下
 
