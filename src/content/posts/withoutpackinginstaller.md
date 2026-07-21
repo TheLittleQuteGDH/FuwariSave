@@ -2,7 +2,7 @@
 title: 绕华为系统安装器安装软件
 published: 2026-07-20
 description: ''
-image: 'photo/hwsafe.jpg'
+image: 'photo/fail1.PNG'
 tags: [安卓研究]
 category: '教程'
 draft: false 
