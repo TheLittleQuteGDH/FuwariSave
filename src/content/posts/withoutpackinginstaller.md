@@ -1,5 +1,5 @@
 ---
-title: 绕华为系统安装器安装软件
+title: 绕过华为自带的系统安装器安装软件
 published: 2026-07-20
 description: ''
 image: 'photo/fail1.PNG'
