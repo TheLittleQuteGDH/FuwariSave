@@ -11,25 +11,29 @@ lang: ''
 
 ## 引言
 
-依旧对老鸡抱有折腾的欲望，今天来折腾iPhone4S登录微信
-
 B站UP主[@**LuoTianyiLover**](https://space.bilibili.com/3493112672422440)在B站已经出过一次完整的教程：[2026年iOS6登陆QQ和微信的终极教程！_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV14oSZBPEPa/?spm_id_from=333.337.search-card.all.click&vd_source=1563440284c89d0819859c530c939980)，但用的是iPad版，所以这次拿iPhone4S做演示，也是他的教程的修改版
 
 ### 首先是准备工作
 
-- 一部旧越狱iPhone/iPad设备（理论上来说应该适用于任何想登录并且可越狱的设备，不局限于iOS6.1.3）
+- 一部越狱iPhone/iPad设备
 
-- 一部电脑
+- 一个已经绑定了Facebook的微信号。
 
-- 一个已经绑定了Facebook的微信号，教程网上搜索。
+  微信不同版本绑定Facebook的方法好像都不一样
+
+  6.x版本：先搜索Facebookapp，启用该功能，接着在设置里绑定
+
+  7.x版本：搜索facebookapp，直接绑定
+
+  8.0-8.0.48/8.0.50需要启用facebookapp功能后在`账户与安全`-`更多安全设置`里查看Facebook绑定
 
 - [点我下载所需文件](https://files.thelittlequtegdh.fun/000-%E6%96%87%E7%AB%A0%E8%B5%84%E6%BA%90/003-%E6%97%A7IOS%E7%99%BB%E5%BD%95%E5%BE%AE%E4%BF%A1%EF%BC%88Facebook%EF%BC%89)，备用链接: [https://yun.139.com/shareweb/#/w/i/2wFGQNZDkZv5p](https://yun.139.com/shareweb/#/w/i/2wFGQNZDkZv5p)
 
   你们也可以点击[原作者的链接](https://pan.baidu.com/s/1ECButCatj5tdV0tbdm6hAg?pwd=B735)进行下载
-
-> [!NOTE]
->
-> 旧版本微信无法接收来自别人的转账和红包
+  
+  > [!NOTE]
+  >
+  > 经过测试，旧版本微信无法接收来自别人的转账和红包，也不能主动添加好友，只能对方添加好友。
 
 
 
@@ -79,12 +83,13 @@ B站UP主[@**LuoTianyiLover**](https://space.bilibili.com/3493112672422440)在B�
 
   > [!WARNING]
   >
-  > 温馨提示：此时千万不要退出微信的后台，不然下次重新打开时会显示`微信版本过低`，需要重新登录。
+  > 温馨提示：登录完成功进入微信后，千万不要退出后台，不然会提示`微信版本过低`，需要重新登陆。
+
   
 
 - ### Facebook客户端无法登录或者成功登录但授权页面空白？
 
-  如果你遇到使用上面的方法能正常登录，但是授权时转圈转很久或者登录不上Facebook，那么你可以看接下来的步骤
+  如果你使用上面的方法能正常登录Facebook客户端，但是授权时转圈转很久，白屏或者登录不上Facebook客户端，那么你可以看接下来的步骤
 
   
 
@@ -122,13 +127,13 @@ B站UP主[@**LuoTianyiLover**](https://space.bilibili.com/3493112672422440)在B�
 
   > [!WARNING]
   >
-  > 温馨提示：此时千万不要退出微信的后台，不然下次重新打开时会显示`微信版本过低`，需要重新登录。
+  > 温馨提示：此时千万不要退出微信的后台，不然下次重新打开时会显示`微信版本过低`，需要重新登录
 
   
 
   ## 覆盖安装微信
 
-  登陆完成后请保持微信进程，不要删后台，打开爱思助手，覆盖安装下载提供的`微信 已修改.ipa`，如果此时设备微信闪退，证明已经安装成功，已经可以使用微信了。
+  登陆完成后请保持微信进程，不要删后台，打开爱思助手，覆盖安装下载提供的`微信 已修改.ipa`，如果此时设备微信闪退，证明已经安装成功。教程结束
 
   ![](photo/reinstallwx.jpg)
 
