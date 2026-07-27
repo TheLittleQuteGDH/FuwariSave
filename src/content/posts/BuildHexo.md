@@ -8,19 +8,15 @@ category: '教程'
 draft: false 
 lang: ''
 ---
+## 本教程需要科学上网，Github打不开可以使用[瓦特工具箱（加速器）](https://steampp.net/)哦
 
 ## 搭建[Hexo博客](https://hexo.io)
-
-#### 1、请先创建一个用于搭建Hexo的**空文件夹**，我这里就举例子取名为Hexo文件夹，接着请到NodeJS和Git官网下载nodejs和git这两个程序并安装
-
+#### 1、创建一个用于搭建Hexo的**空文件夹**，我这里就举例子取名为Hexo文件夹，接着请到NodeJS和Git官网下载nodejs和git这两个程序并安装
 由于Git在国内下载较慢，所以建议使用国内下载链接：
-
-**（[国内下载链接1](https://www.alipan.com/s/kozZGKHWYZR/folder/68a558e5789c117ebde048f2a7c484d8bb8d4225)）（[国内下载链接2（版本较旧）](https://xiaoyuboi.lanzoum.com/b0c5k65ih)）**
-
+[国内下载链接1](https://www.alipan.com/s/kozZGKHWYZR/folder/68a558e5789c117ebde048f2a7c484d8bb8d4225)
+[国内下载链接2（版本较旧）](https://xiaoyuboi.lanzoum.com/b0c5k65ih)
 Nodejs的官网：[https://nodejs.org/zh-cn](https://nodejs.org/zh-cn)
-
 Git的官网（请打开科学上网进行下载）：[https://git-scm.com/](https://git-scm.com/)
-
 #### 2、打开Hexo文件夹，右键选择Open Git Bash Here，依次运行以下代码，没有报错即为成功
 代码摘抄自[Hexo官网](https://hexo.io)
 
@@ -70,8 +66,7 @@ hexo clean #清理缓存
 
 #### 5、加入主题
 
-默认的Hexo博客主题似乎不太好看，请转到[https://hexo.io/themes/](https://hexo.io/themes/)寻找你心仪的主题哦，点进去有安装方法（可能需要科学上网）Github打不开请打开科学上网或使用[瓦特工具箱（加速器）](https://steampp.net/)哦
+默认的Hexo博客主题似乎不太好看，请转到[https://hexo.io/themes/](https://hexo.io/themes/)寻找你心仪的主题哦，点进去有安装方法（可能需要科学上网）
 
 
-## 到这里你已经拥有博客框架了，那么本期教程就结束了，886~
 
