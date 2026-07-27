@@ -9,21 +9,7 @@ draft: false
 lang: ''
 ---
 
-# Hexo 博客搭建
-
-## 本博客就是基于Hexo搭建的，并且已经托管到Cloudflare并使用了优选域名，如图所示
-
-![Itdog测速，非常绿](photo/itdog测速.PNG)
-
-
-
-## 准备工作
-
-一台电脑（建议能开代理）
-
-
-
-## 开始搭建[Hexo博客](https://hexo.io)
+## 搭建[Hexo博客](https://hexo.io)
 
 #### 1、请先创建一个用于搭建Hexo的**空文件夹**，我这里就举例子取名为Hexo文件夹，接着请到NodeJS和Git官网下载nodejs和git这两个程序并安装
 
@@ -35,7 +21,8 @@ Nodejs的官网：[https://nodejs.org/zh-cn](https://nodejs.org/zh-cn)
 
 Git的官网（请打开科学上网进行下载）：[https://git-scm.com/](https://git-scm.com/)
 
-#### 2、打开Hexo文件夹，右键选择Open Git Bash Here，依次运行以下代码，没有报错即为成功，代码摘抄自[Hexo官网](https://hexo.io)
+#### 2、打开Hexo文件夹，右键选择Open Git Bash Here，依次运行以下代码，没有报错即为成功
+代码摘抄自[Hexo官网](https://hexo.io)
 
 ```
 npm install hexo-cli -g
@@ -44,7 +31,7 @@ cd blog
 npm install
 ```
 
-#### 3、接下来运行代码“hexo s”（或“hexo server”）
+#### 3、运行代码“hexo s”（或“hexo server”）
 
 将生成的链接复制到浏览器，查看hexo博客框架是否安装成功，如果你看到的是以下浏览器的界面，恭喜你，你已经安装成功了
 
@@ -86,7 +73,5 @@ hexo clean #清理缓存
 默认的Hexo博客主题似乎不太好看，请转到[https://hexo.io/themes/](https://hexo.io/themes/)寻找你心仪的主题哦，点进去有安装方法（可能需要科学上网）Github打不开请打开科学上网或使用[瓦特工具箱（加速器）](https://steampp.net/)哦
 
 
-
 ## 到这里你已经拥有博客框架了，那么本期教程就结束了，886~
 
-托管到Cloudflare请查看[将Hexo免费托管到Cloudflare](/将Hexo免费托管到Cloudflare.md)
