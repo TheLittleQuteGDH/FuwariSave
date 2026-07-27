@@ -38,11 +38,9 @@ www.gov.ua
 
 第三方维护域名如下表：（前面带*的代表可以解析到任意前缀）
 cloudflare.182682.xyz #wetest.vip维护
-tencentapp.cn #ktff维护
 cf.877774.xyz #秋名山维护
 cfip.xxxxxxxx.tk #OTC维护
 bestcf.030101.xyz #MingYu维护
-777.ai7777777.xyz
 cdn.2020111.xyz
 cfip.cfcdn.vip
 *.cf.licdn.top
@@ -60,18 +58,9 @@ cloudflare-ip.mofashi.ltd
 cnamefuckxxs.yuchen.icu
 cname.xirancdn.us
 8.889288.xyz
-speed.marisalnc.com
-cdn.tzpro.xyz
-cf.877771.xyz
-115155.xyz
-*.cf.959923.xyz
 *.cf.cname.vvhan.com
 xn--b6gac.eu.org
 freeyx.cloudflare88.eu.org
-cf.zhetengsha.eu.org
-cloudflare.9jy.cc
-cf.zerone-cdn.pp.ua
-bestcf.top
 cf.090227.xyz #CM大佬维护
 ```
 
