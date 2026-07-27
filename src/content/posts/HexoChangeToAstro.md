@@ -16,6 +16,6 @@ lang: 'zh-CN'
 
 Hexo-theme里的主题个人认为都不好看，有些还很卡，所以转过来Astro博客框架
 
-
+##本博客现在改为接入到Cloudflare Pages，使用CloudflareCDN和EdgeoneCDN制作分流
 
 ![Astro-Fuwari主题界面预览](photo/Astro博客.PNG)
