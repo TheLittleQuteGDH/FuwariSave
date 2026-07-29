@@ -14,17 +14,17 @@ lang: ''
 
 ![展示评论](photo/Giscus评论区.png)
 
-那么，Astro-Fuwari该怎么搭建这该死的评论呢？
+所以今天来添加它
 
 ## 存储库安装Giscus
 
-首先，你需要在Github创建一个新存储库，然后，打开你的新存储库，点开`Settings`，接着往下滑，滑到一个带`Discussions`字样时，将前面的对勾选上，如下图：
+你需要在Github创建一个新存储库，并打开你的新存储库，点开`Settings`，往下滑，找到一个带`Discussions`字样的选项，将前面的对勾选上，如下图：
 
 ![打勾](photo/打勾.png)
 
-接着，访问[Giscus官网](https://giscus.app/zh-CN)，滑倒仓库板块，找到`giscus app已安装，否则访客将无法评论和回应`，点击那里的`giscus app`，进到安装页面后，选择`Only select repositories` ，选择你刚刚开启了`Discussions`的仓库，点击`Save`，初步的安装就完成了
+访问[Giscus官网](https://giscus.app/zh-CN)，滑倒仓库板块，找到`giscus app已安装，否则访客将无法评论和回应`，点击那里的`giscus app`，进到安装页面后，选择`Only select repositories` ，选择你刚刚开启了`Discussions`的仓库，点击`Save`，初步的安装就完成了
 
-回到[giscus](https://giscus.app/zh-CN)，往下滑，回到`仓库`板块，填写你的Github用户名/仓库名，我这里是TheLittleQuteGDH/GiscusComments，等到出现`成功！该仓库满足所有条件。`字样时，那么请进行下一步，如果显示`无法在该仓库上使用 giscus。请确保以上条件均已满足。`，请从第一步重新开始检查。
+回到[giscus](https://giscus.app/zh-CN)，往下滑，回到`仓库`板块，填写你的Github用户名/仓库名，比如TheLittleQuteGDH/GiscusComments，等到出现`成功！该仓库满足所有条件。`，进行下一步，如果显示`无法在该仓库上使用 giscus。请确保以上条件均已满足。`，请从第一步重新开始检查。
 
 下面进行Giscus评论区的配置：（按自己需求进行配置，这里是我自己配置的内容）
 
@@ -47,7 +47,6 @@ lang: ''
         async>
 </script>
 ```
-
 
 
 ## Fuwari的配置
