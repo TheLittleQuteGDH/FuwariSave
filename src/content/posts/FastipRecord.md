@@ -9,11 +9,12 @@ draft: false
 lang: ''
 ---
 
-# Cloudflare优选域名记录
+### Cloudflare优选域名记录
 
-要想检查其连通性和速度，请访问[itdog](https://itdog.cn)
-
-## 以下是Cloudflare的优选域名
+要想检查其连通性和速度，请访问以下网站
+[itdog](https://itdog.cn)
+[Antping](https://antping.com/)
+[TcpTest](https://www.tcptest.cn/)
 
 ```
 Cloudflare官方优选域名如下表：
@@ -64,3 +65,8 @@ freeyx.cloudflare88.eu.org
 cf.090227.xyz #CM大佬维护
 ```
 
+### 更多Cloudflare优选域名请访问以下网站：
+[cf.090227.xyz](https://cf.090227.xyz)
+[Wetest](https://www.wetest.vip/)
+[VVhan](https://cf.vvhan.com/)
+[VPS789](https://vps789.com/)
