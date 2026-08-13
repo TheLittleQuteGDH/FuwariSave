@@ -95,7 +95,7 @@
            style="max-width: 78%; height: auto; object-fit: contain; display: inline-block;" />
     </div>
     <div style="font-size: 14px; line-height: 1.6; color: #374151;">
-      Netlify 海外静态站点托管平台，全球多地边缘CDN分发，专为前端静态网站、页面资源提供零配置高速托管访问，部署简单海外访问稳定。
+      Netlify 海外静态站点托管平台，全球多地边缘CDN分发，专为前端静态网站、页面资源提供零配置高速托管访问。
     </div>
   </div>
 
@@ -113,7 +113,7 @@
            style="max-width: 78%; height: auto; object-fit: contain; display: inline-block;" />
     </div>
     <div style="font-size: 14px; line-height: 1.6; color: #374151;">
-      腾讯云 EdgeOne 一站式边缘安全加速平台，覆盖国内全运营商节点，提供低延迟静态资源加速、DDoS 防护与智能调度，保障境内访问稳定流畅。
+      腾讯云 EdgeOne 一站式边缘安全加速平台，覆盖国内全运营商节点，保障境内访问稳定流畅。
     </div>
   </div>
 
