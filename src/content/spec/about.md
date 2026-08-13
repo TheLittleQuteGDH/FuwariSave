@@ -1,7 +1,5 @@
   ## 作者的联系方式
-  如果要联系博主的话可以通过以下方式进行联系：
-
-<div style="display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0; justify-content: center;">
+  <div style="display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0; justify-content: center;">
   <!-- B站 -->
   <a href="https://space.bilibili.com/1759955728" target="_blank" rel="noopener"
      style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 12px; min-width: 160px; flex: 1; max-width: 180px;
@@ -77,6 +75,7 @@
     }
   }
 </style>
+
 
 
   ## 本博客使用的CDN
