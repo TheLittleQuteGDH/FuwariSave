@@ -502,11 +502,40 @@ window.onresize = () => {
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
 }
 
+function getRouteUrl(value) {
+  const map = {
+    cloudflare: 'https://api-cloudflare.example.com',
+    h1: 'https://api-h1.example.com',
+    natalie: 'https://api-natalie.example.com',
+  };
+  return map[value] || 'https://default.example.com';
+}
+
+function applyRoute(value) {
+  window.__API_BASE = getRouteUrl(value);
+  console.log('当前线路:', value, 'API地址:', window.__API_BASE);
+}
+
+function restoreRoute() {
+  const saved = localStorage.getItem('selectedRoute');
+  if (saved) {
+    applyRoute(saved);
+  }
+}
+
 window.addEventListener('route-switch', (e) => {
   const { value } = e.detail;
-  // 执行切换，例如更新全局状态或重写 fetch 的 baseURL
-  console.log('切换到线路:', value);
+  localStorage.setItem('selectedRoute', value);
+  applyRoute(value);
 });
+
+window.getCurrentRoute = function() {
+  return localStorage.getItem('selectedRoute') || null;
+};
+window.getCurrentRouteUrl = function() {
+  const route = window.getCurrentRoute();
+  return route ? getRouteUrl(route) : null;
+};
 
 </script>
 
