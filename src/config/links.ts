@@ -52,5 +52,23 @@ url: "https://www.cloudflare.com",
 description: "免费的网络安全与 CDN 服务",
 avatar: "https://www.cloudflare.com/favicon.ico",
 }
+{
+name: "GDHの资源盘",
+url: "https://files.thelittlequtegdh.top",
+description: "GDH的资源网盘",
+avatar: "https://thelittlequtegdh.top/images/favicon.jpg",
+}
+{
+name: "GDHの导航站",
+url: "https://thelittlequtegdh.top",
+description: "收集许多宝藏网站！",
+avatar: "https://thelittlequtegdh.top/images/favicon.jpg",
+}
+{
+name: "Edgeone",
+url: "https://edgeone.ai",
+description: "国内免费的网络安全与 CDN 服务",
+avatar: "https://edgeone.ai/favicon.ico",
+}
   // 在这里添加更多友链
 ];
