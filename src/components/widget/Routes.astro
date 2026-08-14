@@ -1,22 +1,16 @@
 ---
-// src/components/widgets/Routes.astro
 import WidgetLayout from "./WidgetLayout.astro";
 
-// 从配置文件读取线路列表（若未配置则使用默认示例）
-// 建议在 src/config.ts 中导出 routesConfig，详见下方说明
-import { routesConfig } from "../../config";
-
-// 若配置文件未定义，使用默认示例
 const defaultRoutes = [
   { name: "线路 A", value: "a" },
   { name: "线路 B", value: "b" },
   { name: "线路 C", value: "c" },
 ];
 
-const routes = routesConfig || defaultRoutes;
+const routes = defaultRoutes;
 
 const COLLAPSED_HEIGHT = "7.5rem";
-const isCollapsed = routes.length >= 10; // 可根据需要调整折叠阈值
+const isCollapsed = routes.length >= 10;
 
 interface Props {
   class?: string;
@@ -48,10 +42,8 @@ const style = Astro.props.style;
 </WidgetLayout>
 
 <script>
-  // 客户端交互：记录选中状态并触发自定义事件
   document.addEventListener('DOMContentLoaded', () => {
     const buttons = document.querySelectorAll('.route-btn');
-    // 从 localStorage 恢复上次选择
     const saved = localStorage.getItem('selectedRoute');
     buttons.forEach(btn => {
       if (saved && btn.dataset.value === saved) {
@@ -62,7 +54,6 @@ const style = Astro.props.style;
         this.classList.add('active');
         const value = this.dataset.value;
         localStorage.setItem('selectedRoute', value);
-        // 触发全局事件，供外部监听切换逻辑
         window.dispatchEvent(new CustomEvent('route-switch', { detail: { value } }));
       });
     });
@@ -73,6 +64,5 @@ const style = Astro.props.style;
   .route-btn.active {
     background-color: var(--primary);
     color: white;
-    /* 若需要边框或阴影可自行添加 */
   }
 </style>
