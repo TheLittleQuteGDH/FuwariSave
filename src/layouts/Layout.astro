@@ -504,9 +504,9 @@ window.onresize = () => {
 
 function getRouteUrl(value) {
   const map = {
-    默认线路: 'https://blog.thelittlequtegdh.top',
-    Cloudflare: 'https://cloudflare.thelittlequtegdh.top',
-    Edgeone: 'https://edgeone.thelittlequtegdh.top',
+    default: 'https://blog.thelittlequtegdh.top',
+    cloudflare: 'https://cloudflare.thelittlequtegdh.top',
+    edgeone: 'https://edgeone.thelittlequtegdh.top',
   };
   return map[value] || 'https://blog.thelittlequtegdh.top';
 }
@@ -528,7 +528,6 @@ window.getCurrentRouteUrl = function() {
   const route = window.getCurrentRoute();
   return route ? getRouteUrl(route) : null;
 };
-
 </script>
 
 <script>
