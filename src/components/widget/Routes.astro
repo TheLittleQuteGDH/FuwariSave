@@ -42,12 +42,26 @@ const style = Astro.props.style;
 
 <script>
   (function() {
-    const buttons = document.querySelectorAll('.route-btn');
+    const hostname = window.location.hostname;
+    const hostnameMap = {
+      'blog.thelittlequtegdh.top': 'default',
+      'cloudflare.thelittlequtegdh.top': 'cloudflare',
+      'edgeone.thelittlequtegdh.top': 'edgeone',
+    };
+    const currentRoute = hostnameMap[hostname] || 'default';
     const saved = localStorage.getItem('selectedRoute');
+    if (saved !== currentRoute) {
+      localStorage.setItem('selectedRoute', currentRoute);
+    }
+    const buttons = document.querySelectorAll('.route-btn');
     buttons.forEach(btn => {
-      if (saved && btn.dataset.value === saved) {
+      if (btn.dataset.value === currentRoute) {
         btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
       }
+    });
+    buttons.forEach(btn => {
       btn.addEventListener('click', function() {
         buttons.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
