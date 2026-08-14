@@ -8,7 +8,6 @@ const defaultRoutes = [
 ];
 
 const routes = defaultRoutes;
-
 const COLLAPSED_HEIGHT = "7.5rem";
 const isCollapsed = routes.length >= 10;
 
@@ -28,10 +27,10 @@ const style = Astro.props.style;
   class={className} 
   style={style}
 >
-  <div class="flex gap-2 flex-wrap">
+  <div class="flex flex-col gap-2">
     {routes.map(r => (
       <button 
-        class="btn-regular h-8 text-sm px-3 rounded-lg route-btn" 
+        class="btn-regular h-8 text-sm px-3 rounded-lg w-full route-btn" 
         data-value={r.value}
         aria-label={`切换到 ${r.name}`}
       >
@@ -49,7 +48,7 @@ const style = Astro.props.style;
       if (saved && btn.dataset.value === saved) {
         btn.classList.add('active');
       }
-      btn.addEventListener('click', function(e) {
+      btn.addEventListener('click', function() {
         buttons.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
         const value = this.dataset.value;
