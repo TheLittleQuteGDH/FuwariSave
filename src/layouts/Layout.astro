@@ -369,7 +369,6 @@ function init() {
     loadHue();
     initCustomScrollbar();
     showBanner();
-    restoreRoute();
 }
 
 /* Load settings when entering the site */
@@ -509,19 +508,11 @@ function getRouteUrl(value) {
     Cloudflare: 'https://cloudflare.thelittlequtegdh.top',
     Edgeone: 'https://edgeone.thelittlequtegdh.top',
   };
-  return map[value] || 'https://default.example.com';
+  return map[value] || 'https://blog.thelittlequtegdh.top';
 }
 
 function applyRoute(value) {
-  window.__API_BASE = getRouteUrl(value);
-  console.log('当前线路:', value, 'API地址:', window.__API_BASE);
-}
-
-function restoreRoute() {
-  const saved = localStorage.getItem('selectedRoute');
-  if (saved) {
-    applyRoute(saved);
-  }
+  window.location.href = getRouteUrl(value);
 }
 
 window.addEventListener('route-switch', (e) => {
