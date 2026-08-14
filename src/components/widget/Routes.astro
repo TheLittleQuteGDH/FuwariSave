@@ -34,8 +34,8 @@ const style = Astro.props.style;
         data-value={r.value}
         aria-label={`切换到 ${r.name}`}
       >
-        <span class="text-sm">{r.name}</span>
-        <span class="radio-circle w-4 h-4 rounded-full border-2 border-gray-400 flex items-center justify-center">
+        <span class="text-sm text-left">{r.name}</span>
+        <span class="radio-circle w-4 h-4 rounded-full border-2 border-gray-400 flex items-center justify-center flex-shrink-0">
           <span class="radio-dot w-2 h-2 rounded-full bg-transparent"></span>
         </span>
       </button>
@@ -77,10 +77,17 @@ const style = Astro.props.style;
 </script>
 
 <style is:global>
-  .route-btn.active .radio-dot {
+  .route-btn.active {
     background-color: var(--primary);
+    color: white;
   }
   .route-btn.active .radio-circle {
-    border-color: var(--primary);
+    border-color: white;
+  }
+  .route-btn.active .radio-dot {
+    background-color: white;
+  }
+  .route-btn:not(.active) .radio-dot {
+    background-color: transparent;
   }
 </style>
