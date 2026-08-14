@@ -502,9 +502,16 @@ window.onresize = () => {
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
 }
 
+window.addEventListener('route-switch', (e) => {
+  const { value } = e.detail;
+  // 执行切换，例如更新全局状态或重写 fetch 的 baseURL
+  console.log('切换到线路:', value);
+});
+
 </script>
 
 <script>
+
 import PhotoSwipeLightbox from "photoswipe/lightbox"
 import "photoswipe/style.css"
 
