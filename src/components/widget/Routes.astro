@@ -30,11 +30,14 @@ const style = Astro.props.style;
   <div class="flex flex-col gap-4">
     {routes.map(r => (
       <button 
-        class="btn-regular h-10 text-sm px-4 rounded-lg w-full route-btn" 
+        class="route-btn w-full flex items-center justify-between btn-regular h-10 px-4 rounded-lg" 
         data-value={r.value}
         aria-label={`切换到 ${r.name}`}
       >
-        {r.name}
+        <span class="text-sm">{r.name}</span>
+        <span class="radio-circle w-4 h-4 rounded-full border-2 border-gray-400 flex items-center justify-center">
+          <span class="radio-dot w-2 h-2 rounded-full bg-transparent"></span>
+        </span>
       </button>
     ))}
   </div>
@@ -74,8 +77,10 @@ const style = Astro.props.style;
 </script>
 
 <style is:global>
-  .route-btn.active {
+  .route-btn.active .radio-dot {
     background-color: var(--primary);
-    color: white;
+  }
+  .route-btn.active .radio-circle {
+    border-color: var(--primary);
   }
 </style>
