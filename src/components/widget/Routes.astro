@@ -41,7 +41,7 @@ const style = Astro.props.style;
 </WidgetLayout>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  (function() {
     const buttons = document.querySelectorAll('.route-btn');
     const saved = localStorage.getItem('selectedRoute');
     buttons.forEach(btn => {
@@ -56,7 +56,7 @@ const style = Astro.props.style;
         window.dispatchEvent(new CustomEvent('route-switch', { detail: { value } }));
       });
     });
-  });
+  })();
 </script>
 
 <style is:global>
