@@ -502,36 +502,6 @@ window.onresize = () => {
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
 }
 
-function getRouteUrl(value) {
-  const map = {
-    default: 'https://blog.thelittlequtegdh.top',
-    cloudflare: 'https://cloudflare.thelittlequtegdh.top',
-    edgeone: 'https://edgeone.thelittlequtegdh.top',
-    netlify: 'https://netlify.thelittlequtegdh.top',
-    aliyun: 'https://aliyun.thelittlequtegdh.top',
-    fastly: 'https://fastly.thelittlequtegdh.top',
-  };
-  return map[value] || 'https://blog.thelittlequtegdh.top';
-}
-
-function applyRoute(value) {
-  window.location.href = getRouteUrl(value);
-}
-
-window.addEventListener('route-switch', (e) => {
-  const { value } = e.detail;
-  localStorage.setItem('selectedRoute', value);
-  applyRoute(value);
-});
-
-window.getCurrentRoute = function() {
-  return localStorage.getItem('selectedRoute') || null;
-};
-window.getCurrentRouteUrl = function() {
-  const route = window.getCurrentRoute();
-  return route ? getRouteUrl(route) : null;
-};
-
 </script>
 
 <script>
