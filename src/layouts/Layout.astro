@@ -503,11 +503,24 @@ window.onresize = () => {
 }
 
 (function() {
-  var origin = window.location.origin;
-  var target = 'https://blog.thelittlequtegdh.top';
-  document.querySelectorAll('a[href^="' + target + '"]').forEach(function(a) {
-    a.href = origin + a.href.slice(target.length);
-  });
+    var origin = window.location.origin;
+    var target = 'https://blog.thelittlequtegdh.top';
+    function replaceLinks() {
+        var links = document.querySelectorAll('a[href^="' + target + '"]');
+        for (var i = 0; i < links.length; i++) {
+            var a = links[i];
+            var path = a.href.substring(target.length);
+            a.href = origin + path;
+        }
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', replaceLinks);
+    } else {
+        replaceLinks();
+    }
+    if (window.swup && window.swup.hooks) {
+        window.swup.hooks.on('page:view', replaceLinks);
+    }
 })();
 
 if (window.swup && window.swup.hooks) {
