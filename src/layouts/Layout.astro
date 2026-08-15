@@ -502,6 +502,13 @@ window.onresize = () => {
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
 }
 
+(function() {
+  var origin = window.location.origin;
+  document.querySelectorAll('a[href^="https://blog.thelittlequtegdh.top"]').forEach(function(a) {
+    a.href = origin + a.href.slice(30);  // 去除固定域名部分（长度30）
+  });
+})();
+
 function getRouteUrl(value) {
   const map = {
     default: 'https://blog.thelittlequtegdh.top',
