@@ -71,22 +71,20 @@ const style = Astro.props.style;
     });
 
     function testDelay(domain) {
-      var url = 'https://' + domain + '/favicon.ico?t=' + Date.now();
-      return new Promise(function(resolve) {
-        var img = new Image();
-        var start = performance.now();
-        var resolved = false;
-        img.onload = function() {
-          if (!resolved) { resolved = true; resolve(Math.round(performance.now() - start)); }
-        };
-        img.onerror = function() {
-          if (!resolved) { resolved = true; resolve(Infinity); }
-        };
-        var timeout = setTimeout(function() {
-          if (!resolved) { resolved = true; resolve(Infinity); }
-        }, 5000);
-        img.src = url;
-      });
+      var url = 'https://' + domain + '/?t=' + Date.now();
+      var controller = new AbortController();
+      var timeout = setTimeout(function() { controller.abort(); }, 5000);
+      var start = performance.now();
+      return fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal })
+        .then(function() {
+          clearTimeout(timeout);
+          var end = performance.now();
+          return Math.round(end - start);
+        })
+        .catch(function() {
+          clearTimeout(timeout);
+          return Infinity;
+        });
     }
 
     function getColor(delay) {
