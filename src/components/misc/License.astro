@@ -16,15 +16,14 @@ const { title, pubDate } = Astro.props;
 const className = Astro.props.class;
 const profileConf = profileConfig;
 const licenseConf = licenseConfig;
-// 使用相对路径，去除域名
-const postPath = Astro.url.pathname;   // 例如 "/posts/hello-world/"
+const postPath = Astro.url.pathname;   // 相对路径，不含域名
 ---
 <div class={`relative transition overflow-hidden bg-[var(--license-block-bg)] py-5 px-6 ${className}`}>
     <div class="transition font-bold text-black/75 dark:text-white/75">
         {title}
     </div>
-    <!-- 使用相对路径作为 href，显示文本由客户端动态补全 -->
-    <a href={postPath} class="link text-[var(--primary)]" id="post-url">
+    <!-- 使用内联样式，不依赖任何自定义类 -->
+    <a href={postPath} style="color: var(--primary); text-decoration: underline;" id="post-url">
         {postPath}
     </a>
     <div class="flex gap-6 mt-2">
@@ -38,19 +37,17 @@ const postPath = Astro.url.pathname;   // 例如 "/posts/hello-world/"
         </div>
         <div>
             <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.license)}</div>
-            <!-- 许可证链接若也是绝对域名，建议也改为相对路径，或保持原样（通常是固定链接） -->
-            <a href={licenseConf.url} target="_blank" class="link text-[var(--primary)] line-clamp-2">{licenseConf.name}</a>
+            <a href={licenseConf.url} target="_blank" style="color: var(--primary); text-decoration: underline;" class="line-clamp-2">{licenseConf.name}</a>
         </div>
     </div>
     <Icon name="fa6-brands:creative-commons" class="transition text-[15rem] absolute pointer-events-none right-6 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5"></Icon>
 </div>
 
-<!-- 客户端脚本：将文章链接显示为完整的当前域名 + 路径 -->
+<!-- 客户端动态补全域名，仅用于显示，href 已是相对路径 -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const el = document.getElementById('post-url');
     if (el) {
-      // 显示完整域名 + 路径，但 href 保持相对路径
       el.textContent = window.location.origin + el.getAttribute('href');
     }
   });
