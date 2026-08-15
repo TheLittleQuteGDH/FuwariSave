@@ -6,9 +6,11 @@ const defaultRoutes = [
   { name: "Cloudflare", value: "cloudflare", domain: "cloudflare.thelittlequtegdh.top" },
   { name: "Edgeone", value: "edgeone", domain: "edgeone.thelittlequtegdh.top" },
   { name: "Netlify", value: "netlify", domain: "netlify.thelittlequtegdh.top" },
+  { name: "CloudflarePages Dev", value: "cloudflarepages", domain: "gdhblog.pages.dev" },
 ];
 
 const routes = defaultRoutes;
+const MAX_VISIBLE = 4;
 const COLLAPSED_HEIGHT = "7.5rem";
 const isCollapsed = routes.length >= 10;
 
@@ -29,7 +31,8 @@ const style = Astro.props.style;
   style={style}
 >
   <div class="flex flex-col gap-4">
-    {routes.map(r => (
+    <!-- 前4个节点 -->
+    {routes.slice(0, MAX_VISIBLE).map(r => (
       <button 
         class="route-btn w-full flex items-center justify-between btn-regular h-10 px-4 rounded-lg text-left" 
         data-value={r.value}
@@ -45,6 +48,35 @@ const style = Astro.props.style;
         </div>
       </button>
     ))}
+
+    <!-- 额外节点（超过4个时折叠） -->
+    {routes.length > MAX_VISIBLE && (
+      <div id="extra-routes" class="flex flex-col gap-4 hidden">
+        {routes.slice(MAX_VISIBLE).map(r => (
+          <button 
+            class="route-btn w-full flex items-center justify-between btn-regular h-10 px-4 rounded-lg text-left" 
+            data-value={r.value}
+            data-domain={r.domain}
+            aria-label={`切换到 ${r.name}`}
+          >
+            <span class="flex-1 text-sm">{r.name}</span>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <span class="delay-text text-xs text-gray-400 w-10 text-right">--</span>
+              <span class="delay-indicator w-4 h-4 rounded-full border-2 border-gray-400 flex items-center justify-center flex-shrink-0">
+                <span class="delay-dot w-2 h-2 rounded-full bg-gray-300"></span>
+              </span>
+            </div>
+          </button>
+        ))}
+      </div>
+    )}
+
+    <!-- 展开/收起按钮 -->
+    {routes.length > MAX_VISIBLE && (
+      <button id="toggle-routes" class="btn-regular h-8 text-sm px-3 rounded-lg w-full text-center text-gray-400 hover:text-gray-600 transition">
+        展开更多 ▼
+      </button>
+    )}
   </div>
   <div class="text-xs text-gray-400 mt-2 text-center">切换线路以访问不同节点</div>
 </WidgetLayout>
@@ -56,6 +88,7 @@ const style = Astro.props.style;
       'cloudflare.thelittlequtegdh.top': 'cloudflare',
       'edgeone.thelittlequtegdh.top': 'edgeone',
       'netlify.thelittlequtegdh.top': 'netlify',
+      'gdhblog.pages.dev': 'cloudflarepages',
     };
     var currentHost = window.location.hostname;
     var currentRoute = hostnameMap[currentHost] || 'default';
@@ -156,6 +189,22 @@ const style = Astro.props.style;
     if (window._delayTimer) clearInterval(window._delayTimer);
     window._delayTimer = setInterval(refreshAllDelays, expireTime);
 
+    // 折叠/展开功能
+    var toggleBtn = document.getElementById('toggle-routes');
+    var extraDiv = document.getElementById('extra-routes');
+    if (toggleBtn && extraDiv) {
+      toggleBtn.addEventListener('click', function() {
+        var isHidden = extraDiv.classList.contains('hidden');
+        if (isHidden) {
+          extraDiv.classList.remove('hidden');
+          toggleBtn.textContent = '收起更多 ▲';
+        } else {
+          extraDiv.classList.add('hidden');
+          toggleBtn.textContent = '展开更多 ▼';
+        }
+      });
+    }
+
     buttons.forEach(function(btn) {
       if (btn.dataset.value === currentRoute) {
         btn.classList.add('active');
@@ -198,5 +247,8 @@ const style = Astro.props.style;
   }
   .delay-indicator {
     border: 2px solid #9ca3af;
+  }
+  #toggle-routes {
+    user-select: none;
   }
 </style>
