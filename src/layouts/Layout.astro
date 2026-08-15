@@ -502,51 +502,6 @@ window.onresize = () => {
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
 }
 
-(function() {
-    var origin = window.location.origin;
-    var target = 'https://blog.thelittlequtegdh.top';
-
-    function replaceAll(node) {
-        if (!node) return;
-        if (node.nodeType === Node.TEXT_NODE) {
-            var text = node.textContent;
-            if (text.indexOf(target) !== -1) {
-                node.textContent = text.split(target).join(origin);
-            }
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-            if (node.tagName === 'A' && node.href && node.href.indexOf(target) === 0) {
-                var newHref = node.href.replace(target, origin);
-                node.href = newHref;
-                if (node.textContent.indexOf(target) !== -1) {
-                    node.textContent = node.textContent.replace(target, origin);
-                }
-            }
-            if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && node.tagName !== 'NOSCRIPT') {
-                var children = node.childNodes;
-                for (var i = 0; i < children.length; i++) {
-                    replaceAll(children[i]);
-                }
-            }
-        }
-    }
-
-    function run() {
-        replaceAll(document.body);
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', run);
-    } else {
-        run();
-    }
-
-    if (window.swup && window.swup.hooks) {
-        window.swup.hooks.on('page:view', run);
-    }
-
-    var observer = new MutationObserver(run);
-    observer.observe(document.body, { childList: true, subtree: true });
-})();
 
 function getRouteUrl(value) {
   const map = {
