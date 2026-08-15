@@ -75,7 +75,7 @@ const style = Astro.props.style;
       var controller = new AbortController();
       var timeout = setTimeout(function() { controller.abort(); }, 5000);
       var start = performance.now();
-      return fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal })
+      return fetch(url, { method: 'GET', mode: 'no-cors', signal: controller.signal })
         .then(function() {
           clearTimeout(timeout);
           var end = performance.now();
@@ -88,18 +88,19 @@ const style = Astro.props.style;
     }
 
     function getColor(delay) {
-      if (delay <= 50) return 'bg-[#00aa00] border-[#00aa00]';
-      if (delay <= 100) return 'bg-[#66dd66] border-[#66dd66]';
-      if (delay <= 200) return 'bg-[#ffcc00] border-[#ffcc00]';
-      if (delay <= 250) return 'bg-[#ff3300] border-[#ff3300]';
-      return 'bg-gray-400 border-gray-400';
+      if (delay <= 50) return 'bg-green-700 border-green-700';
+      if (delay <= 100) return 'bg-green-500 border-green-500';
+      if (delay <= 200) return 'bg-green-300 border-green-300';
+      if (delay <= 250) return 'bg-yellow-400 border-yellow-400';
+      if (delay <= 300) return 'bg-orange-400 border-orange-400';
+      return 'bg-red-600 border-red-600';
     }
 
     function updateDot(dot, text, delay) {
       var color;
       var display;
       if (delay === Infinity || delay === undefined || delay === null) {
-        color = 'bg-gray-400 border-gray-400';
+        color = 'bg-red-600 border-red-600';
         display = 'N/A';
       } else {
         color = getColor(delay);
