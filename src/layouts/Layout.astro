@@ -504,10 +504,21 @@ window.onresize = () => {
 
 (function() {
   var origin = window.location.origin;
-  document.querySelectorAll('a[href^="https://blog.thelittlequtegdh.top"]').forEach(function(a) {
-    a.href = origin + a.href.slice(30);  // 去除固定域名部分（长度30）
+  var target = 'https://blog.thelittlequtegdh.top';
+  document.querySelectorAll('a[href^="' + target + '"]').forEach(function(a) {
+    a.href = origin + a.href.slice(target.length);
   });
 })();
+
+if (window.swup && window.swup.hooks) {
+  window.swup.hooks.on('page:view', function() {
+    var origin = window.location.origin;
+    var target = 'https://blog.thelittlequtegdh.top';
+    document.querySelectorAll('a[href^="' + target + '"]').forEach(function(a) {
+      a.href = origin + a.href.slice(target.length);
+    });
+  });
+}
 
 function getRouteUrl(value) {
   const map = {
