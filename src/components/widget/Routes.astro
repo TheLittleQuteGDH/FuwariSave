@@ -72,14 +72,35 @@ const style = Astro.props.style;
 
     function testDelay(domain) {
       var url = 'https://' + domain + '/?t=' + Date.now();
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function() { controller.abort(); }, 3000);
       var start = performance.now();
-      return fetch(url, { method: 'HEAD', mode: 'cors', cache: 'no-store' })
-        .then(function() {
+      return fetch(url, { method: 'GET', mode: 'cors', cache: 'no-store', signal: controller.signal })
+        .then(function(resp) {
+          clearTimeout(timeoutId);
+          if (!resp.ok) throw new Error('not ok');
           var end = performance.now();
           return Math.round(end - start);
         })
-        .catch(function() {
-          return Infinity;
+        .catch(function(err) {
+          clearTimeout(timeoutId);
+          // 重试一次
+          return new Promise(function(resolve) {
+            var controller2 = new AbortController();
+            var timeoutId2 = setTimeout(function() { controller2.abort(); }, 3000);
+            var start2 = performance.now();
+            fetch(url, { method: 'GET', mode: 'cors', cache: 'no-store', signal: controller2.signal })
+              .then(function(resp2) {
+                clearTimeout(timeoutId2);
+                if (!resp2.ok) throw new Error('not ok');
+                var end2 = performance.now();
+                resolve(Math.round(end2 - start2));
+              })
+              .catch(function() {
+                clearTimeout(timeoutId2);
+                resolve(Infinity);
+              });
+          });
         });
     }
 
@@ -94,7 +115,7 @@ const style = Astro.props.style;
     function updateDot(dot, text, delay) {
       var color;
       var display;
-      if (delay === Infinity || delay === undefined) {
+      if (delay === Infinity || delay === undefined || delay === null) {
         color = 'bg-gray-400 border-gray-400';
         display = 'N/A';
       } else {
@@ -109,21 +130,21 @@ const style = Astro.props.style;
     var cacheStr = localStorage.getItem(cacheKey);
     var cache = cacheStr ? JSON.parse(cacheStr) : {};
     var now = Date.now();
-    var expireTime = 30 * 1000;
+    var expireTime = 15000;
 
     function refreshAllDelays() {
       var now = Date.now();
       var domains = Object.keys(domainMap);
-      domains.forEach(function(domain) {
-        testDelay(domain).then(function(delay) {
+      var promises = domains.map(function(domain) {
+        return testDelay(domain).then(function(delay) {
           var entry = domainMap[domain];
           updateDot(entry.dot, entry.text, delay);
           cache[domain] = { delay: delay, time: now };
         }).catch(function() {});
       });
-      setTimeout(function() {
+      Promise.allSettled(promises).then(function() {
         localStorage.setItem(cacheKey, JSON.stringify(cache));
-      }, 500);
+      });
     }
 
     var domains = Object.keys(domainMap);
