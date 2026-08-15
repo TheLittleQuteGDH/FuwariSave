@@ -6,7 +6,8 @@ const defaultRoutes = [
   { name: "Cloudflare", value: "cloudflare", domain: "cloudflare.thelittlequtegdh.top" },
   { name: "Edgeone", value: "edgeone", domain: "edgeone.thelittlequtegdh.top" },
   { name: "Netlify", value: "netlify", domain: "netlify.thelittlequtegdh.top" },
-  { name: "CloudflarePages Dev", value: "cloudflarepages", domain: "gdhblog.pages.dev" },
+  { name: "Aliyun", value: "aliyun", domain: "aliyun.thelittlequtegdh.top" },
+  { name: "Fastly", value: "fastly", domain: "fastly.thelittlequtegdh.top" },
 ];
 
 const routes = defaultRoutes;
@@ -31,7 +32,6 @@ const style = Astro.props.style;
   style={style}
 >
   <div class="flex flex-col gap-4">
-    <!-- 前4个节点 -->
     {routes.slice(0, MAX_VISIBLE).map(r => (
       <button 
         class="route-btn w-full flex items-center justify-between btn-regular h-10 px-4 rounded-lg text-left" 
@@ -49,7 +49,6 @@ const style = Astro.props.style;
       </button>
     ))}
 
-    <!-- 额外节点（超过4个时折叠） -->
     {routes.length > MAX_VISIBLE && (
       <div id="extra-routes" class="flex flex-col gap-4 hidden">
         {routes.slice(MAX_VISIBLE).map(r => (
@@ -71,7 +70,6 @@ const style = Astro.props.style;
       </div>
     )}
 
-    <!-- 展开/收起按钮 -->
     {routes.length > MAX_VISIBLE && (
       <button id="toggle-routes" class="btn-regular h-8 text-sm px-3 rounded-lg w-full text-center text-gray-400 hover:text-gray-600 transition">
         展开更多 ▼
@@ -88,7 +86,8 @@ const style = Astro.props.style;
       'cloudflare.thelittlequtegdh.top': 'cloudflare',
       'edgeone.thelittlequtegdh.top': 'edgeone',
       'netlify.thelittlequtegdh.top': 'netlify',
-      'gdhblog.pages.dev': 'cloudflarepages',
+      'aliyun.thelittlequtegdh.top': 'aliyun',
+      'fastly.thelittlequtegdh.top': 'fastly',
     };
     var currentHost = window.location.hostname;
     var currentRoute = hostnameMap[currentHost] || 'default';
@@ -189,7 +188,6 @@ const style = Astro.props.style;
     if (window._delayTimer) clearInterval(window._delayTimer);
     window._delayTimer = setInterval(refreshAllDelays, expireTime);
 
-    // 折叠/展开功能
     var toggleBtn = document.getElementById('toggle-routes');
     var extraDiv = document.getElementById('extra-routes');
     if (toggleBtn && extraDiv) {
@@ -215,9 +213,10 @@ const style = Astro.props.style;
 
     buttons.forEach(function(btn) {
       btn.addEventListener('click', function() {
+        var domain = this.dataset.domain;
         var value = this.dataset.value;
         localStorage.setItem('selectedRoute', value);
-        window.dispatchEvent(new CustomEvent('route-switch', { detail: { value: value } }));
+        window.location.href = 'https://' + domain;
       });
     });
   })();
