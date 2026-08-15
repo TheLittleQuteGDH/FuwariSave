@@ -71,36 +71,14 @@ const style = Astro.props.style;
     });
 
     function testDelay(domain) {
-      var url = 'https://' + domain + '/?t=' + Date.now();
-      var controller = new AbortController();
-      var timeoutId = setTimeout(function() { controller.abort(); }, 5000);
-      var start = performance.now();
-      return fetch(url, { method: 'HEAD', mode: 'cors', cache: 'no-store', signal: controller.signal })
-        .then(function(resp) {
-          clearTimeout(timeoutId);
-          if (!resp.ok) throw new Error('not ok');
-          var end = performance.now();
-          return Math.round(end - start);
+      var apiUrl = '/api/ping?domain=' + encodeURIComponent(domain) + '&t=' + Date.now();
+      return fetch(apiUrl)
+        .then(function(resp) { return resp.json(); })
+        .then(function(data) {
+          if (data.delay === -1) return Infinity;
+          return data.delay;
         })
-        .catch(function(err) {
-          clearTimeout(timeoutId);
-          return new Promise(function(resolve) {
-            var controller2 = new AbortController();
-            var timeoutId2 = setTimeout(function() { controller2.abort(); }, 5000);
-            var start2 = performance.now();
-            fetch(url, { method: 'HEAD', mode: 'cors', cache: 'no-store', signal: controller2.signal })
-              .then(function(resp2) {
-                clearTimeout(timeoutId2);
-                if (!resp2.ok) throw new Error('not ok');
-                var end2 = performance.now();
-                resolve(Math.round(end2 - start2));
-              })
-              .catch(function() {
-                clearTimeout(timeoutId2);
-                resolve(Infinity);
-              });
-          });
-        });
+        .catch(function() { return Infinity; });
     }
 
     function getColor(delay) {
