@@ -366,9 +366,9 @@ function showBanner() {
 function init() {
 	// disableAnimation()()		// TODO
 	loadTheme();
-    loadHue();
-    initCustomScrollbar();
-    showBanner();
+	loadHue();
+	initCustomScrollbar();
+	showBanner();
 }
 
 /* Load settings when entering the site */
@@ -502,7 +502,6 @@ window.onresize = () => {
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
 }
 
-
 function getRouteUrl(value) {
   const map = {
     default: 'https://blog.thelittlequtegdh.top',
@@ -530,6 +529,7 @@ window.getCurrentRouteUrl = function() {
   const route = window.getCurrentRoute();
   return route ? getRouteUrl(route) : null;
 };
+
 </script>
 
 <script>
