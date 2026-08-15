@@ -505,33 +505,48 @@ window.onresize = () => {
 (function() {
     var origin = window.location.origin;
     var target = 'https://blog.thelittlequtegdh.top';
-    function replaceLinks() {
-        var links = document.querySelectorAll('a[href^="' + target + '"]');
-        for (var i = 0; i < links.length; i++) {
-            var a = links[i];
-            var path = a.href.substring(target.length);
-            a.href = origin + path;
+
+    function replaceAll(node) {
+        if (!node) return;
+        if (node.nodeType === Node.TEXT_NODE) {
+            var text = node.textContent;
+            if (text.indexOf(target) !== -1) {
+                node.textContent = text.split(target).join(origin);
+            }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+            if (node.tagName === 'A' && node.href && node.href.indexOf(target) === 0) {
+                var newHref = node.href.replace(target, origin);
+                node.href = newHref;
+                if (node.textContent.indexOf(target) !== -1) {
+                    node.textContent = node.textContent.replace(target, origin);
+                }
+            }
+            if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && node.tagName !== 'NOSCRIPT') {
+                var children = node.childNodes;
+                for (var i = 0; i < children.length; i++) {
+                    replaceAll(children[i]);
+                }
+            }
         }
     }
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', replaceLinks);
-    } else {
-        replaceLinks();
-    }
-    if (window.swup && window.swup.hooks) {
-        window.swup.hooks.on('page:view', replaceLinks);
-    }
-})();
 
-if (window.swup && window.swup.hooks) {
-  window.swup.hooks.on('page:view', function() {
-    var origin = window.location.origin;
-    var target = 'https://blog.thelittlequtegdh.top';
-    document.querySelectorAll('a[href^="' + target + '"]').forEach(function(a) {
-      a.href = origin + a.href.slice(target.length);
-    });
-  });
-}
+    function run() {
+        replaceAll(document.body);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', run);
+    } else {
+        run();
+    }
+
+    if (window.swup && window.swup.hooks) {
+        window.swup.hooks.on('page:view', run);
+    }
+
+    var observer = new MutationObserver(run);
+    observer.observe(document.body, { childList: true, subtree: true });
+})();
 
 function getRouteUrl(value) {
   const map = {
