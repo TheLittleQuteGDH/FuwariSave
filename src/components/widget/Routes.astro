@@ -37,9 +37,12 @@ const style = Astro.props.style;
         aria-label={`切换到 ${r.name}`}
       >
         <span class="flex-1 text-sm">{r.name}</span>
-        <span class="delay-indicator w-4 h-4 rounded-full border-2 border-gray-400 flex items-center justify-center flex-shrink-0">
-          <span class="delay-dot w-2 h-2 rounded-full bg-gray-300"></span>
-        </span>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <span class="delay-text text-xs text-gray-400 w-10 text-right">--</span>
+          <span class="delay-indicator w-4 h-4 rounded-full border-2 border-gray-400 flex items-center justify-center flex-shrink-0">
+            <span class="delay-dot w-2 h-2 rounded-full bg-gray-300"></span>
+          </span>
+        </div>
       </button>
     ))}
   </div>
@@ -48,87 +51,107 @@ const style = Astro.props.style;
 
 <script>
   (function() {
-    const hostnameMap = {
+    var hostnameMap = {
       'blog.thelittlequtegdh.top': 'default',
       'cloudflare.thelittlequtegdh.top': 'cloudflare',
       'edgeone.thelittlequtegdh.top': 'edgeone',
       'netlify.thelittlequtegdh.top': 'netlify',
     };
-    const currentHost = window.location.hostname;
-    const currentRoute = hostnameMap[currentHost] || 'default';
+    var currentHost = window.location.hostname;
+    var currentRoute = hostnameMap[currentHost] || 'default';
     localStorage.setItem('selectedRoute', currentRoute);
 
-    const buttons = document.querySelectorAll('.route-btn');
-    const dotElements = document.querySelectorAll('.delay-dot');
-    const domainMap = {};
-    buttons.forEach((btn, idx) => {
-      const domain = btn.dataset.domain;
-      domainMap[domain] = { btn, dot: dotElements[idx] };
+    var buttons = document.querySelectorAll('.route-btn');
+    var dotElements = document.querySelectorAll('.delay-dot');
+    var textElements = document.querySelectorAll('.delay-text');
+    var domainMap = {};
+    buttons.forEach(function(btn, idx) {
+      var domain = btn.dataset.domain;
+      domainMap[domain] = { btn: btn, dot: dotElements[idx], text: textElements[idx] };
     });
 
     function testDelay(domain) {
-      const url = `https://${domain}/?t=${Date.now()}`;
-      const start = performance.now();
-      return fetch(url, { method: 'HEAD', mode: 'cors' })
-        .then(() => {
-          const end = performance.now();
+      var url = 'https://' + domain + '/?t=' + Date.now();
+      var start = performance.now();
+      return fetch(url, { method: 'HEAD', mode: 'cors', cache: 'no-store' })
+        .then(function() {
+          var end = performance.now();
           return Math.round(end - start);
         })
-        .catch(() => Infinity);
+        .catch(function() {
+          return Infinity;
+        });
     }
 
-    function updateDot(dot, delay) {
-      let color;
-      if (delay <= 50) color = 'bg-green-700';
-      else if (delay <= 100) color = 'bg-green-300';
-      else if (delay <= 200) color = 'bg-yellow-400';
-      else if (delay <= 250) color = 'bg-red-500';
-      else color = 'bg-gray-400';
+    function getColor(delay) {
+      if (delay <= 50) return 'bg-green-700 border-green-700';
+      if (delay <= 100) return 'bg-green-300 border-green-300';
+      if (delay <= 200) return 'bg-yellow-400 border-yellow-400';
+      if (delay <= 250) return 'bg-red-500 border-red-500';
+      return 'bg-gray-400 border-gray-400';
+    }
+
+    function updateDot(dot, text, delay) {
+      var color;
+      var display;
+      if (delay === Infinity || delay === undefined) {
+        color = 'bg-gray-400 border-gray-400';
+        display = 'N/A';
+      } else {
+        color = getColor(delay);
+        display = delay + 'ms';
+      }
       dot.className = 'w-2 h-2 rounded-full ' + color + ' delay-dot';
+      text.textContent = display;
     }
 
-    const cacheKey = 'delayCache';
-    const cacheStr = localStorage.getItem(cacheKey);
-    const cache = cacheStr ? JSON.parse(cacheStr) : {};
-    const now = Date.now();
-    const expireTime = 30 * 1000;
+    var cacheKey = 'delayCache';
+    var cacheStr = localStorage.getItem(cacheKey);
+    var cache = cacheStr ? JSON.parse(cacheStr) : {};
+    var now = Date.now();
+    var expireTime = 30 * 1000;
 
     function refreshAllDelays() {
-      const now = Date.now();
-      const domains = Object.keys(domainMap);
-      const promises = domains.map(domain => {
-        return testDelay(domain).then(delay => {
-          updateDot(domainMap[domain].dot, delay);
-          cache[domain] = { delay, time: now };
-        }).catch(() => {});
+      var now = Date.now();
+      var domains = Object.keys(domainMap);
+      domains.forEach(function(domain) {
+        testDelay(domain).then(function(delay) {
+          var entry = domainMap[domain];
+          updateDot(entry.dot, entry.text, delay);
+          cache[domain] = { delay: delay, time: now };
+        }).catch(function() {});
       });
-      Promise.allSettled(promises).then(() => {
+      setTimeout(function() {
         localStorage.setItem(cacheKey, JSON.stringify(cache));
-      });
+      }, 500);
     }
 
-    const promises = [];
-    for (const domain in domainMap) {
-      const cached = cache[domain];
+    var domains = Object.keys(domainMap);
+    var pending = domains.length;
+    domains.forEach(function(domain) {
+      var cached = cache[domain];
+      var entry = domainMap[domain];
       if (cached && (now - cached.time) < expireTime) {
-        updateDot(domainMap[domain].dot, cached.delay);
+        updateDot(entry.dot, entry.text, cached.delay);
+        pending--;
       } else {
-        promises.push(
-          testDelay(domain).then(delay => {
-            updateDot(domainMap[domain].dot, delay);
-            cache[domain] = { delay, time: now };
-          }).catch(() => {})
-        );
+        testDelay(domain).then(function(delay) {
+          updateDot(entry.dot, entry.text, delay);
+          cache[domain] = { delay: delay, time: now };
+          pending--;
+          if (pending === 0) {
+            localStorage.setItem(cacheKey, JSON.stringify(cache));
+          }
+        }).catch(function() {
+          pending--;
+        });
       }
-    }
-    Promise.allSettled(promises).then(() => {
-      localStorage.setItem(cacheKey, JSON.stringify(cache));
     });
 
     if (window._delayTimer) clearInterval(window._delayTimer);
     window._delayTimer = setInterval(refreshAllDelays, expireTime);
 
-    buttons.forEach(btn => {
+    buttons.forEach(function(btn) {
       if (btn.dataset.value === currentRoute) {
         btn.classList.add('active');
       } else {
@@ -136,11 +159,11 @@ const style = Astro.props.style;
       }
     });
 
-    buttons.forEach(btn => {
+    buttons.forEach(function(btn) {
       btn.addEventListener('click', function() {
-        const value = this.dataset.value;
+        var value = this.dataset.value;
         localStorage.setItem('selectedRoute', value);
-        window.dispatchEvent(new CustomEvent('route-switch', { detail: { value } }));
+        window.dispatchEvent(new CustomEvent('route-switch', { detail: { value: value } }));
       });
     });
   })();
@@ -148,9 +171,9 @@ const style = Astro.props.style;
 
 <style is:global>
   @keyframes pulse-dot {
-    0% { transform: scale(1); opacity: 0.7; }
-    50% { transform: scale(1.2); opacity: 1; }
-    100% { transform: scale(1); opacity: 0.7; }
+    0% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.3); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.6; }
   }
   .delay-dot {
     animation: pulse-dot 2s ease-in-out infinite;
@@ -161,6 +184,9 @@ const style = Astro.props.style;
   }
   .route-btn.active .delay-indicator {
     border-color: white;
+  }
+  .route-btn.active .delay-text {
+    color: white !important;
   }
   .route-btn.active .delay-dot {
     border-color: white;
