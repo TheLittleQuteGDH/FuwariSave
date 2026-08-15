@@ -8,10 +8,10 @@ import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import { defineConfig } from "astro/config";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypeComponents from "rehype-components";
+import rehypeComponents from "rehype-components"; /* Render the custom directive content */
 import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
-import remarkDirective from "remark-directive";
+import remarkDirective from "remark-directive"; /* Handle directives */
 import remarkGithubAdmonitionsToDirectives from "remark-github-admonitions-to-directives";
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
@@ -23,17 +23,21 @@ import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
 import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
-import relativeLinks from "astro-relative-links";
 
+// https://astro.build/config
 export default defineConfig({
 	site: "https://blog.thelittlequtegdh.top",
 	base: "/",
 	trailingSlash: "always",
 	integrations: [
-		tailwind({ nesting: true }),
+		tailwind({
+			nesting: true,
+		}),
 		swup({
 			theme: false,
-			animationClass: "transition-swup-",
+			animationClass: "transition-swup-", // see https://swup.js.org/options/#animationselector
+			// the default value `transition-` cause transition delay
+			// when the Tailwind class `transition-all` is used
 			containers: ["main", "#toc"],
 			smoothScrolling: true,
 			cache: true,
@@ -62,7 +66,9 @@ export default defineConfig({
 			defaultProps: {
 				wrap: true,
 				overridesByLang: {
-					'shellsession': { showLineNumbers: false },
+					'shellsession': {
+						showLineNumbers: false,
+					},
 				},
 			},
 			styleOverrides: {
@@ -93,9 +99,8 @@ export default defineConfig({
 				showCopyToClipboardButton: false,
 			}
 		}),
-		svelte(),
+        svelte(),
 		sitemap(),
-		relativeLinks(),
 	],
 	markdown: {
 		remarkPlugins: [
@@ -127,12 +132,22 @@ export default defineConfig({
 				rehypeAutolinkHeadings,
 				{
 					behavior: "append",
-					properties: { className: ["anchor"] },
+					properties: {
+						className: ["anchor"],
+					},
 					content: {
 						type: "element",
 						tagName: "span",
-						properties: { className: ["anchor-icon"], "data-pagefind-ignore": true },
-						children: [{ type: "text", value: "#" }],
+						properties: {
+							className: ["anchor-icon"],
+							"data-pagefind-ignore": true,
+						},
+						children: [
+							{
+								type: "text",
+								value: "#",
+							},
+						],
 					},
 				},
 			],
@@ -142,6 +157,7 @@ export default defineConfig({
 		build: {
 			rollupOptions: {
 				onwarn(warning, warn) {
+					// temporarily suppress this warning
 					if (
 						warning.message.includes("is dynamically imported by") &&
 						warning.message.includes("but also statically imported by")
