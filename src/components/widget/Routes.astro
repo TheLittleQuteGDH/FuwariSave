@@ -73,9 +73,9 @@ const style = Astro.props.style;
     function testDelay(domain) {
       var url = 'https://' + domain + '/?t=' + Date.now();
       var controller = new AbortController();
-      var timeoutId = setTimeout(function() { controller.abort(); }, 3000);
+      var timeoutId = setTimeout(function() { controller.abort(); }, 5000);
       var start = performance.now();
-      return fetch(url, { method: 'GET', mode: 'cors', cache: 'no-store', signal: controller.signal })
+      return fetch(url, { method: 'HEAD', mode: 'cors', cache: 'no-store', signal: controller.signal })
         .then(function(resp) {
           clearTimeout(timeoutId);
           if (!resp.ok) throw new Error('not ok');
@@ -84,12 +84,11 @@ const style = Astro.props.style;
         })
         .catch(function(err) {
           clearTimeout(timeoutId);
-          // 重试一次
           return new Promise(function(resolve) {
             var controller2 = new AbortController();
-            var timeoutId2 = setTimeout(function() { controller2.abort(); }, 3000);
+            var timeoutId2 = setTimeout(function() { controller2.abort(); }, 5000);
             var start2 = performance.now();
-            fetch(url, { method: 'GET', mode: 'cors', cache: 'no-store', signal: controller2.signal })
+            fetch(url, { method: 'HEAD', mode: 'cors', cache: 'no-store', signal: controller2.signal })
               .then(function(resp2) {
                 clearTimeout(timeoutId2);
                 if (!resp2.ok) throw new Error('not ok');
@@ -105,10 +104,10 @@ const style = Astro.props.style;
     }
 
     function getColor(delay) {
-      if (delay <= 50) return 'bg-green-700 border-green-700';
-      if (delay <= 100) return 'bg-green-300 border-green-300';
-      if (delay <= 200) return 'bg-yellow-400 border-yellow-400';
-      if (delay <= 250) return 'bg-red-500 border-red-500';
+      if (delay <= 50) return 'bg-[#00aa00] border-[#00aa00]';
+      if (delay <= 100) return 'bg-[#66dd66] border-[#66dd66]';
+      if (delay <= 200) return 'bg-[#ffcc00] border-[#ffcc00]';
+      if (delay <= 250) return 'bg-[#ff3300] border-[#ff3300]';
       return 'bg-gray-400 border-gray-400';
     }
 
