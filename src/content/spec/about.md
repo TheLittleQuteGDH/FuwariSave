@@ -1,5 +1,16 @@
-  ## 作者的联系方式
- 
+---
+title: 关于
+published: 2026-08-16
+description: ''
+image: ''
+tags: []
+category: ''
+draft: false 
+lang: ''
+---
+
+  ### 作者的联系方式
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
 <div class="contact-buttons">
@@ -84,26 +95,7 @@
 }
 </style>
 
-  ## 本博客使用的CDN
-
-<div style="display: flex; gap: 16px; width: 100%; margin: 16px 0; box-sizing: border-box; flex-wrap: wrap;">
-  <div style="flex: 1; min-width: 280px; border: 1px solid #e5e7eb; border-radius: 10px; padding: 18px 20px; transition: border-color .2s; cursor: pointer; box-sizing: border-box;"
-       onclick="window.open('https://www.netlify.com','_blank')"
-       onmouseover="this.style.borderColor='#00c7b7'"
-       onmouseout="this.style.borderColor='#e5e7eb'">
-    <div style="display: inline-flex; align-items: center; gap: 6px; background: #10b981; color: #fff; font-size: 12px; padding: 4px 10px; border-radius: 6px; margin-bottom: 14px; letter-spacing: .5px;">
-      <span style="width: 6px; height: 6px; border-radius: 50%; background: #fff; display: inline-block;"></span>
-      全球节点
-    </div>
-    <div style="text-align: center; margin: 8px 0 14px;">
-      <img src="https://thelittlequtegdh.top/images/Netlify.png"
-           alt="Netlify"
-           style="max-width: 78%; height: auto; object-fit: contain; display: inline-block;" />
-    </div>
-    <div style="font-size: 14px; line-height: 1.6; color: #374151;">
-      Netlify是一站式网站开发托管平台，集成代码仓库自动构建部署、全球内容分发加速、无服务器函数、表单处理与身份验证。开发者推送代码即可快速上线高性能安全可靠网站，提升开发效率。
-    </div>
-  </div>
+  ### 本博客使用的CDN
 
   <div style="flex: 1; min-width: 280px; border: 1px solid #e5e7eb; border-radius: 10px; padding: 18px 20px; transition: border-color .2s; cursor: pointer; box-sizing: border-box;"
        onclick="window.open('https://edgeone.ai','_blank')"
@@ -123,6 +115,26 @@
     </div>
   </div>
 
+<div style="display: flex; gap: 16px; width: 100%; margin: 16px 0; box-sizing: border-box; flex-wrap: wrap;">
+  <div style="flex: 1; min-width: 280px; border: 1px solid #e5e7eb; border-radius: 10px; padding: 18px 20px; transition: border-color .2s; cursor: pointer; box-sizing: border-box;"
+       onclick="window.open('https://fastly.com','_blank')"
+       onmouseover="this.style.borderColor='#00c7b7'"
+       onmouseout="this.style.borderColor='#e5e7eb'">
+    <div style="display: inline-flex; align-items: center; gap: 6px; background: #10b981; color: #fff; font-size: 12px; padding: 4px 10px; border-radius: 6px; margin-bottom: 14px; letter-spacing: .5px;">
+      <span style="width: 6px; height: 6px; border-radius: 50%; background: #fff; display: inline-block;"></span>
+      全球节点
+    </div>
+    <div style="text-align: center; margin: 8px 0 14px;">
+      <img src="https://thelittlequtegdh.top/images/fastly.webp"
+           alt="Fastly"
+           style="max-width: 78%; height: auto; object-fit: contain; display: inline-block;" />
+    </div>
+    <div style="font-size: 14px; line-height: 1.6; color: #374151;">
+      Fastly 是一家边缘云平台提供商，其核心是高性能、可编程的 CDN。它提供实时配置、边缘计算及安全防护等服务，旨在加速并保护网站与应用。
+    </div>
+  </div>
+
+
   <div style="flex: 1; min-width: 280px; border: 1px solid #e5e7eb; border-radius: 10px; padding: 18px 20px; transition: border-color .2s; cursor: pointer; box-sizing: border-box;"
        onclick="window.open('https://www.cloudflare.com','_blank')"
        onmouseover="this.style.borderColor='#f38020'"
@@ -140,12 +152,9 @@
       Cloudflare 全球分布式边缘网络，覆盖 100+ 国家与地区，为海外访客提供极速静态资源加速、智能缓存与全域安全防护。
     </div>
   </div>
-</div>
 
 
- ## 本博客的主题：Fuwari
-
-
+ ### 本博客的主题：Fuwari
 
   ### 原版
 
