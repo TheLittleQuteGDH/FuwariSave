@@ -29,14 +29,32 @@ B站UP主[@**LuoTianyiLover**](https://space.bilibili.com/3493112672422440)在B�
 
   绑定还得看运气，我试了两天绑定时都会显示`绑定被拒绝`，第三天绑定时才会显示`已绑定`。
   
-- [本文附件：点我下载所需文件](https://files.thelittlequtegdh.fun/000-%E6%96%87%E7%AB%A0%E8%B5%84%E6%BA%90/003-%E6%97%A7IOS%E7%99%BB%E5%BD%95%E5%BE%AE%E4%BF%A1%EF%BC%88Facebook%EF%BC%89)
-- 备用链接: [https://yun.139.com/shareweb/#/w/i/2wFGQNZDkZv5p](https://yun.139.com/shareweb/#/w/i/2wFGQNZDkZv5p)
-
-  你们也可以点击[原作者的链接](https://pan.baidu.com/s/1ECButCatj5tdV0tbdm6hAg?pwd=B735)下载
-  
   > [!NOTE]
   >
-  > 经过测试，旧版本微信无法接收来自别人的转账和红包，不能主动添加好友，只能别人添加你为好友。
+  > 经过测试，旧版本微信无法接收来自别人的转账和红包，不能添加好友，只能简单的发朋友圈，看消息
+
+
+
+## 下载附件
+
+首先，您需要先下载本文相关的附件，点击下方按钮即可跳转到相关页面下载
+
+<p>
+  <a href="https://files.thelittlequtegdh.top/000-%E5%8D%9A%E5%AE%A2%E8%B5%84%E6%BA%90/003-%E6%97%A7IOS%E7%99%BB%E5%BD%95%E5%BE%AE%E4%BF%A1%EF%BC%88Facebook%EF%BC%89" download
+     style="display:inline-block;background:transparent;color:#e74c3c;padding:10px 20px;margin:5px;border:2px solid #e74c3c;border-radius:6px;text-decoration:none;font-weight:bold;">
+    下载链接1
+  </a>
+  <a href="https://yun.139.com/shareweb/#/w/i/2wFGQNZDkZv5p" download
+     style="display:inline-block;background:transparent;color:#3498db;padding:10px 20px;margin:5px;border:2px solid #3498db;border-radius:6px;text-decoration:none;font-weight:bold;">
+    下载链接2
+  </a>
+  <a href="https://pan.baidu.com/s/1ECButCatj5tdV0tbdm6hAg?pwd=B735" download
+     style="display:inline-block;background:transparent;color:#2ecc71;padding:10px 20px;margin:5px;border:2px solid #2ecc71;border-radius:6px;text-decoration:none;font-weight:bold;">
+    原作者链接
+  </a>
+</p>
+
+
 
 ## 配置魔法
 
@@ -55,6 +73,8 @@ B站UP主[@**LuoTianyiLover**](https://space.bilibili.com/3493112672422440)在B�
 然后拿出你的旧设备，确保与主力机连接到同一局域网，查看主力机的IP地址，复制下来，旧设备找到主力机连接的网络，点击右边的箭头，找到`http代理`，点击`手动`，服务器填写主力机IP，端口填7890，如下图
 
 ![](photo/setvpn.jpg)
+
+
 
 ## 登录微信的操作
 

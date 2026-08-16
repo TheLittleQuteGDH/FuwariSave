@@ -13,19 +13,20 @@ lang: ''
 
 本教程适用于Harmony3-4.2或以上的系统
 
-### 准备工作
-
-一台电脑，和一台Harmony3-4.2的华为手机
-你需要在你的手机上安装以下软件：
-- Shizuku
-- 爱玩机工具箱
-- Scene
-电脑上需准备好以下程序：
-- 搞机工具箱V11
-
-本文附件下载链接：[点我（密码dx3u）](https://wwbfi.lanzn.com/b0139un7je)
-
 ### 开始操作
+
+先下载本文的附件，点击下方按钮下载附件
+
+<p>
+  <a href="https://files.thelittlequtegdh.top/000-%E5%8D%9A%E5%AE%A2%E8%B5%84%E6%BA%90/001-%E5%85%B3%E9%97%AD%E7%BA%AF%E5%87%80%E6%A8%A1%E5%BC%8F" download
+     style="display:inline-block;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:12px 24px;margin:5px;border-radius:30px;text-decoration:none;font-weight:bold;box-shadow:0 4px 15px rgba(0,0,0,0.2);">
+    下载链接1
+  </a>
+  <a href="https://wwbfi.lanzn.com/b0139un7je" download
+     style="display:inline-block;background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:#fff;padding:12px 24px;margin:5px;border-radius:30px;text-decoration:none;font-weight:bold;box-shadow:0 4px 15px rgba(0,0,0,0.2);">
+    下载链接2（密码dx3u）
+  </a>
+</p>
 
 1、先打开手机的设置，找到`关于手机`，连续点击`HarmonyOS版本`7次，直到打开开发者选项，返回设置，找到`系统和更新`-`开发人员选项`，往下滑找到USB调试，打开
 

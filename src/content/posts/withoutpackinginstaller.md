@@ -1,5 +1,5 @@
 ---
-title: 绕过鸿蒙系统自带的安装器安装软件
+title: 绕过鸿蒙系统自带安装器安装软件
 published: 2026-07-20
 description: ''
 image: 'photo/fail1.PNG'
@@ -17,17 +17,28 @@ lang: ''
 
 ![failure](photo/fail1.PNG)
 
-那么这种情况也很好解决，方法如下
-
-## 准备工作
-
-| 准备           | 说明                                                         |
-| -------------- | ------------------------------------------------------------ |
-| 一部鸿蒙手机   | 本教程适用于Harmony4及以上的手机                             |
-| 一台电脑       | Windows系统                                                  |
-| 需要下载的工具 | [下载链接1](https://files.thelittlequtegdh.fun/000-%E6%96%87%E7%AB%A0%E8%B5%84%E6%BA%90/002-%E7%BB%95%E5%8D%8E%E4%B8%BA%E5%AE%89%E8%A3%85%E5%99%A8%E5%AE%89%E8%A3%85Apps )，[下载链接2](https://yun.139.com/shareweb/#/w/i/2w2KQrHeCBwma)，[下载链接3，密码67yz](https://wwbfi.lanzn.com/b0139veygf) |
+那么这种情况也很好解决，方法如下（适用于Harmony手机）
 
 ## 开始操作（配置环境）
+
+### 下载附件
+
+首先，你需要先下载本文的附件，点击下方按钮即可跳转到相关页面进行下载
+
+<p>
+  <a href="https://files.thelittlequtegdh.top/000-%E5%8D%9A%E5%AE%A2%E8%B5%84%E6%BA%90/002-%E7%BB%95%E5%8D%8E%E4%B8%BA%E5%AE%89%E8%A3%85%E5%99%A8%E5%AE%89%E8%A3%85Apps" download
+     style="display:inline-block;background-color:#4CAF50;color:#ffffff;padding:10px 20px;margin:4px;text-decoration:none;border-radius:6px;font-weight:bold;border:none;cursor:pointer;">
+    ⬇️下载链接1(不限速)
+  </a>
+  <a href="https://yun.139.com/shareweb/#/w/i/2w2KQrHeCBwma" download
+     style="display:inline-block;background-color:#2196F3;color:#ffffff;padding:10px 20px;margin:4px;text-decoration:none;border-radius:6px;font-weight:bold;border:none;cursor:pointer;">
+    ⬇️下载链接2(不限速)
+  </a>
+  <a href="https://wwbfi.lanzn.com/b0139veygf" download
+     style="display:inline-block;background-color:#FF9800;color:#ffffff;padding:10px 20px;margin:4px;text-decoration:none;border-radius:6px;font-weight:bold;border:none;cursor:pointer;">
+    ⬇️下载链接3(密码67yz，不限速)
+  </a>
+</p>
 
 ### 使用电脑操作，并且只用电脑安装软件，只需要完成下面操作的第一步即可
 
@@ -65,7 +76,7 @@ com.huawei.security.privacycenter
 
 ![](photo/pcban.jpg)
 
-> [!warning]
+> [!WARNING]
 >
 > 在下一次重启前，请将这五个包名通过搞机工具箱启用它们，否则重启后手机桌面的软件布局凌乱，上一篇教程删除的隐私中心会再次出现
 
@@ -120,4 +131,6 @@ HwSecurityPluginBase-com.huawei.securitypluginbase
 > [!WARNING]
 >
 > 在下一次重启前，请将这五个包名通过搞机工具箱启用它们，否则重启后手机桌面的软件布局凌乱，上一篇教程删除的隐私中心会再次出现
+
+
 
