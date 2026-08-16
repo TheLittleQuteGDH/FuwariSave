@@ -1,6 +1,5 @@
 ---
 import WidgetLayout from "./WidgetLayout.astro";
-
 const defaultRoutes = [
   { name: "默认线路", value: "default", domain: "blog.thelittlequtegdh.top" },
   { name: "Cloudflare", value: "cloudflare", domain: "cloudflare.thelittlequtegdh.top" },
@@ -9,12 +8,10 @@ const defaultRoutes = [
   { name: "Aliyun", value: "aliyun", domain: "aliyun.thelittlequtegdh.top" },
   { name: "Fastly", value: "fastly", domain: "fastly.thelittlequtegdh.top" },
 ];
-
 const routes = defaultRoutes;
 const MAX_VISIBLE = 4;
 const COLLAPSED_HEIGHT = "7.5rem";
 const isCollapsed = routes.length >= 10;
-
 interface Props {
   class?: string;
   style?: string;
@@ -22,7 +19,6 @@ interface Props {
 const className = Astro.props.class;
 const style = Astro.props.style;
 ---
-
 <WidgetLayout 
   name="线路切换" 
   id="routes" 
@@ -48,7 +44,6 @@ const style = Astro.props.style;
         </div>
       </button>
     ))}
-
     {routes.length > MAX_VISIBLE && (
       <div id="extra-routes" class="flex flex-col gap-4 hidden">
         {routes.slice(MAX_VISIBLE).map(r => (
@@ -69,7 +64,6 @@ const style = Astro.props.style;
         ))}
       </div>
     )}
-
     {routes.length > MAX_VISIBLE && (
       <button id="toggle-routes" class="btn-regular h-8 text-sm px-3 rounded-lg w-full text-center text-gray-400 hover:text-gray-600 transition">
         展开更多 ▼
@@ -78,7 +72,6 @@ const style = Astro.props.style;
   </div>
   <div class="text-xs text-gray-400 mt-2 text-center">切换线路以访问不同节点</div>
 </WidgetLayout>
-
 <script>
   (function() {
     var hostnameMap = {
@@ -90,13 +83,14 @@ const style = Astro.props.style;
       'fastly.thelittlequtegdh.top': 'fastly',
     };
     var cacheKey = 'delayCache';
-    var expireTime = 15000;
+    var expireTime = 5000;
+    var testCount = 3;
+    var singleTimeout = 3000;
 
     function initRoutes() {
       var currentHost = window.location.hostname;
       var currentRoute = hostnameMap[currentHost] || 'default';
       localStorage.setItem('selectedRoute', currentRoute);
-
       var buttons = document.querySelectorAll('.route-btn');
       var dotElements = document.querySelectorAll('.delay-dot');
       var textElements = document.querySelectorAll('.delay-text');
@@ -106,21 +100,35 @@ const style = Astro.props.style;
         domainMap[domain] = { btn: btn, dot: dotElements[idx], text: textElements[idx] };
       });
 
-      function testDelay(domain) {
-        var url = 'https://' + domain + '/?t=' + Date.now();
+      function singleTest(domain) {
+        var url = 'https://' + domain + '/?t=' + Date.now() + '&r=' + Math.random();
         var controller = new AbortController();
-        var timeout = setTimeout(function() { controller.abort(); }, 5000);
+        var timeout = setTimeout(function() { controller.abort(); }, singleTimeout);
         var start = performance.now();
         return fetch(url, { method: 'GET', mode: 'no-cors', signal: controller.signal })
           .then(function() {
             clearTimeout(timeout);
-            var end = performance.now();
-            return Math.round(end - start);
+            return performance.now() - start;
           })
           .catch(function() {
             clearTimeout(timeout);
-            return Infinity;
+            return null;
           });
+      }
+
+      function testDelay(domain) {
+        var tasks = [];
+        for (var i = 0; i < testCount; i++) {
+          tasks.push(singleTest(domain));
+        }
+        return Promise.all(tasks).then(function(results) {
+          var valid = results.filter(function(t) { return t !== null; });
+          if (valid.length === 0) return Infinity;
+          valid.sort(function(a, b) { return a - b; });
+          if (valid.length >= 3) valid = valid.slice(1, -1);
+          var sum = valid.reduce(function(s, v) { return s + v; }, 0);
+          return Math.round(sum / valid.length);
+        });
       }
 
       function getColor(delay) {
@@ -137,7 +145,7 @@ const style = Astro.props.style;
         var display;
         if (delay === Infinity || delay === undefined || delay === null) {
           color = 'bg-red-600 border-red-600';
-          display = 'N/A';
+          display = 'TimeOut';
         } else {
           color = getColor(delay);
           display = delay + 'ms';
@@ -193,7 +201,6 @@ const style = Astro.props.style;
       var toggleBtn = document.getElementById('toggle-routes');
       var extraDiv = document.getElementById('extra-routes');
       if (toggleBtn && extraDiv) {
-        // 移除旧的事件监听（避免重复绑定）
         toggleBtn.removeEventListener('click', toggleHandler);
         function toggleHandler() {
           var isHidden = extraDiv.classList.contains('hidden');
@@ -233,13 +240,11 @@ const style = Astro.props.style;
     } else {
       initRoutes();
     }
-
     if (window.swup && window.swup.hooks) {
       window.swup.hooks.on('page:view', initRoutes);
     }
   })();
 </script>
-
 <style is:global>
   @keyframes pulse-dot {
     0% { transform: scale(1); opacity: 0.6; }
