@@ -93,7 +93,7 @@ HwSecurityPluginBase-com.huawei.securitypluginbase
 
 解冻时请点击右上方三个点，点击`解冻可见`即可解冻。
 
-> [!warning]
+> [!WARNING]
 >
 > 在下一次重启前，请将这五个包名解冻，否则重启的时间异常的长，手机桌面的软件是散开的（即便你之前使用文件夹整理过它们），一定要在重启前启用，包括上一篇教程删除的隐私中心会重新安装，还会还原某些设置
 
@@ -117,7 +117,7 @@ HwSecurityPluginBase-com.huawei.securitypluginbase
 
 解冻方法：长按任意一个Apps，选择所有Apps，在弹出来的窗口点击`解冻`即可
 
-> [!warning]
+> [!WARNING]
 >
 > 在下一次重启前，请将这五个包名通过搞机工具箱启用它们，否则重启后手机桌面的软件布局凌乱，上一篇教程删除的隐私中心会再次出现
 
