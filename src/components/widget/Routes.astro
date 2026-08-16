@@ -89,136 +89,154 @@ const style = Astro.props.style;
       'aliyun.thelittlequtegdh.top': 'aliyun',
       'fastly.thelittlequtegdh.top': 'fastly',
     };
-    var currentHost = window.location.hostname;
-    var currentRoute = hostnameMap[currentHost] || 'default';
-    localStorage.setItem('selectedRoute', currentRoute);
-
-    var buttons = document.querySelectorAll('.route-btn');
-    var dotElements = document.querySelectorAll('.delay-dot');
-    var textElements = document.querySelectorAll('.delay-text');
-    var domainMap = {};
-    buttons.forEach(function(btn, idx) {
-      var domain = btn.dataset.domain;
-      domainMap[domain] = { btn: btn, dot: dotElements[idx], text: textElements[idx] };
-    });
-
-    function testDelay(domain) {
-      var url = 'https://' + domain + '/?t=' + Date.now();
-      var controller = new AbortController();
-      var timeout = setTimeout(function() { controller.abort(); }, 5000);
-      var start = performance.now();
-      return fetch(url, { method: 'GET', mode: 'no-cors', signal: controller.signal })
-        .then(function() {
-          clearTimeout(timeout);
-          var end = performance.now();
-          return Math.round(end - start);
-        })
-        .catch(function() {
-          clearTimeout(timeout);
-          return Infinity;
-        });
-    }
-
-    function getColor(delay) {
-      if (delay <= 50) return 'bg-green-700 border-green-700';
-      if (delay <= 100) return 'bg-green-500 border-green-500';
-      if (delay <= 200) return 'bg-green-300 border-green-300';
-      if (delay <= 250) return 'bg-yellow-400 border-yellow-400';
-      if (delay <= 300) return 'bg-orange-400 border-orange-400';
-      return 'bg-red-600 border-red-600';
-    }
-
-    function updateDot(dot, text, delay) {
-      var color;
-      var display;
-      if (delay === Infinity || delay === undefined || delay === null) {
-        color = 'bg-red-600 border-red-600';
-        display = 'N/A';
-      } else {
-        color = getColor(delay);
-        display = delay + 'ms';
-      }
-      dot.className = 'w-2 h-2 rounded-full ' + color + ' delay-dot';
-      text.textContent = display;
-    }
-
     var cacheKey = 'delayCache';
-    var cacheStr = localStorage.getItem(cacheKey);
-    var cache = cacheStr ? JSON.parse(cacheStr) : {};
-    var now = Date.now();
     var expireTime = 15000;
 
-    function refreshAllDelays() {
-      var now = Date.now();
-      var domains = Object.keys(domainMap);
-      var promises = domains.map(function(domain) {
-        return testDelay(domain).then(function(delay) {
-          var entry = domainMap[domain];
-          updateDot(entry.dot, entry.text, delay);
-          cache[domain] = { delay: delay, time: now };
-        }).catch(function() {});
-      });
-      Promise.allSettled(promises).then(function() {
-        localStorage.setItem(cacheKey, JSON.stringify(cache));
-      });
-    }
+    function initRoutes() {
+      var currentHost = window.location.hostname;
+      var currentRoute = hostnameMap[currentHost] || 'default';
+      localStorage.setItem('selectedRoute', currentRoute);
 
-    var domains = Object.keys(domainMap);
-    var pending = domains.length;
-    domains.forEach(function(domain) {
-      var cached = cache[domain];
-      var entry = domainMap[domain];
-      if (cached && (now - cached.time) < expireTime) {
-        updateDot(entry.dot, entry.text, cached.delay);
-        pending--;
-      } else {
-        testDelay(domain).then(function(delay) {
-          updateDot(entry.dot, entry.text, delay);
-          cache[domain] = { delay: delay, time: now };
-          pending--;
-          if (pending === 0) {
-            localStorage.setItem(cacheKey, JSON.stringify(cache));
-          }
-        }).catch(function() {
-          pending--;
+      var buttons = document.querySelectorAll('.route-btn');
+      var dotElements = document.querySelectorAll('.delay-dot');
+      var textElements = document.querySelectorAll('.delay-text');
+      var domainMap = {};
+      buttons.forEach(function(btn, idx) {
+        var domain = btn.dataset.domain;
+        domainMap[domain] = { btn: btn, dot: dotElements[idx], text: textElements[idx] };
+      });
+
+      function testDelay(domain) {
+        var url = 'https://' + domain + '/?t=' + Date.now();
+        var controller = new AbortController();
+        var timeout = setTimeout(function() { controller.abort(); }, 5000);
+        var start = performance.now();
+        return fetch(url, { method: 'GET', mode: 'no-cors', signal: controller.signal })
+          .then(function() {
+            clearTimeout(timeout);
+            var end = performance.now();
+            return Math.round(end - start);
+          })
+          .catch(function() {
+            clearTimeout(timeout);
+            return Infinity;
+          });
+      }
+
+      function getColor(delay) {
+        if (delay <= 50) return 'bg-green-700 border-green-700';
+        if (delay <= 100) return 'bg-green-500 border-green-500';
+        if (delay <= 200) return 'bg-green-300 border-green-300';
+        if (delay <= 250) return 'bg-yellow-400 border-yellow-400';
+        if (delay <= 300) return 'bg-orange-400 border-orange-400';
+        return 'bg-red-600 border-red-600';
+      }
+
+      function updateDot(dot, text, delay) {
+        var color;
+        var display;
+        if (delay === Infinity || delay === undefined || delay === null) {
+          color = 'bg-red-600 border-red-600';
+          display = 'N/A';
+        } else {
+          color = getColor(delay);
+          display = delay + 'ms';
+        }
+        dot.className = 'w-2 h-2 rounded-full ' + color + ' delay-dot';
+        text.textContent = display;
+      }
+
+      var cacheStr = localStorage.getItem(cacheKey);
+      var cache = cacheStr ? JSON.parse(cacheStr) : {};
+      var now = Date.now();
+
+      function refreshAllDelays() {
+        var now = Date.now();
+        var domains = Object.keys(domainMap);
+        var promises = domains.map(function(domain) {
+          return testDelay(domain).then(function(delay) {
+            var entry = domainMap[domain];
+            updateDot(entry.dot, entry.text, delay);
+            cache[domain] = { delay: delay, time: now };
+          }).catch(function() {});
+        });
+        Promise.allSettled(promises).then(function() {
+          localStorage.setItem(cacheKey, JSON.stringify(cache));
         });
       }
-    });
 
-    if (window._delayTimer) clearInterval(window._delayTimer);
-    window._delayTimer = setInterval(refreshAllDelays, expireTime);
-
-    var toggleBtn = document.getElementById('toggle-routes');
-    var extraDiv = document.getElementById('extra-routes');
-    if (toggleBtn && extraDiv) {
-      toggleBtn.addEventListener('click', function() {
-        var isHidden = extraDiv.classList.contains('hidden');
-        if (isHidden) {
-          extraDiv.classList.remove('hidden');
-          toggleBtn.textContent = '收起更多 ▲';
+      var domains = Object.keys(domainMap);
+      var pending = domains.length;
+      domains.forEach(function(domain) {
+        var cached = cache[domain];
+        var entry = domainMap[domain];
+        if (cached && (now - cached.time) < expireTime) {
+          updateDot(entry.dot, entry.text, cached.delay);
+          pending--;
         } else {
-          extraDiv.classList.add('hidden');
-          toggleBtn.textContent = '展开更多 ▼';
+          testDelay(domain).then(function(delay) {
+            updateDot(entry.dot, entry.text, delay);
+            cache[domain] = { delay: delay, time: now };
+            pending--;
+            if (pending === 0) {
+              localStorage.setItem(cacheKey, JSON.stringify(cache));
+            }
+          }).catch(function() {
+            pending--;
+          });
         }
+      });
+
+      if (window._delayTimer) clearInterval(window._delayTimer);
+      window._delayTimer = setInterval(refreshAllDelays, expireTime);
+
+      var toggleBtn = document.getElementById('toggle-routes');
+      var extraDiv = document.getElementById('extra-routes');
+      if (toggleBtn && extraDiv) {
+        // 移除旧的事件监听（避免重复绑定）
+        toggleBtn.removeEventListener('click', toggleHandler);
+        function toggleHandler() {
+          var isHidden = extraDiv.classList.contains('hidden');
+          if (isHidden) {
+            extraDiv.classList.remove('hidden');
+            toggleBtn.textContent = '收起更多 ▲';
+          } else {
+            extraDiv.classList.add('hidden');
+            toggleBtn.textContent = '展开更多 ▼';
+          }
+        }
+        toggleBtn.addEventListener('click', toggleHandler);
+      }
+
+      buttons.forEach(function(btn) {
+        if (btn.dataset.value === currentRoute) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      buttons.forEach(function(btn) {
+        btn.removeEventListener('click', routeClickHandler);
+        function routeClickHandler() {
+          var domain = this.dataset.domain;
+          var value = this.dataset.value;
+          localStorage.setItem('selectedRoute', value);
+          window.location.href = 'https://' + domain;
+        }
+        btn.addEventListener('click', routeClickHandler);
       });
     }
 
-    buttons.forEach(function(btn) {
-      if (btn.dataset.value === currentRoute) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-    });
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initRoutes);
+    } else {
+      initRoutes();
+    }
 
-    buttons.forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var domain = this.dataset.domain;
-        var value = this.dataset.value;
-        localStorage.setItem('selectedRoute', value);
-        window.location.href = 'https://' + domain;
-      });
-    });
+    if (window.swup && window.swup.hooks) {
+      window.swup.hooks.on('page:view', initRoutes);
+    }
   })();
 </script>
 
