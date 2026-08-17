@@ -3,7 +3,7 @@ title: 什么？为你的Fuwari博客添加线路切换？还能测速？
 published: 2026-08-16
 description: ''
 image: 'photo/changeview.jpg'
-tags: [安卓研究]
+tags: [博客搭建]
 category: '教程'
 draft: false 
 lang: ''
