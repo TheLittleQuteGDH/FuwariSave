@@ -1,9 +1,4 @@
 ---
-import { profileConfig } from "../config";
-import { url } from "../utils/url-utils";
-
-const currentYear = new Date().getFullYear();
----
 
 <div class="transition border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"></div>
 <div class="transition border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6">
@@ -39,15 +34,26 @@ const currentYear = new Date().getFullYear();
         const apis = [
             { url: 'https://api.ipify.org?format=json', parse: (d) => d.ip },
             { url: 'https://ip-api.com/json/', parse: (d) => d.query },
+            { url: 'https://httpbin.org/ip', parse: (d) => d.origin },
+            { url: 'https://api.ip.sb/geoip', parse: (d) => d.ip },
+            { url: 'https://ipinfo.io/ip', parse: (d) => d.trim(), isText: true },
+            { url: 'https://icanhazip.com/', parse: (d) => d.trim(), isText: true },
         ];
 
         for (const api of apis) {
             try {
-                const resp = await fetch(api.url, { signal: AbortSignal.timeout(5000) });
-                const data = await resp.json();
+                const resp = await fetch(api.url, { signal: AbortSignal.timeout(8000) });
+                let data;
+                if (api.isText) {
+                    data = await resp.text();
+                } else {
+                    data = await resp.json();
+                }
                 const ip = api.parse(data);
                 if (ip) return ip;
-            } catch (_) {}
+            } catch (_) {
+                continue;
+            }
         }
         return null;
     }
