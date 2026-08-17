@@ -4,16 +4,72 @@ import { url } from "../utils/url-utils";
 
 const currentYear = new Date().getFullYear();
 ---
-<!--<div class="border-t border-[var(&#45;&#45;primary)] mx-16 border-dashed py-8 max-w-[var(&#45;&#45;page-width)] flex flex-col items-center justify-center px-6">-->
+
 <div class="transition border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"></div>
-<!--<div class="transition bg-[oklch(92%_0.01_var(&#45;&#45;hue))] dark:bg-black rounded-2xl py-8 mt-4 mb-8 flex flex-col items-center justify-center px-6">-->
 <div class="transition border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6">
     <div class="transition text-50 text-sm text-center">
-        &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. All Rights Reserved. /
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('rss.xml')}>RSS</a> /
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('sitemap-index.xml')}>Sitemap</a><br>
-        Powered by
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/saicaca/fuwari">Fuwari</a>
+        <div id="footer-info" class="mt-1.5 text-xs opacity-75 flex flex-col items-center gap-y-1">
+            <span id="node-info">正在识别节点…</span>
+            <span id="ip-info">正在获取IP…</span>
+        </div>
     </div>
 </div>
+
+<script>
+(() => {
+    const NODE_MAP = {
+        'blog.thelittlequtegdh.top': '默认节点 (Tencent Edgeone + Cloudflare + Fastly)',
+        'blog.gdh.us.kg': '备用线路 (Cloudflare)',
+        'aliyun.thelittlequtegdh.top': 'AliyunESA',
+        'netlify.thelittlequtegdh.top': 'Netlify',
+        'faastly.thelittlequtegdh.top': 'Fastly',
+        'edgeone.thelittlequtegdh.top': 'Tencent Edgeone',
+        'vercel.thelittlequtegdh.top': 'Vercel',
+    };
+
+    function getNodeLabel() {
+        const host = window.location.hostname;
+        if (host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.') || host.startsWith('10.')) {
+            return '本地开发';
+        }
+        return NODE_MAP[host] || host;
+    }
+
+    async function fetchPublicIP() {
+        const apis = [
+            { url: 'https://api.ipify.org?format=json', parse: (d) => d.ip },
+            { url: 'https://ip-api.com/json/', parse: (d) => d.query },
+        ];
+
+        for (const api of apis) {
+            try {
+                const resp = await fetch(api.url, { signal: AbortSignal.timeout(5000) });
+                const data = await resp.json();
+                const ip = api.parse(data);
+                if (ip) return ip;
+            } catch (_) {}
+        }
+        return null;
+    }
+
+    async function updateFooter() {
+        const nodeEl = document.getElementById('node-info');
+        const ipEl = document.getElementById('ip-info');
+
+        if (nodeEl) {
+            nodeEl.textContent = getNodeLabel();
+        }
+
+        if (ipEl) {
+            const ip = await fetchPublicIP();
+            ipEl.textContent = ip ? `您的IP: ${ip}` : '无法获取IP';
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateFooter);
+    } else {
+        updateFooter();
+    }
+})();
+</script>
