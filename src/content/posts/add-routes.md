@@ -381,3 +381,66 @@ window.getCurrentRouteUrl = function() {
 
 最后提交，就可以发现左侧侧边栏线路切换已经生效了。
 
+每篇文章下面都有一个许可协议的卡片，里面写着文章的访问地址，但是这个访问地址默认是在Astro.config.mjs里写死的，想要动态获取的话，还需要修改.\src\components\misc目录下的License.astro文件，将其完整替换成以下代码即可。
+
+```astro
+---
+import { Icon } from "astro-icon/components";
+import { licenseConfig, profileConfig } from "../../config";
+import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
+import { formatDateToYYYYMMDD } from "../../utils/date-utils";
+
+interface Props {
+	title: string;
+	slug: string;
+	pubDate: Date;
+	class: string;
+}
+
+const { title, pubDate } = Astro.props;
+const className = Astro.props.class;
+const profileConf = profileConfig;
+const licenseConf = licenseConfig;
+// 移除了 postUrl 构建时计算，改为客户端动态获取
+---
+<div class={`relative transition overflow-hidden bg-[var(--license-block-bg)] py-5 px-6 ${className}`}>
+    <div class="transition font-bold text-black/75 dark:text-white/75">
+        {title}
+    </div>
+    <!-- 链接地址和显示文本由客户端 JavaScript 动态设置 -->
+    <a id="post-url-link" class="link text-[var(--primary)]" href="#">
+        <span id="post-url-text"></span>
+    </a>
+    <div class="flex gap-6 mt-2">
+        <div>
+            <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.author)}</div>
+            <div class="transition text-black/75 dark:text-white/75 line-clamp-2">{profileConf.name}</div>
+        </div>
+        <div>
+            <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.publishedAt)}</div>
+            <div class="transition text-black/75 dark:text-white/75 line-clamp-2">{formatDateToYYYYMMDD(pubDate)}</div>
+        </div>
+        <div>
+            <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.license)}</div>
+            <a href={licenseConf.url} target="_blank" class="link text-[var(--primary)] line-clamp-2">{licenseConf.name}</a>
+        </div>
+    </div>
+    <Icon name="fa6-brands:creative-commons" class="transition text-[15rem] absolute pointer-events-none right-6 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5"></Icon>
+</div>
+
+<!-- 客户端脚本：立即执行，不依赖任何事件，浏览器解析到此处时立即更新链接 -->
+<script>
+  (function() {
+    const link = document.getElementById('post-url-link');
+    const textSpan = document.getElementById('post-url-text');
+    if (link && textSpan) {
+      const currentUrl = window.location.href;
+      link.href = currentUrl;
+      textSpan.textContent = currentUrl;
+    }
+  })();
+</script>
+
+```
+
