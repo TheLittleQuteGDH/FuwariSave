@@ -13,19 +13,19 @@
 <script>
 (() => {
     const NODE_MAP = {
-        'blog.thelittlequtegdh.top': '默认节点 (Tencent Edgeone + Cloudflare + Fastly)',
-        'blog.gdh.us.kg': '备用线路 (Cloudflare)',
-        'aliyun.thelittlequtegdh.top': 'AliyunESA',
-        'netlify.thelittlequtegdh.top': 'Netlify',
-        'faastly.thelittlequtegdh.top': 'Fastly',
-        'edgeone.thelittlequtegdh.top': 'Tencent Edgeone',
-        'vercel.thelittlequtegdh.top': 'Vercel',
+        'blog.thelittlequtegdh.top': '当前节点：默认节点 (Tencent Edgeone + Cloudflare + Fastly)',
+        'cloudflare,thelittlequtegdh.top': '当前节点：Cloudflare',
+        'aliyun.thelittlequtegdh.top': '当前节点：AliyunESA',
+        'netlify.thelittlequtegdh.top': '当前节点：Netlify',
+        'fastly.thelittlequtegdh.top': '当前节点：Fastly',
+        'edgeone.thelittlequtegdh.top': '当前节点：Tencent Edgeone',
+        'vercel.thelittlequtegdh.top': '当前节点：Vercel',
     };
 
     function getNodeLabel() {
         const host = window.location.hostname;
         if (host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.') || host.startsWith('10.')) {
-            return '本地开发';
+            return '本地开发：Localhost:4321';
         }
         return NODE_MAP[host] || host;
     }
